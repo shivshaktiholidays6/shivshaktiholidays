@@ -9,29 +9,44 @@ import { cn } from "@/lib/utils";
 const nav = [
   { to: "/", label: "Home" },
   { to: "/destinations", label: "Destinations" },
-  { to: "/packages", label: "Holiday Packages" },
+  { to: "/packages", label: "Packages" },
   { to: "/international", label: "International" },
   { to: "/domestic", label: "Domestic" },
+  { to: "/honeymoon", label: "Honeymoon" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 export function Logo({ light }: { light?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-      <img
-        src="/logo.png"
-        alt="Shiv Shakti Holidays"
-        width={48}
-        height={48}
-        className="size-10 sm:size-11 rounded-full object-contain bg-white p-0.5 shadow-soft ring-1 ring-accent/40 transition-transform duration-300 group-hover:scale-105 shrink-0"
-      />
-      <span className="leading-tight">
-        <span className={cn("block font-display text-base sm:text-lg font-semibold tracking-wide transition-colors", light ? "text-white" : "text-white")}>
-          Shiv Shakti
+    <Link to="/" className="flex items-center gap-3 sm:gap-3.5 group select-none">
+      {/* Animated Glowing Emblem Badge */}
+      <div className="relative shrink-0">
+        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-accent/40 via-accent to-accent/40 blur-xs opacity-75 group-hover:opacity-100 transition-opacity duration-500 animate-emblem-glow" />
+        <img
+          src="/logo.png"
+          alt="Shiv Shakti Holidays"
+          width={56}
+          height={56}
+          className="relative size-12 sm:size-13 rounded-full object-contain bg-white p-0.5 shadow-lift ring-2 ring-accent/70 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
+        />
+      </div>
+
+      {/* Styled, Big & Animated Brand Name */}
+      <div className="leading-none flex flex-col justify-center">
+        <span className="font-display text-xl sm:text-2xl lg:text-[1.72rem] font-bold tracking-tight inline-block drop-shadow-sm">
+          <span className="animate-gold-shimmer inline-block transition-all duration-300 group-hover:scale-[1.02]">
+            Shiv Shakti
+          </span>
         </span>
-        <span className="block text-[0.58rem] sm:text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-accent">Holidays</span>
-      </span>
+        <div className="mt-1 flex items-center gap-1.5">
+          <span className="h-px w-3 sm:w-4 bg-gradient-to-r from-transparent to-accent/90" />
+          <span className="block text-[0.62rem] sm:text-[0.68rem] font-bold uppercase tracking-[0.36em] text-accent transition-all duration-500 group-hover:tracking-[0.44em] group-hover:text-amber-300">
+            Holidays
+          </span>
+          <span className="h-px w-3 sm:w-4 bg-gradient-to-l from-transparent to-accent/90" />
+        </div>
+      </div>
     </Link>
   );
 }
@@ -96,29 +111,22 @@ export function Header() {
       </div>
 
       {/* Main Navbar */}
-      <div className={cn("container-x flex items-center justify-between gap-4 transition-all duration-300", scrolled ? "h-16 sm:h-18" : "h-20")}>
+      <div className={cn("container-x flex items-center justify-between gap-4 transition-all duration-300", scrolled ? "h-18 sm:h-20" : "h-22")}>
         <Logo light={true} />
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden items-center gap-1 xl:gap-1.5 lg:flex">
+        {/* Desktop Navigation Links - Perfectly Aligned */}
+        <nav className="hidden items-center gap-1 xl:gap-2 lg:flex">
           {nav.map((n) => (
             <Link
               key={n.to}
               to={n.to}
               activeOptions={{ exact: n.to === "/" }}
-              className="relative px-3 py-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85 transition-all hover:text-accent rounded-full hover:bg-primary-foreground/5 data-[status=active]:text-accent data-[status=active]:bg-primary-foreground/10 group"
+              className="relative inline-flex items-center justify-center px-3 py-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85 transition-all hover:text-accent rounded-full hover:bg-primary-foreground/5 data-[status=active]:text-accent data-[status=active]:bg-primary-foreground/10 group whitespace-nowrap"
             >
               <span>{n.label}</span>
               <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 w-0 bg-accent rounded-full transition-all duration-300 group-hover:w-4 group-data-[status=active]:w-4" />
             </Link>
           ))}
-          <Link
-            to="/honeymoon"
-            className="relative px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent transition-all hover:text-white rounded-full bg-accent/15 border border-accent/40 hover:bg-accent/25 ml-1 flex items-center gap-1"
-          >
-            <span>Honeymoon</span>
-            <span className="text-[0.65rem]">✨</span>
-          </Link>
         </nav>
 
         {/* Right Action Buttons */}
@@ -213,7 +221,7 @@ export function Header() {
       {open && (
         <nav className="border-t border-accent/25 bg-primary/98 backdrop-blur-2xl text-primary-foreground lg:hidden">
           <div className="container-x flex flex-col py-5 space-y-1">
-            {[...nav, { to: "/honeymoon", label: "Honeymoon Specials ✨" }].map((n) => (
+            {nav.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
