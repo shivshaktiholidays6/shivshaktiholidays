@@ -53,7 +53,7 @@ export function PackageCard({ p }: { p: Pkg }) {
   );
 }
 
-export function SectionHead({ eyebrow, title, text, center = true }: { eyebrow: string; title: string; text?: string; center?: boolean }) {
+export function SectionHead({ eyebrow, title, text, center = true }: { eyebrow: string; title: string; text?: string | undefined; center?: boolean }) {
   return (
     <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       <p className="eyebrow">{eyebrow}</p>

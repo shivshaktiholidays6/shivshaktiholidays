@@ -61,7 +61,7 @@ export const destinations: Destination[] = groups.flatMap(([scope, region, names
     name,
     region,
     scope,
-    image: specific[name] ?? regionImage[region],
+    image: specific[name] ?? regionImage[region] ?? hero,
     blurb: scope === "international"
       ? `Discover ${name} with a holiday planned around your pace, budget and interests.`
       : `Explore the landscapes, culture and flavours of ${name} on a tailored Indian holiday.`,

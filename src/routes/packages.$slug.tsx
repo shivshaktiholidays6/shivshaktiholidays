@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/Cards";
 import { EnquiryForm } from "@/components/site/EnquiryForm";
-import { formatINR, itinerary, packages, images } from "@/data/catalog";
+import { formatINR, itinerary, packages } from "@/data/catalog";
 
 export const Route = createFileRoute("/packages/$slug")({
   loader: ({ params }) => {
@@ -31,7 +31,6 @@ const exclusions = ["Flights / train tickets unless specified", "Visa fees and t
 
 function Page() {
   const p = Route.useLoaderData();
-  const gallery = [p.image, ...Object.values(images).filter((i) => i !== p.image).slice(0, 3)];
   return (
     <>
       <PageHero image={p.image} eyebrow={p.types.join(" · ")} title={p.name}>
@@ -46,9 +45,6 @@ function Page() {
           <div className="space-y-14 lg:col-span-2">
             <div>
               <p className="text-lg text-muted-foreground">{p.summary}</p>
-              <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-                {gallery.map((g, i) => <img key={i} src={g} alt="" loading="lazy" className="aspect-square w-full rounded-xl object-cover" />)}
-              </div>
             </div>
             <div>
               <h2 className="text-3xl text-primary">Tour Highlights</h2>
