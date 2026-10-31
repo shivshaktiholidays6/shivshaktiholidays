@@ -27,12 +27,13 @@ function Chip({ on, children, onClick }: { on: boolean; children: React.ReactNod
 
 function Page() {
   const [step, setStep] = useState(0);
-  const [f, setF] = useState<Record<string, string>>({ adults: "2", children: "0", infants: "0" });
+  type K = "scope" | "from" | "dest" | "start" | "end" | "flex" | "adults" | "children" | "infants" | "budget" | "name" | "phone" | "email" | "notes";
+  const [f, setF] = useState<Partial<Record<K, string>>>({ adults: "2", children: "0", infants: "0" });
   const [types, setTypes] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [done, setDone] = useState<string | null>(null);
-  const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
-  const inp = (k: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => <input {...props} value={f[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={fieldClass} />;
+  const set = (k: K, v: string) => setF((s) => ({ ...s, [k]: v }));
+  const inp = (k: K, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => <input {...props} value={f[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={fieldClass} />;
 
   function next() {
     setError("");
@@ -79,7 +80,7 @@ function Page() {
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={!!f.flex} onChange={(e) => set("flex", e.target.checked ? "1" : "")} className="accent-accent" />My dates are flexible</label>
             </div>
           )}
-          {step === 2 && <div className="grid gap-4 sm:grid-cols-3">{[["adults", "Adults", 1], ["children", "Children", 0], ["infants", "Infants", 0]].map(([k, l, m]) => <label key={k as string} className="text-sm text-muted-foreground">{l as string}{inp(k as string, { type: "number", min: m as number })}</label>)}</div>}
+          {step === 2 && <div className="grid gap-4 sm:grid-cols-3">{[["adults", "Adults", 1], ["children", "Children", 0], ["infants", "Infants", 0]].map(([k, l, m]) => <label key={k as string} className="text-sm text-muted-foreground">{l as string}{inp(k as K, { type: "number", min: m as number })}</label>)}</div>}
           {step === 3 && <div className="grid gap-3 sm:grid-cols-4">{prefs.map((o) => <Chip key={o} on={types.includes(o)} onClick={() => setTypes((t) => t.includes(o) ? t.filter((x) => x !== o) : [...t, o])}>{o}</Chip>)}</div>}
           {step === 4 && <div className="grid gap-3 sm:grid-cols-3">{budgets.map((o) => <Chip key={o} on={f.budget === o} onClick={() => set("budget", o)}>{o}</Chip>)}</div>}
           {step === 5 && (
