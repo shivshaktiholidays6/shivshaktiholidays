@@ -17,15 +17,19 @@ const nav = [
 
 export function Logo({ light }: { light?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2.5">
-      <span className="grid size-10 place-items-center rounded-full border border-accent text-accent">
-        <Compass className="size-5" strokeWidth={1.5} />
-      </span>
-      <span className="leading-none">
-        <span className={cn("block font-display text-lg font-semibold tracking-wide", light ? "text-primary-foreground" : "text-primary")}>
+    <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
+      <img
+        src="/logo.png"
+        alt="Shiv Shakti Holidays"
+        width={48}
+        height={48}
+        className="size-10 sm:size-11 rounded-full object-contain bg-white p-0.5 shadow-soft ring-1 ring-accent/40 transition-transform duration-300 group-hover:scale-105 shrink-0"
+      />
+      <span className="leading-tight">
+        <span className={cn("block font-display text-base sm:text-lg font-semibold tracking-wide transition-colors", light ? "text-white" : "text-primary")}>
           Shiv Shakti
         </span>
-        <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.35em] text-accent">Holidays</span>
+        <span className="block text-[0.58rem] sm:text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-accent">Holidays</span>
       </span>
     </Link>
   );
