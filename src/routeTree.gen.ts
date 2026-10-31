@@ -10,6 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DomesticRouteImport } from './routes/domestic'
+import { Route as HoneymoonRouteImport } from './routes/honeymoon'
+import { Route as InternationalRouteImport } from './routes/international'
+import { Route as PlanTripRouteImport } from './routes/plan-trip'
 import { Route as DestinationsIndexRouteImport } from './routes/destinations.index'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as PackagesIndexRouteImport } from './routes/packages.index'
@@ -18,6 +24,36 @@ import { Route as PackagesSlugRouteImport } from './routes/packages.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DomesticRoute = DomesticRouteImport.update({
+  id: '/domestic',
+  path: '/domestic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HoneymoonRoute = HoneymoonRouteImport.update({
+  id: '/honeymoon',
+  path: '/honeymoon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InternationalRoute = InternationalRouteImport.update({
+  id: '/international',
+  path: '/international',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanTripRoute = PlanTripRouteImport.update({
+  id: '/plan-trip',
+  path: '/plan-trip',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DestinationsIndexRoute = DestinationsIndexRouteImport.update({
@@ -43,6 +79,12 @@ const PackagesSlugRoute = PackagesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/domestic': typeof DomesticRoute
+  '/honeymoon': typeof HoneymoonRoute
+  '/international': typeof InternationalRoute
+  '/plan-trip': typeof PlanTripRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/packages/$slug': typeof PackagesSlugRoute
   '/destinations/': typeof DestinationsIndexRoute
@@ -50,6 +92,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/domestic': typeof DomesticRoute
+  '/honeymoon': typeof HoneymoonRoute
+  '/international': typeof InternationalRoute
+  '/plan-trip': typeof PlanTripRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/packages/$slug': typeof PackagesSlugRoute
   '/destinations': typeof DestinationsIndexRoute
@@ -58,6 +106,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/domestic': typeof DomesticRoute
+  '/honeymoon': typeof HoneymoonRoute
+  '/international': typeof InternationalRoute
+  '/plan-trip': typeof PlanTripRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/packages/$slug': typeof PackagesSlugRoute
   '/destinations/': typeof DestinationsIndexRoute
@@ -67,6 +121,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/domestic'
+    | '/honeymoon'
+    | '/international'
+    | '/plan-trip'
     | '/destinations/$slug'
     | '/packages/$slug'
     | '/destinations/'
@@ -74,6 +134,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/domestic'
+    | '/honeymoon'
+    | '/international'
+    | '/plan-trip'
     | '/destinations/$slug'
     | '/packages/$slug'
     | '/destinations'
@@ -81,6 +147,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/contact'
+    | '/domestic'
+    | '/honeymoon'
+    | '/international'
+    | '/plan-trip'
     | '/destinations/$slug'
     | '/packages/$slug'
     | '/destinations/'
@@ -89,6 +161,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  DomesticRoute: typeof DomesticRoute
+  HoneymoonRoute: typeof HoneymoonRoute
+  InternationalRoute: typeof InternationalRoute
+  PlanTripRoute: typeof PlanTripRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   PackagesSlugRoute: typeof PackagesSlugRoute
   DestinationsIndexRoute: typeof DestinationsIndexRoute
@@ -102,6 +180,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/domestic': {
+      id: '/domestic'
+      path: '/domestic'
+      fullPath: '/domestic'
+      preLoaderRoute: typeof DomesticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/honeymoon': {
+      id: '/honeymoon'
+      path: '/honeymoon'
+      fullPath: '/honeymoon'
+      preLoaderRoute: typeof HoneymoonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/international': {
+      id: '/international'
+      path: '/international'
+      fullPath: '/international'
+      preLoaderRoute: typeof InternationalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan-trip': {
+      id: '/plan-trip'
+      path: '/plan-trip'
+      fullPath: '/plan-trip'
+      preLoaderRoute: typeof PlanTripRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/destinations/': {
@@ -137,6 +257,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  DomesticRoute: DomesticRoute,
+  HoneymoonRoute: HoneymoonRoute,
+  InternationalRoute: InternationalRoute,
+  PlanTripRoute: PlanTripRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   PackagesSlugRoute: PackagesSlugRoute,
   DestinationsIndexRoute: DestinationsIndexRoute,

@@ -18,7 +18,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const featured = ["maldives", "bali", "switzerland", "dubai", "kashmir", "kerala", "rajasthan", "greece"];
 
 function Home() {
   const [tab, setTab] = useState<"international" | "domestic">("international");
@@ -26,7 +25,6 @@ function Home() {
   const shown = tab === "international"
     ? destinations.filter((d) => ["maldives", "bali", "switzerland", "dubai", "greece", "thailand"].includes(d.slug))
     : destinations.filter((d) => ["kashmir", "kerala", "rajasthan", "goa", "himachal-pradesh", "andaman-and-nicobar-islands"].includes(d.slug));
-  void featured;
 
   return (
     <>
