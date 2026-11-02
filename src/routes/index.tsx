@@ -59,55 +59,55 @@ function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/75 via-primary/45 to-primary/95" />
         <div className="absolute inset-0 bg-radial-[at_top_right] from-accent/20 via-transparent to-transparent opacity-60" />
 
-        <div className="container-x relative z-10 flex flex-1 flex-col justify-center pb-20 pt-28 sm:pb-32 sm:pt-36 text-primary-foreground">
+        <div className="container-x relative z-10 flex flex-1 flex-col justify-center pb-16 pt-24 sm:pb-32 sm:pt-36 text-primary-foreground">
           <div className="max-w-3xl animate-fade-up">
             {/* Luxury pill badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-primary/50 px-3.5 py-1.5 backdrop-blur-md shadow-xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-primary/50 px-3 py-1 sm:px-3.5 sm:py-1.5 backdrop-blur-md shadow-xs">
               <Sparkles className="size-3.5 text-accent animate-pulse" />
-              <span className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-accent">
+              <span className="text-[0.62rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.22em] text-accent">
                 Bespoke Luxury Escapes & Curated Journeys
               </span>
             </div>
 
-            <h1 className="mt-5 text-3.5xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] sm:leading-[1.05] font-semibold font-display tracking-tight text-white drop-shadow-sm">
+            <h1 className="mt-4 sm:mt-5 text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.12] sm:leading-[1.05] font-semibold font-display tracking-tight text-white drop-shadow-sm">
               Discover The World.<br />
               <em className="text-accent italic font-normal block sm:inline">Create Memories Forever.</em>
             </h1>
 
-            <p className="mt-4 sm:mt-6 max-w-xl text-base sm:text-lg text-primary-foreground/90 leading-relaxed font-sans font-normal">
+            <p className="mt-3 sm:mt-6 max-w-xl text-sm sm:text-lg text-primary-foreground/90 leading-relaxed font-sans font-normal">
               From pristine overwater villas in the Maldives to royal palaces in Rajasthan, discover tailored holidays handcrafted exclusively around your dreams.
             </p>
 
-            <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row gap-3">
+            <div className="mt-6 sm:mt-9 flex flex-col sm:flex-row gap-3">
               <Button asChild variant="gold" size="xl" className="w-full sm:w-auto shadow-lift hover:scale-102">
-                <Link to="/packages" className="inline-flex items-center gap-2">
+                <Link to="/packages" className="inline-flex items-center justify-center gap-2">
                   <span>Explore Holiday Packages</span>
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
               <Button asChild variant="glass" size="xl" className="w-full sm:w-auto hover:scale-102">
-                <Link to="/plan-trip">Plan Bespoke Trip</Link>
+                <Link to="/plan-trip" className="inline-flex items-center justify-center">Plan Bespoke Trip</Link>
               </Button>
             </div>
 
             {/* Quick Trust Highlights in Hero */}
-            <div className="mt-10 sm:mt-14 flex flex-wrap items-center gap-6 sm:gap-10 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/80">
+            <div className="mt-8 sm:mt-14 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-4 sm:gap-10 border-t border-primary-foreground/15 pt-5 sm:pt-6 text-xs text-primary-foreground/80">
               <div className="flex items-center gap-2.5">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm">✦</span>
+                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">✦</span>
                 <div>
                   <strong className="block font-semibold text-white">500+ Curated Trips</strong>
                   <span className="text-[0.72rem] text-primary-foreground/70">Custom tailored itineraries</span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm">★</span>
+                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">★</span>
                 <div>
                   <strong className="block font-semibold text-white">4.9 / 5 Guest Rating</strong>
                   <span className="text-[0.72rem] text-primary-foreground/70">Verified traveler praises</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm">24/7</span>
+              <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1">
+                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">24/7</span>
                 <div>
                   <strong className="block font-semibold text-white">Dedicated Concierge</strong>
                   <span className="text-[0.72rem] text-primary-foreground/70">Personal travel specialist</span>
@@ -119,14 +119,14 @@ function Home() {
       </section>
 
       {/* ================= LUXURY HOLIDAY FINDER CONCIERGE BAR ================= */}
-      <section className="relative z-20 -mt-10 sm:-mt-16 lg:-mt-14">
+      <section className="relative z-20 -mt-8 sm:-mt-16 lg:-mt-14">
         <div className="container-x">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               navigate({ to: "/plan-trip" });
             }}
-            className="rounded-3xl border border-border/80 bg-card/95 p-5 sm:p-7 shadow-lift backdrop-blur-xl"
+            className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card/95 p-4 sm:p-7 shadow-lift backdrop-blur-xl"
           >
             {/* Header label inside booking bar */}
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
