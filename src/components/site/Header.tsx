@@ -1,6 +1,18 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, Search, X, Compass, Phone, MessageCircle, ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+  Menu,
+  Search,
+  X,
+  Compass,
+  Phone,
+  MessageCircle,
+  ArrowRight,
+  ArrowUpRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { destinations } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
@@ -19,7 +31,10 @@ const nav = [
 
 export function Logo({ light }: { light?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2 xs:gap-2.5 sm:gap-3.5 group select-none min-w-0 shrink">
+    <Link
+      href="/"
+      className="flex items-center gap-2 xs:gap-2.5 sm:gap-3.5 group select-none min-w-0 shrink"
+    >
       {/* Animated Glowing Emblem Badge */}
       <div className="relative shrink-0">
         <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-accent/40 via-accent to-accent/40 blur-xs opacity-75 group-hover:opacity-100 transition-opacity duration-500 animate-emblem-glow" />
@@ -52,13 +67,13 @@ export function Logo({ light }: { light?: boolean }) {
 }
 
 export function Header() {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const path = usePathname();
   const isHome = path === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState("");
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 30);
@@ -66,10 +81,16 @@ export function Header() {
     window.addEventListener("scroll", on);
     return () => window.removeEventListener("scroll", on);
   }, []);
-  useEffect(() => { setOpen(false); setSearchOpen(false); }, [path]);
+  useEffect(() => {
+    setOpen(false);
+    setSearchOpen(false);
+  }, [path]);
 
   const solid = scrolled || !isHome || open;
-  const results = q.length > 1 ? destinations.filter((d) => d.name.toLowerCase().includes(q.toLowerCase())).slice(0, 6) : [];
+  const results =
+    q.length > 1
+      ? destinations.filter((d) => d.name.toLowerCase().includes(q.toLowerCase())).slice(0, 6)
+      : [];
 
   return (
     <header
@@ -77,14 +98,16 @@ export function Header() {
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
         solid
           ? "bg-primary/95 backdrop-blur-xl border-b border-accent/25 shadow-soft text-primary-foreground"
-          : "bg-gradient-to-b from-primary/85 via-primary/40 to-transparent text-primary-foreground"
+          : "bg-gradient-to-b from-primary/85 via-primary/40 to-transparent text-primary-foreground",
       )}
     >
       {/* Top micro concierge strip (desktop) */}
       <div
         className={cn(
           "hidden lg:block border-b border-primary-foreground/10 transition-all duration-300",
-          scrolled ? "h-0 overflow-hidden opacity-0 py-0" : "bg-primary/30 backdrop-blur-xs py-1.5 text-[0.72rem] text-primary-foreground/80"
+          scrolled
+            ? "h-0 overflow-hidden opacity-0 py-0"
+            : "bg-primary/30 backdrop-blur-xs py-1.5 text-[0.72rem] text-primary-foreground/80",
         )}
       >
         <div className="container-x flex items-center justify-between">
@@ -97,12 +120,24 @@ export function Header() {
             <span className="text-primary-foreground/70">Personalized Luxury Travel Planning</span>
           </div>
           <div className="flex items-center gap-5">
-            <a href={`tel:${site.phone}`} className="flex items-center gap-1.5 hover:text-accent transition-colors">
+            <a
+              href={`tel:${site.phone}`}
+              className="flex items-center gap-1.5 hover:text-accent transition-colors"
+            >
               <Phone className="size-3 text-accent" />
               <span>{site.phone}</span>
             </a>
+            <span className="text-primary-foreground/30">/</span>
+            <a href={`tel:${site.phoneSecondary}`} className="hover:text-accent transition-colors">
+              {site.phoneSecondary}
+            </a>
             <span className="text-primary-foreground/30">|</span>
-            <a href={waLink(waMessages.general)} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-accent transition-colors">
+            <a
+              href={waLink(waMessages.general)}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 hover:text-accent transition-colors"
+            >
               <MessageCircle className="size-3 text-accent" />
               <span>WhatsApp Concierge</span>
             </a>
@@ -114,7 +149,7 @@ export function Header() {
       <div
         className={cn(
           "container-x flex items-center justify-between gap-2 sm:gap-4 transition-all duration-300",
-          scrolled ? "h-16 sm:h-18 lg:h-20" : "h-18 sm:h-20 lg:h-22"
+          scrolled ? "h-16 sm:h-18 lg:h-20" : "h-18 sm:h-20 lg:h-22",
         )}
       >
         <Logo light={true} />
@@ -124,12 +159,13 @@ export function Header() {
           {nav.map((n) => (
             <Link
               key={n.to}
-              to={n.to}
-              activeOptions={{ exact: n.to === "/" }}
-              className="relative inline-flex items-center justify-center px-3 py-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85 transition-all hover:text-accent rounded-full hover:bg-primary-foreground/5 data-[status=active]:text-accent data-[status=active]:bg-primary-foreground/10 group whitespace-nowrap"
+              href={n.to}
+              className={`relative inline-flex items-center justify-center px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-all hover:text-accent rounded-full hover:bg-primary-foreground/5 group whitespace-nowrap ${path === n.to ? "text-accent bg-primary-foreground/10" : "text-primary-foreground/85"}`}
             >
               <span>{n.label}</span>
-              <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 w-0 bg-accent rounded-full transition-all duration-300 group-hover:w-4 group-data-[status=active]:w-4" />
+              <span
+                className={`absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-accent rounded-full transition-all duration-300 group-hover:w-4 ${path === n.to ? "w-4" : "w-0"}`}
+              />
             </Link>
           ))}
         </nav>
@@ -143,7 +179,7 @@ export function Header() {
               "grid size-9 sm:size-10 place-items-center rounded-full border transition-all shrink-0",
               searchOpen
                 ? "border-accent bg-accent text-accent-foreground shadow-xs"
-                : "border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground hover:border-accent hover:bg-accent/20 hover:text-accent"
+                : "border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground hover:border-accent hover:bg-accent/20 hover:text-accent",
             )}
           >
             {searchOpen ? <X className="size-4" /> : <Search className="size-4" />}
@@ -155,7 +191,7 @@ export function Header() {
             size="xl"
             className="hidden sm:inline-flex h-10 px-4 sm:px-5 text-xs font-semibold uppercase tracking-wider shadow-soft hover:shadow-lift hover:scale-103 shrink-0"
           >
-            <Link to="/plan-trip" className="inline-flex items-center gap-1.5">
+            <Link href="/plan-trip" className="inline-flex items-center gap-1.5">
               <span>Plan My Trip</span>
               <ArrowRight className="size-3.5" />
             </Link>
@@ -202,18 +238,22 @@ export function Header() {
                 <span className="text-[0.65rem] sm:text-[0.68rem] uppercase tracking-wider text-accent font-semibold whitespace-nowrap">
                   Popular:
                 </span>
-                {["Bali", "Maldives", "Switzerland", "Dubai", "Kashmir", "Kerala", "Rajasthan"].map((dest) => (
-                  <button
-                    key={dest}
-                    onClick={() => {
-                      const found = destinations.find((d) => d.name.toLowerCase() === dest.toLowerCase());
-                      if (found) navigate({ to: "/destinations/$slug", params: { slug: found.slug } });
-                    }}
-                    className="rounded-full border border-primary-foreground/15 bg-primary-foreground/5 px-2.5 sm:px-3 py-1 text-[0.72rem] sm:text-xs hover:border-accent hover:text-accent transition-colors cursor-pointer"
-                  >
-                    {dest}
-                  </button>
-                ))}
+                {["Bali", "Maldives", "Switzerland", "Dubai", "Kashmir", "Kerala", "Rajasthan"].map(
+                  (dest) => (
+                    <button
+                      key={dest}
+                      onClick={() => {
+                        const found = destinations.find(
+                          (d) => d.name.toLowerCase() === dest.toLowerCase(),
+                        );
+                        if (found) router.push(`/destinations/${found.slug}`);
+                      }}
+                      className="rounded-full border border-primary-foreground/15 bg-primary-foreground/5 px-2.5 sm:px-3 py-1 text-[0.72rem] sm:text-xs hover:border-accent hover:text-accent transition-colors cursor-pointer"
+                    >
+                      {dest}
+                    </button>
+                  ),
+                )}
               </div>
             )}
 
@@ -222,11 +262,13 @@ export function Header() {
                 {results.map((d) => (
                   <li key={d.slug}>
                     <button
-                      onClick={() => navigate({ to: "/destinations/$slug", params: { slug: d.slug } })}
+                      onClick={() => router.push(`/destinations/${d.slug}`)}
                       className="w-full rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-2.5 sm:p-3 text-left text-sm hover:border-accent/40 hover:bg-primary-foreground/10 transition-all flex items-center justify-between group cursor-pointer"
                     >
                       <div className="min-w-0 pr-2">
-                        <span className="font-semibold text-white group-hover:text-accent transition-colors block truncate">{d.name}</span>
+                        <span className="font-semibold text-white group-hover:text-accent transition-colors block truncate">
+                          {d.name}
+                        </span>
                         <span className="text-xs text-primary-foreground/60 block">{d.region}</span>
                       </div>
                       <ArrowUpRight className="size-4 shrink-0 text-accent/60 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -260,9 +302,8 @@ export function Header() {
             {nav.map((n) => (
               <Link
                 key={n.to}
-                to={n.to}
-                activeOptions={{ exact: n.to === "/" }}
-                className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium text-primary-foreground/90 transition-colors hover:bg-primary-foreground/10 hover:text-accent data-[status=active]:bg-primary-foreground/10 data-[status=active]:text-accent"
+                href={n.to}
+                className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-foreground/10 hover:text-accent ${path === n.to ? "bg-primary-foreground/10 text-accent" : "text-primary-foreground/90"}`}
               >
                 <span>{n.label}</span>
                 <ArrowRight className="size-4 opacity-50" />
@@ -271,18 +312,26 @@ export function Header() {
 
             <div className="border-t border-primary-foreground/15 pt-4 mt-3 space-y-3">
               <Button asChild variant="gold" size="xl" className="w-full shadow-soft">
-                <Link to="/plan-trip" className="inline-flex items-center justify-center gap-2">
+                <Link href="/plan-trip" className="inline-flex items-center justify-center gap-2">
                   <span>Plan My Trip</span>
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
               <div className="flex items-center justify-around pt-2 text-xs text-primary-foreground/75">
-                <a href={`tel:${site.phone}`} className="flex items-center gap-1.5 hover:text-accent transition-colors">
+                <a
+                  href={`tel:${site.phone}`}
+                  className="flex items-center gap-1.5 hover:text-accent transition-colors"
+                >
                   <Phone className="size-3.5 text-accent" />
                   <span>Call Us</span>
                 </a>
                 <span className="text-primary-foreground/30">|</span>
-                <a href={waLink(waMessages.general)} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-accent transition-colors">
+                <a
+                  href={waLink(waMessages.general)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 hover:text-accent transition-colors"
+                >
                   <MessageCircle className="size-3.5 text-accent" />
                   <span>WhatsApp Concierge</span>
                 </a>

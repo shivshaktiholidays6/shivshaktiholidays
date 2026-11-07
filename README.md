@@ -1,6 +1,6 @@
-# Screenshot Precision
+# Shiv Shakti Holidays
 
-Implement exactly the screenshot and nothing else
+A responsive travel website built with Next.js App Router, React, TypeScript and Tailwind CSS.
 
 This project was built with [Lovable](https://lovable.dev).
 
@@ -14,7 +14,7 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+You need Node.js and npm.
 
 ```sh
 git clone <this-repository-url>
@@ -22,3 +22,7 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+Open `http://localhost:3000`. Run `npm run build` for a production build and `npm start` to serve it.
+
+The public site includes destination, package, domestic, international, honeymoon and trip-planning pages. Popular spiritual packages include Char Dham, Do Dham, Kedarnath, Vaishno Devi, Ayodhya–Varanasi and Mathura–Vrindavan.

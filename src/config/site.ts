@@ -2,16 +2,18 @@
 export const site = {
   name: "Shiv Shakti Holidays",
   tagline: "Explore the World. Experience More.",
-  phone: "+91 00000 00000", // TODO: real business phone
-  whatsapp: "910000000000", // TODO: real WhatsApp number, digits only with country code
-  email: "hello@example.com", // TODO: real email
-  address: "Address to be confirmed",
+  phone: "+91 95680 00777",
+  phoneSecondary: "+91 98975 99995",
+  whatsapp: "919568000777",
+  email: "shivshaktiholidays.rke@gmail.com",
+  address: "Opp. Old Kachari Gate, Bus Stand, Roorkee, Uttarakhand 247667",
   social: { instagram: "#", facebook: "#", youtube: "#" },
 };
 
 export const waMessages = {
   general: "Hello Shiv Shakti Holidays, I would like to know more about your holiday packages.",
-  international: "Hello, I am interested in planning an international holiday. Please share available packages.",
+  international:
+    "Hello, I am interested in planning an international holiday. Please share available packages.",
   domestic: "Hello, I want to explore domestic holiday packages. Please assist me.",
   honeymoon: "Hello, I am planning a honeymoon trip and would like a customized package.",
 };

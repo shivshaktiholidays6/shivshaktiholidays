@@ -18,7 +18,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         gold: "bg-accent text-accent-foreground font-semibold tracking-wider uppercase text-xs shadow-soft hover:brightness-105 hover:-translate-y-0.5 transition-all",
         navy: "bg-primary text-primary-foreground font-semibold tracking-wider uppercase text-xs hover:bg-secondary transition-all",
-        glass: "border border-primary-foreground/50 text-primary-foreground font-semibold tracking-wider uppercase text-xs backdrop-blur-sm hover:bg-primary-foreground hover:text-primary transition-all",
+        glass:
+          "border border-primary-foreground/50 text-primary-foreground font-semibold tracking-wider uppercase text-xs backdrop-blur-sm hover:bg-primary-foreground hover:text-primary transition-all",
       },
       size: {
         default: "h-9 px-4 py-2",

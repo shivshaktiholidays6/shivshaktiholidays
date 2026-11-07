@@ -1,4 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Compass,
@@ -21,28 +24,29 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationCard, PackageCard, SectionHead } from "@/components/site/Cards";
+import { SectionCTA } from "@/components/site/SectionCTA";
 import { fieldClass } from "@/components/site/EnquiryForm";
-import { destinations, images, packages, categories } from "@/data/catalog";
+import { categories, destinations, images, mostBookedPackageSlugs, packages } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Shiv Shakti Holidays — Bespoke Luxury Holidays & Custom Trips" },
-      { name: "description", content: "Curated domestic and international holiday packages, honeymoons, and bespoke itineraries planned around you." },
-      { property: "og:title", content: "Shiv Shakti Holidays — Discover the World" },
-      { property: "og:description", content: "From Indian escapes to international adventures, holidays designed around your dreams." },
-    ],
-  }),
-  component: Home,
-});
-
-function Home() {
+export default function Home() {
   const [tab, setTab] = useState<"international" | "domestic">("international");
-  const navigate = useNavigate();
-  const shown = tab === "international"
-    ? destinations.filter((d) => ["maldives", "bali", "switzerland", "dubai", "greece", "thailand"].includes(d.slug))
-    : destinations.filter((d) => ["kashmir", "kerala", "rajasthan", "goa", "himachal-pradesh", "andaman-and-nicobar-islands"].includes(d.slug));
+  const router = useRouter();
+  const shown =
+    tab === "international"
+      ? destinations.filter((d) =>
+          ["maldives", "bali", "switzerland", "dubai", "greece", "thailand"].includes(d.slug),
+        )
+      : destinations.filter((d) =>
+          [
+            "kashmir",
+            "kerala",
+            "rajasthan",
+            "goa",
+            "himachal-pradesh",
+            "andaman-and-nicobar-islands",
+          ].includes(d.slug),
+        );
 
   return (
     <>
@@ -70,47 +74,75 @@ function Home() {
             </div>
 
             <h1 className="mt-4 sm:mt-5 text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.12] sm:leading-[1.05] font-semibold font-display tracking-tight text-white drop-shadow-sm">
-              Discover The World.<br />
-              <em className="text-accent italic font-normal block sm:inline">Create Memories Forever.</em>
+              Discover The World.
+              <br />
+              <em className="text-accent italic font-normal block sm:inline">
+                Create Memories Forever.
+              </em>
             </h1>
 
             <p className="mt-3 sm:mt-6 max-w-xl text-sm sm:text-lg text-primary-foreground/90 leading-relaxed font-sans font-normal">
-              From pristine overwater villas in the Maldives to royal palaces in Rajasthan, discover tailored holidays handcrafted exclusively around your dreams.
+              From pristine overwater villas in the Maldives to royal palaces in Rajasthan, discover
+              tailored holidays handcrafted exclusively around your dreams.
             </p>
 
             <div className="mt-6 sm:mt-9 flex flex-col sm:flex-row gap-3">
-              <Button asChild variant="gold" size="xl" className="w-full sm:w-auto shadow-lift hover:scale-102">
-                <Link to="/packages" className="inline-flex items-center justify-center gap-2">
+              <Button
+                asChild
+                variant="gold"
+                size="xl"
+                className="w-full sm:w-auto shadow-lift hover:scale-102"
+              >
+                <Link href="/packages" className="inline-flex items-center justify-center gap-2">
                   <span>Explore Holiday Packages</span>
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <Button asChild variant="glass" size="xl" className="w-full sm:w-auto hover:scale-102">
-                <Link to="/plan-trip" className="inline-flex items-center justify-center">Plan Bespoke Trip</Link>
+              <Button
+                asChild
+                variant="glass"
+                size="xl"
+                className="w-full sm:w-auto hover:scale-102"
+              >
+                <Link href="/plan-trip" className="inline-flex items-center justify-center">
+                  Plan Bespoke Trip
+                </Link>
               </Button>
             </div>
 
             {/* Quick Trust Highlights in Hero */}
             <div className="mt-8 sm:mt-14 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-4 sm:gap-10 border-t border-primary-foreground/15 pt-5 sm:pt-6 text-xs text-primary-foreground/80">
               <div className="flex items-center gap-2.5">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">✦</span>
+                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">
+                  ✦
+                </span>
                 <div>
                   <strong className="block font-semibold text-white">500+ Curated Trips</strong>
-                  <span className="text-[0.72rem] text-primary-foreground/70">Custom tailored itineraries</span>
+                  <span className="text-[0.72rem] text-primary-foreground/70">
+                    Custom tailored itineraries
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">★</span>
+                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">
+                  ★
+                </span>
                 <div>
                   <strong className="block font-semibold text-white">4.9 / 5 Guest Rating</strong>
-                  <span className="text-[0.72rem] text-primary-foreground/70">Verified traveler praises</span>
+                  <span className="text-[0.72rem] text-primary-foreground/70">
+                    Verified traveler praises
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">24/7</span>
+                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">
+                  24/7
+                </span>
                 <div>
                   <strong className="block font-semibold text-white">Dedicated Concierge</strong>
-                  <span className="text-[0.72rem] text-primary-foreground/70">Personal travel specialist</span>
+                  <span className="text-[0.72rem] text-primary-foreground/70">
+                    Personal travel specialist
+                  </span>
                 </div>
               </div>
             </div>
@@ -124,7 +156,7 @@ function Home() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              navigate({ to: "/plan-trip" });
+              router.push("/plan-trip");
             }}
             className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card/95 p-4 sm:p-7 shadow-lift backdrop-blur-xl"
           >
@@ -184,7 +216,9 @@ function Home() {
               {/* Category */}
               <div>
                 <select className={fieldClass} defaultValue="">
-                  <option value="" disabled>Holiday Style</option>
+                  <option value="" disabled>
+                    Holiday Style
+                  </option>
                   {categories.map((c) => (
                     <option key={c}>{c}</option>
                   ))}
@@ -224,12 +258,16 @@ function Home() {
                   <Icon className="size-5 sm:size-6" strokeWidth={1.5} />
                 </span>
                 <span className="mt-3 text-sm font-semibold text-primary">{t as string}</span>
-                <span className="mt-1 text-xs text-muted-foreground hidden sm:block">{d as string}</span>
+                <span className="mt-1 text-xs text-muted-foreground hidden sm:block">
+                  {d as string}
+                </span>
               </div>
             );
           })}
         </div>
       </section>
+
+      <PopularPackagesSection />
 
       {/* ================= CURATED DESTINATIONS ================= */}
       <section className="py-14 sm:py-20 md:py-24 bg-card/30">
@@ -266,50 +304,19 @@ function Home() {
           </div>
 
           <div className="mt-10 sm:mt-12 text-center">
-            <Button asChild variant="navy" size="xl" className="w-full sm:w-auto shadow-soft hover:shadow-lift">
-              <Link to="/destinations" className="inline-flex items-center gap-2">
+            <Button
+              asChild
+              variant="navy"
+              size="xl"
+              className="w-full sm:w-auto shadow-soft hover:shadow-lift"
+            >
+              <Link href="/destinations" className="inline-flex items-center gap-2">
                 <span>View All 50+ Destinations</span>
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
           </div>
-        </div>
-      </section>
-
-      {/* ================= SIGNATURE ITINERARIES (JOURNEYS WE LOVE) ================= */}
-      <section className="bg-muted/70 py-14 sm:py-20 md:py-24 border-y border-border/50">
-        <div className="container-x">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6">
-            <SectionHead
-              center={false}
-              eyebrow="Signature Packages"
-              title="Journeys We Love"
-              text="Sample itineraries curated by our travel specialists — every trip can be tailored to your pace and preferences."
-            />
-            <Button asChild variant="outline" className="rounded-full w-full sm:w-auto shrink-0 border-accent/40 text-primary hover:bg-primary hover:text-primary-foreground">
-              <Link to="/packages" className="inline-flex items-center gap-2">
-                <span>Browse All Packages</span>
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="mt-8 sm:mt-12 grid gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {packages
-              .filter((p) =>
-                [
-                  "bali-romantic-escape",
-                  "switzerland-scenic-escape",
-                  "dubai-luxury-experience",
-                  "kashmir-paradise",
-                  "kerala-backwaters",
-                  "rajasthan-royal-experience",
-                ].includes(p.slug)
-              )
-              .map((p) => (
-                <PackageCard key={p.slug} p={p} />
-              ))}
-          </div>
+          <SectionCTA />
         </div>
       </section>
 
@@ -323,7 +330,7 @@ function Home() {
             className="absolute inset-0 size-full object-cover transition-transform duration-1000 hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
-          
+
           {/* Floating luxury stamp */}
           <div className="absolute bottom-5 left-5 z-10 sm:bottom-8 sm:left-8">
             <div className="rounded-2xl border border-white/20 bg-primary/80 p-4 text-white backdrop-blur-md shadow-lift max-w-xs">
@@ -347,7 +354,8 @@ function Home() {
               Make Your Beginning Unforgettable.
             </h2>
             <p className="mt-4 text-sm sm:text-base text-primary-foreground/80 leading-relaxed font-sans font-light">
-              Private pool villas, scenic sunsets, and bespoke romantic touches — from the Maldives and Santorini to Kashmir, Udaipur, and Switzerland.
+              Private pool villas, scenic sunsets, and bespoke romantic touches — from the Maldives
+              and Santorini to Kashmir, Udaipur, and Switzerland.
             </p>
 
             {/* Romance Highlights List */}
@@ -366,8 +374,13 @@ function Home() {
               </li>
             </ul>
 
-            <Button asChild variant="gold" size="xl" className="mt-8 w-full sm:w-auto shadow-lift hover:scale-102">
-              <Link to="/honeymoon" className="inline-flex items-center gap-2">
+            <Button
+              asChild
+              variant="gold"
+              size="xl"
+              className="mt-8 w-full sm:w-auto shadow-lift hover:scale-102"
+            >
+              <Link href="/honeymoon" className="inline-flex items-center gap-2">
                 <span>Plan Your Dream Honeymoon</span>
                 <ArrowRight className="size-4" />
               </Link>
@@ -387,12 +400,36 @@ function Home() {
 
           <div className="mt-8 sm:mt-12 md:mt-14 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              [Sparkles, "Customized Travel Experiences", "Every itinerary is tailored around your personal interests, preferred pace, and budget."],
-              [Globe2, "Domestic & International", "From the majestic Himalayas to the Swiss Alps, one trusted team for all your journeys."],
-              [Compass, "Thoughtfully Paced Days", "Balanced days blending iconic must-see sights with leisure time to relax and recharge."],
-              [Layers, "Multiple Holiday Styles", "Honeymoons, family holidays, spiritual pilgrimages, adventure escapes, and ultra-luxury stays."],
-              [HeartHandshake, "Personalized Assistance", "Dedicated travel planners who assist you before, during, and after your trip."],
-              [CalendarCheck, "Effortless Booking & Support", "Get instant quotes and customize your journey in minutes via WhatsApp, call, or form."],
+              [
+                Sparkles,
+                "Customized Travel Experiences",
+                "Every itinerary is tailored around your personal interests, preferred pace, and budget.",
+              ],
+              [
+                Globe2,
+                "Domestic & International",
+                "From the majestic Himalayas to the Swiss Alps, one trusted team for all your journeys.",
+              ],
+              [
+                Compass,
+                "Thoughtfully Paced Days",
+                "Balanced days blending iconic must-see sights with leisure time to relax and recharge.",
+              ],
+              [
+                Layers,
+                "Multiple Holiday Styles",
+                "Honeymoons, family holidays, spiritual pilgrimages, adventure escapes, and ultra-luxury stays.",
+              ],
+              [
+                HeartHandshake,
+                "Personalized Assistance",
+                "Dedicated travel planners who assist you before, during, and after your trip.",
+              ],
+              [
+                CalendarCheck,
+                "Effortless Booking & Support",
+                "Get instant quotes and customize your journey in minutes via WhatsApp, call, or form.",
+              ],
             ].map(([I, t, d]) => {
               const Icon = I as typeof Map;
               return (
@@ -428,21 +465,24 @@ function Home() {
           <div className="mt-10 sm:mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                quote: "Every detail of our Bali honeymoon was flawlessly orchestrated. From the private pool villa to the sunset dinner, it was truly magical.",
+                quote:
+                  "Every detail of our Bali honeymoon was flawlessly orchestrated. From the private pool villa to the sunset dinner, it was truly magical.",
                 author: "Rohan & Sneha M.",
                 city: "Mumbai",
                 pkg: "Bali Romantic Escape",
                 rating: 5,
               },
               {
-                quote: "The Switzerland trip was a dream come true for our family. Scenic train passes, breathtaking mountain hotels, and 24/7 care on WhatsApp made it effortless.",
+                quote:
+                  "The Switzerland trip was a dream come true for our family. Scenic train passes, breathtaking mountain hotels, and 24/7 care on WhatsApp made it effortless.",
                 author: "Ananya & Vikram K.",
                 city: "New Delhi",
                 pkg: "Switzerland Scenic Escape",
                 rating: 5,
               },
               {
-                quote: "The luxury houseboat in Kerala and private tea estate stay in Munnar exceeded all expectations. Shiv Shakti Holidays provides genuine 5-star planning.",
+                quote:
+                  "The luxury houseboat in Kerala and private tea estate stay in Munnar exceeded all expectations. Shiv Shakti Holidays provides genuine 5-star planning.",
                 author: "Dr. Rajesh Patel",
                 city: "Ahmedabad",
                 pkg: "Kerala Backwaters & Hills",
@@ -505,10 +545,22 @@ function Home() {
 
           <div className="mt-10 sm:mt-14 md:mt-16 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
             {[
-              ["Discover Your Destination", "Browse our curated domestic and international destinations or ask for personalized recommendations."],
-              ["Share Your Preferences", "Tell us your preferred dates, party size, travel style, and special requests."],
-              ["Receive Custom Itinerary", "Our travel specialists handcraft a detailed day-by-day plan with transparent pricing."],
-              ["Confirm & Travel In Style", "Finalize arrangements, receive travel vouchers, and enjoy 24/7 on-ground assistance."],
+              [
+                "Discover Your Destination",
+                "Browse our curated domestic and international destinations or ask for personalized recommendations.",
+              ],
+              [
+                "Share Your Preferences",
+                "Tell us your preferred dates, party size, travel style, and special requests.",
+              ],
+              [
+                "Receive Custom Itinerary",
+                "Our travel specialists handcraft a detailed day-by-day plan with transparent pricing.",
+              ],
+              [
+                "Confirm & Travel In Style",
+                "Finalize arrangements, receive travel vouchers, and enjoy 24/7 on-ground assistance.",
+              ],
             ].map(([t, d], i) => (
               <div
                 key={t}
@@ -539,7 +591,9 @@ function Home() {
                 Looking For Something Truly Unique?
               </h2>
               <p className="mt-4 text-sm sm:text-base text-primary-foreground/80 leading-relaxed font-light">
-                Speak directly with our senior travel designers. Whether it's an anniversary escape, a multi-country family tour, or a corporate retreat, we craft completely bespoke itineraries from scratch.
+                Speak directly with our senior travel designers. Whether it's an anniversary escape,
+                a multi-country family tour, or a corporate retreat, we craft completely bespoke
+                itineraries from scratch.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3.5">
                 <Button asChild variant="gold" size="xl" className="shadow-lift hover:scale-102">
@@ -554,7 +608,7 @@ function Home() {
                   </a>
                 </Button>
                 <Button asChild variant="glass" size="xl" className="hover:scale-102">
-                  <Link to="/plan-trip" className="inline-flex items-center justify-center gap-2">
+                  <Link href="/plan-trip" className="inline-flex items-center justify-center gap-2">
                     <Plane className="size-4" />
                     <span>Plan Online in 2 Minutes</span>
                   </Link>
@@ -570,5 +624,45 @@ function Home() {
         </div>
       </section>
     </>
+  );
+}
+
+function PopularPackagesSection() {
+  const slugs = mostBookedPackageSlugs.slice(0, 6);
+  const popularPackages = slugs.flatMap((slug) => {
+    const packageItem = packages.find((item) => item.slug === slug);
+    return packageItem ? [packageItem] : [];
+  });
+
+  return (
+    <section className="bg-muted/70 py-14 sm:py-20 md:py-24 border-y border-border/50">
+      <div className="container-x">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6">
+          <SectionHead
+            center={false}
+            eyebrow="Popular Packages"
+            title="Our Most Booked Journeys"
+            text="Start with the holidays travellers request most, from sacred Himalayan journeys to vibrant international escapes."
+          />
+          <Button
+            asChild
+            variant="outline"
+            className="rounded-full w-full sm:w-auto shrink-0 border-accent/40 text-primary hover:bg-primary hover:text-primary-foreground"
+          >
+            <Link href="/packages" className="inline-flex items-center gap-2">
+              <span>Browse All Packages</span>
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="mt-8 sm:mt-12 grid gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {popularPackages.map((packageItem) => (
+            <PackageCard key={packageItem.slug} p={packageItem} />
+          ))}
+        </div>
+        <SectionCTA />
+      </div>
+    </section>
   );
 }
