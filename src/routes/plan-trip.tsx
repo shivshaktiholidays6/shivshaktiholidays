@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { fieldClass } from "@/components/site/EnquiryForm";
 import { waLink } from "@/config/site";
 import { trackAnalyticsEvent } from "@/components/site/Analytics";
+import { saveEnquiry } from "@/lib/enquiries";
 
 const steps = ["Destination", "Travel details", "Travellers", "Preferences", "Budget", "Contact"];
 const budgets = [
@@ -63,7 +64,9 @@ export default function Page() {
     | "name"
     | "phone"
     | "email"
-    | "notes";
+    | "notes"
+    | "consent"
+    | "company";
   const [f, setF] = useState<Partial<Record<K, string>>>({
     adults: "2",
     children: "0",
@@ -72,6 +75,7 @@ export default function Page() {
   const [types, setTypes] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [done, setDone] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const set = (k: K, v: string) => setF((s) => ({ ...s, [k]: v }));
   const inp = (k: K, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
     <input
@@ -82,7 +86,7 @@ export default function Page() {
     />
   );
 
-  function next() {
+  async function next() {
     setError("");
     if (step === 0 && !f.scope) return setError("Please choose an option.");
     if (step === 4 && !f.budget) return setError("Please choose a budget.");
@@ -91,26 +95,71 @@ export default function Page() {
       if (!/^[+\d\s-]{7,16}$/.test(f.phone ?? ""))
         return setError("Please enter a valid phone number.");
       if (!/^\S+@\S+\.\S+$/.test(f.email ?? "")) return setError("Please enter a valid email.");
-      const id = "SSH-" + Date.now().toString(36).toUpperCase().slice(-6);
-      const msg = [
-        `Hello Shiv Shakti Holidays — holiday plan request ${id}`,
-        `Type: ${f.scope}`,
-        `From: ${f.from || "-"}`,
-        `Destination: ${f.dest || "-"}`,
-        `Dates: ${f.start || "?"} to ${f.end || "?"}${f.flex ? " (flexible)" : ""}`,
-        `Travellers: ${f.adults} adults, ${f.children} children, ${f.infants} infants`,
-        `Holiday type: ${types.join(", ") || "-"}`,
-        `Budget: ${f.budget}`,
-        `Name: ${f.name}`,
-        `Phone: ${f.phone}`,
-        `Email: ${f.email}`,
-        f.notes && `Notes: ${f.notes}`,
-      ]
-        .filter(Boolean)
-        .join("\n");
-      trackAnalyticsEvent("plan_trip_submit", { source: "plan_trip_wizard" });
-      window.open(waLink(msg), "_blank");
-      return setDone(id);
+      if (!f.consent) return setError("Please allow us to contact you about this enquiry.");
+
+      setSubmitting(true);
+      const whatsappTab = window.open("about:blank", "_blank");
+      if (whatsappTab) whatsappTab.opener = null;
+      try {
+        const adults = Number(f.adults ?? 0);
+        const children = Number(f.children ?? 0);
+        const infants = Number(f.infants ?? 0);
+        const { enquiryCode } = await saveEnquiry({
+          type: "plan_trip",
+          source: "plan_trip_wizard",
+          name: f.name.trim(),
+          phone: f.phone ?? "",
+          email: f.email ?? "",
+          consent: true,
+          company: f.company,
+          destination: f.dest,
+          departureCity: f.from,
+          travelStart: f.start,
+          travelEnd: f.end,
+          adults,
+          children,
+          infants,
+          travellers: adults + children + infants,
+          preferences: types,
+          budget: f.budget,
+          message: f.notes,
+          metadata: {
+            tripScope: f.scope ?? "",
+            flexibleDates: Boolean(f.flex),
+          },
+        });
+        const msg = [
+          `Hello Shiv Shakti Holidays — holiday plan request ${enquiryCode}`,
+          `Type: ${f.scope}`,
+          `From: ${f.from || "-"}`,
+          `Destination: ${f.dest || "-"}`,
+          `Dates: ${f.start || "?"} to ${f.end || "?"}${f.flex ? " (flexible)" : ""}`,
+          `Travellers: ${f.adults} adults, ${f.children} children, ${f.infants} infants`,
+          `Holiday type: ${types.join(", ") || "-"}`,
+          `Budget: ${f.budget}`,
+          `Name: ${f.name}`,
+          `Phone: ${f.phone}`,
+          `Email: ${f.email}`,
+          f.notes && `Notes: ${f.notes}`,
+        ]
+          .filter(Boolean)
+          .join("\n");
+        const link = waLink(msg);
+        trackAnalyticsEvent("plan_trip_submit", { source: "plan_trip_wizard" });
+        if (whatsappTab) whatsappTab.location.href = link;
+        else window.location.href = link;
+        return setDone(enquiryCode);
+      } catch (submitError) {
+        whatsappTab?.close();
+        setError(
+          submitError instanceof Error
+            ? submitError.message
+            : "We could not save your enquiry. Please try again.",
+        );
+      } finally {
+        setSubmitting(false);
+      }
+      return;
     }
     setStep((s) => s + 1);
   }
@@ -218,6 +267,15 @@ export default function Page() {
           )}
           {step === 5 && (
             <div className="grid gap-4">
+              <input
+                name="company"
+                value={f.company ?? ""}
+                onChange={(event) => set("company", event.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="absolute -left-[9999px] h-px w-px overflow-hidden"
+              />
               {inp("name", { placeholder: "Full name" })}
               <div className="grid gap-4 sm:grid-cols-2">
                 {inp("phone", { placeholder: "Phone number" })}
@@ -230,15 +288,32 @@ export default function Page() {
                 placeholder="Additional requirements"
                 className={fieldClass}
               />
+              <label className="flex cursor-pointer items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={Boolean(f.consent)}
+                  onChange={(event) => set("consent", event.target.checked ? "1" : "")}
+                  className="mt-0.5 size-4 rounded border-input accent-[var(--accent)]"
+                />
+                <span>I agree to be contacted regarding this travel enquiry.</span>
+              </label>
             </div>
           )}
           {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
           <div className="mt-8 flex justify-between">
-            <Button variant="ghost" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>
+            <Button
+              variant="ghost"
+              disabled={step === 0 || submitting}
+              onClick={() => setStep((s) => s - 1)}
+            >
               Back
             </Button>
-            <Button variant="gold" size="xl" onClick={next}>
-              {step === 5 ? "Create My Holiday Plan" : "Continue"}
+            <Button variant="gold" size="xl" onClick={next} disabled={submitting}>
+              {submitting
+                ? "Saving enquiry..."
+                : step === 5
+                  ? "Create My Holiday Plan"
+                  : "Continue"}
             </Button>
           </div>
         </div>

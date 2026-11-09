@@ -8,6 +8,7 @@ import { fieldClass } from "@/components/site/EnquiryForm";
 import { trackAnalyticsEvent } from "@/components/site/Analytics";
 import { images } from "@/data/catalog";
 import { site, waLink } from "@/config/site";
+import { saveEnquiry } from "@/lib/enquiries";
 
 const popupSessionKey = "shiv-shakti-enquiry-popup-seen";
 
@@ -15,6 +16,8 @@ export function LeadEnquiryPopup() {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [lastWhatsAppLink, setLastWhatsAppLink] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     if (window.sessionStorage.getItem(popupSessionKey)) return;
@@ -47,33 +50,62 @@ export function LeadEnquiryPopup() {
     setOpen(false);
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(event.currentTarget)) as Record<string, string>;
-    const enquiryId = `SSH-${Date.now().toString(36).toUpperCase().slice(-6)}`;
-    const message = [
-      `Hello ${site.name}, I would like a personalised holiday quotation.`,
-      "",
-      `Enquiry ID: ${enquiryId}`,
-      `Name: ${values["name"]}`,
-      `Mobile: ${values["phone"]}`,
-      `Email: ${values["email"]}`,
-      `Departure city: ${values["departureCity"]}`,
-      `Destination: ${values["destination"]}`,
-      `Travel date: ${values["travelDate"]}`,
-      `Travellers: ${values["travellers"]}`,
-      `Trip duration: ${values["days"]} days`,
-      values["message"] && `Message: ${values["message"]}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
-    const link = waLink(message);
+    setSubmitError("");
+    setSubmitting(true);
+    const whatsappTab = window.open("about:blank", "_blank");
+    if (whatsappTab) whatsappTab.opener = null;
 
-    window.sessionStorage.setItem(popupSessionKey, "true");
-    setLastWhatsAppLink(link);
-    setSubmitted(true);
-    trackAnalyticsEvent("lead_form_submit", { form_type: "lead_popup" });
-    window.open(link, "_blank", "noopener,noreferrer");
+    try {
+      const { enquiryCode } = await saveEnquiry({
+        type: "popup",
+        source: "lead_popup",
+        name: values["name"] ?? "",
+        phone: values["phone"] ?? "",
+        email: values["email"] ?? "",
+        consent: values["consent"] === "on",
+        company: values["company"],
+        departureCity: values["departureCity"],
+        destination: values["destination"],
+        travelStart: values["travelDate"],
+        travellers: Number(values["travellers"]),
+        days: Number(values["days"]),
+        message: values["message"],
+      });
+      const message = [
+        `Hello ${site.name}, I would like a personalised holiday quotation.`,
+        "",
+        `Enquiry ID: ${enquiryCode}`,
+        `Name: ${values["name"]}`,
+        `Mobile: ${values["phone"]}`,
+        `Email: ${values["email"]}`,
+        `Departure city: ${values["departureCity"]}`,
+        `Destination: ${values["destination"]}`,
+        `Travel date: ${values["travelDate"]}`,
+        `Travellers: ${values["travellers"]}`,
+        `Trip duration: ${values["days"]} days`,
+        values["message"] && `Message: ${values["message"]}`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+      const link = waLink(message);
+
+      window.sessionStorage.setItem(popupSessionKey, "true");
+      setLastWhatsAppLink(link);
+      setSubmitted(true);
+      trackAnalyticsEvent("lead_form_submit", { form_type: "lead_popup" });
+      if (whatsappTab) whatsappTab.location.href = link;
+      else window.location.href = link;
+    } catch (error) {
+      whatsappTab?.close();
+      setSubmitError(
+        error instanceof Error ? error.message : "We could not save your enquiry. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!open) return null;
@@ -160,6 +192,13 @@ export function LeadEnquiryPopup() {
               </p>
 
               <form onSubmit={submit} className="mt-5 grid gap-2.5" noValidate={false}>
+                <input
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-px w-px overflow-hidden"
+                />
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   <label className="sr-only" htmlFor="popup-name">
                     Full name
@@ -298,8 +337,20 @@ export function LeadEnquiryPopup() {
                   />
                   <span>I agree to be contacted by {site.name} regarding this travel enquiry.</span>
                 </label>
-                <Button type="submit" variant="gold" size="xl" className="mt-1 w-full">
-                  <MessageCircle className="size-5" /> Get My Quote on WhatsApp
+                {submitError && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {submitError}
+                  </p>
+                )}
+                <Button
+                  type="submit"
+                  variant="gold"
+                  size="xl"
+                  className="mt-1 w-full"
+                  disabled={submitting}
+                >
+                  <MessageCircle className="size-5" />
+                  {submitting ? "Saving enquiry..." : "Get My Quote on WhatsApp"}
                 </Button>
               </form>
             </>

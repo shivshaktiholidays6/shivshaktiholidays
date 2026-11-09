@@ -170,7 +170,7 @@ export default function PackageDetail({ p }: { p: Pkg }) {
             <p className="eyebrow">Enquire</p>
             <h3 className="mt-1 text-2xl text-primary">{p.name}</h3>
             <div className="mt-5">
-              <EnquiryForm packageName={p.name} compact />
+              <EnquiryForm packageName={p.name} packageSlug={p.slug} compact />
             </div>
           </aside>
         </div>

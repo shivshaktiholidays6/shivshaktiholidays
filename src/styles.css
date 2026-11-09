@@ -220,3 +220,10 @@
 @media (prefers-reduced-motion: reduce) {
   .route-loading-bar { animation: none; background: var(--accent); }
 }
+
+/* The admin portal has its own private application shell. */
+body:has([data-admin-root]) > header,
+body:has([data-admin-root]) > footer,
+body:has([data-admin-root]) > a[aria-label="Chat on WhatsApp"] {
+  display: none;
+}

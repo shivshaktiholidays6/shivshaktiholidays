@@ -25,8 +25,10 @@ export default function PrivacyPage() {
             <h2 className="text-2xl text-primary">Enquiry information</h2>
             <p className="mt-3">
               Information you enter into an enquiry is used to prepare and respond to your travel
-              request. When you continue to WhatsApp, your message is handled according to WhatsApp&apos;s
-              own terms and privacy practices.
+              request. Enquiries are stored securely so our team can follow up, manage their status,
+              and avoid losing your request. We do not send form details to analytics. When you
+              continue to WhatsApp, your message is also handled according to WhatsApp&apos;s own terms
+              and privacy practices.
             </p>
           </div>
           <div>

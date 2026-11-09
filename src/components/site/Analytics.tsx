@@ -55,6 +55,7 @@ function reportWebVital(metric: {
   rating?: string;
   navigationType?: string;
 }) {
+  if (window.location.pathname.startsWith("/admin")) return;
   const value = metric.name === "CLS" ? Math.round(metric.value * 1000) : Math.round(metric.value);
   trackAnalyticsEvent("web_vital", {
     metric_id: metric.id,
@@ -135,6 +136,7 @@ export function AnalyticsManager() {
   }, []);
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
     if (consent !== "granted" || !gaId) return;
     prepareGoogleTag();
 
@@ -165,6 +167,7 @@ export function AnalyticsManager() {
   }, [consent, pathname]);
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
     function trackClick(event: MouseEvent) {
       const target = event.target instanceof Element ? event.target : null;
       const clickable = target?.closest<HTMLElement>("a,button");
@@ -207,6 +210,8 @@ export function AnalyticsManager() {
   }
 
   const analyticsEnabled = consent === "granted";
+
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <>
