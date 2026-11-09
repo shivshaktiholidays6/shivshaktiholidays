@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { waLink } from "@/config/site";
+import { trackAnalyticsEvent } from "@/components/site/Analytics";
 
 export const fieldClass =
   "w-full rounded-lg border border-input bg-background px-3.5 sm:px-4 py-2.5 sm:py-3 text-base sm:text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-ring/40";
@@ -50,6 +51,10 @@ export function EnquiryForm({ packageName, compact }: { packageName?: string; co
       .filter(Boolean)
       .join("\n");
     window.open(waLink(msg), "_blank");
+    trackAnalyticsEvent("lead_form_submit", {
+      form_type: packageName ? "package_quote" : "general_enquiry",
+      package_name: packageName,
+    });
     setDone(id);
   }
 

@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fieldClass } from "@/components/site/EnquiryForm";
 import { waLink } from "@/config/site";
+import { trackAnalyticsEvent } from "@/components/site/Analytics";
 
 const steps = ["Destination", "Travel details", "Travellers", "Preferences", "Budget", "Contact"];
 const budgets = [
@@ -107,6 +108,7 @@ export default function Page() {
       ]
         .filter(Boolean)
         .join("\n");
+      trackAnalyticsEvent("plan_trip_submit", { source: "plan_trip_wizard" });
       window.open(waLink(msg), "_blank");
       return setDone(id);
     }

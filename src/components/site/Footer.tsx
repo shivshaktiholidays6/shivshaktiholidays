@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mail, MapPin, Phone, MessageCircle } from "lucide-react";
 import { Logo } from "./Header";
 import { site, waLink, waMessages } from "@/config/site";
+import { AnalyticsPreferencesButton } from "@/components/site/Analytics";
 
 export function Footer() {
   return (
@@ -66,6 +67,11 @@ export function Footer() {
                 Contact
               </Link>
             </li>
+            <li>
+              <Link href="/privacy" className="hover:text-accent">
+                Privacy & Analytics
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
@@ -100,7 +106,10 @@ export function Footer() {
           <span>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </span>
-          <span>Prices shown are indicative samples and subject to confirmation.</span>
+          <span className="flex flex-wrap gap-x-3 gap-y-1 sm:justify-end">
+            <span>Prices shown are indicative samples and subject to confirmation.</span>
+            <AnalyticsPreferencesButton className="hover:text-accent" />
+          </span>
         </div>
       </div>
     </footer>

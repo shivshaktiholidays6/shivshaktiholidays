@@ -14,6 +14,7 @@ import {
 import { PackageCard, SectionHead } from "@/components/site/Cards";
 import { SectionCTA } from "@/components/site/SectionCTA";
 import { fieldClass } from "@/components/site/EnquiryForm";
+import { trackAnalyticsEvent } from "@/components/site/Analytics";
 import { categories, mostBookedPackageSlugs, packages } from "@/data/catalog";
 
 const serviceHighlights = [
@@ -196,12 +197,34 @@ export default function Page() {
               placeholder="Search destination"
               className={`${fieldClass} md:col-span-2`}
             />
-            <select value={scope} onChange={(e) => setScope(e.target.value)} className={fieldClass}>
+            <select
+              value={scope}
+              onChange={(e) => {
+                setScope(e.target.value);
+                setVisibleCount(9);
+                trackAnalyticsEvent("package_filter", {
+                  filter_name: "scope",
+                  filter_value: e.target.value,
+                });
+              }}
+              className={fieldClass}
+            >
               <option value="all">Domestic & International</option>
               <option value="domestic">Domestic</option>
               <option value="international">International</option>
             </select>
-            <select value={type} onChange={(e) => setType(e.target.value)} className={fieldClass}>
+            <select
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value);
+                setVisibleCount(9);
+                trackAnalyticsEvent("package_filter", {
+                  filter_name: "type",
+                  filter_value: e.target.value,
+                });
+              }}
+              className={fieldClass}
+            >
               <option value="all">All holiday types</option>
               {categories.map((category) => (
                 <option key={category}>{category}</option>
@@ -209,7 +232,14 @@ export default function Page() {
             </select>
             <select
               value={budget}
-              onChange={(e) => setBudget(e.target.value)}
+              onChange={(e) => {
+                setBudget(e.target.value);
+                setVisibleCount(9);
+                trackAnalyticsEvent("package_filter", {
+                  filter_name: "budget",
+                  filter_value: e.target.value,
+                });
+              }}
               className={fieldClass}
             >
               <option value="all">Any budget</option>
@@ -218,7 +248,18 @@ export default function Page() {
               <option value="c">₹50,000–1,00,000</option>
               <option value="d">₹1,00,000+</option>
             </select>
-            <select value={dur} onChange={(e) => setDur(e.target.value)} className={fieldClass}>
+            <select
+              value={dur}
+              onChange={(e) => {
+                setDur(e.target.value);
+                setVisibleCount(9);
+                trackAnalyticsEvent("package_filter", {
+                  filter_name: "duration",
+                  filter_value: e.target.value,
+                });
+              }}
+              className={fieldClass}
+            >
               <option value="all">Any duration</option>
               <option value="s">Up to 4 nights</option>
               <option value="m">5–7 nights</option>
@@ -229,7 +270,13 @@ export default function Page() {
             <span>{list.length} packages</span>
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => {
+                setSort(e.target.value);
+                trackAnalyticsEvent("package_filter", {
+                  filter_name: "sort",
+                  filter_value: e.target.value,
+                });
+              }}
               className="rounded-lg border border-input bg-background px-3 py-2"
             >
               <option value="rec">Recommended</option>
@@ -247,7 +294,10 @@ export default function Page() {
             <div className="mt-9 text-center">
               <button
                 type="button"
-                onClick={() => setVisibleCount((count) => count + 9)}
+                onClick={() => {
+                  setVisibleCount((count) => count + 9);
+                  trackAnalyticsEvent("show_more_packages", { visible_count: visibleCount + 9 });
+                }}
                 className="rounded-full border border-accent/50 bg-card px-6 py-3 text-xs font-semibold uppercase tracking-wider text-primary shadow-xs transition hover:bg-accent hover:text-accent-foreground"
               >
                 Show more packages

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { MapPin, Search, X } from "lucide-react";
 import { DestinationCard, SectionHead } from "@/components/site/Cards";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
+import { trackAnalyticsEvent } from "@/components/site/Analytics";
 import { destinations, regions } from "@/data/catalog";
 
 export default function Page() {
@@ -48,7 +49,13 @@ export default function Page() {
 
   function openFirstMatch() {
     const match = searchMatches[activeSuggestion] ?? searchMatches[0];
-    if (match) router.push(`/destinations/${match.slug}`);
+    if (match) {
+      trackAnalyticsEvent("destination_search", {
+        destination_slug: match.slug,
+        result_count: searchMatches.length,
+      });
+      router.push(`/destinations/${match.slug}`);
+    }
   }
 
   return (
@@ -137,7 +144,13 @@ export default function Page() {
                     role="option"
                     aria-selected={activeSuggestion === index}
                     onMouseEnter={() => setActiveSuggestion(index)}
-                    onClick={() => router.push(`/destinations/${destination.slug}`)}
+                    onClick={() => {
+                      trackAnalyticsEvent("destination_search", {
+                        destination_slug: destination.slug,
+                        result_count: searchMatches.length,
+                      });
+                      router.push(`/destinations/${destination.slug}`);
+                    }}
                     className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${activeSuggestion === index ? "bg-muted" : "hover:bg-muted"}`}
                   >
                     <span className="relative size-11 shrink-0 overflow-hidden rounded-lg">

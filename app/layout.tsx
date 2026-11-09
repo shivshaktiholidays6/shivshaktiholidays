@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import { Header } from "@/components/site/Header";
 import { Footer, WhatsAppFloat } from "@/components/site/Footer";
+import { AnalyticsManager } from "@/components/site/Analytics";
 import "@/styles.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
@@ -18,6 +19,9 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
   openGraph: { type: "website", siteName: "Shiv Shakti Holidays", images: ["/logoimg.jpeg"] },
   twitter: { card: "summary_large_image", images: ["/logoimg.jpeg"] },
+  verification: process.env["GOOGLE_SITE_VERIFICATION"]
+    ? { google: process.env["GOOGLE_SITE_VERIFICATION"] }
+    : undefined,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -28,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <main>{children}</main>
         <Footer />
         <WhatsAppFloat />
+        <AnalyticsManager />
       </body>
     </html>
   );

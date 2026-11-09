@@ -5,6 +5,7 @@ import { CheckCircle2, MapPin, MessageCircle, Sparkles, Users, X } from "lucide-
 import { Button } from "@/components/ui/button";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { fieldClass } from "@/components/site/EnquiryForm";
+import { trackAnalyticsEvent } from "@/components/site/Analytics";
 import { images } from "@/data/catalog";
 import { site, waLink } from "@/config/site";
 
@@ -24,6 +25,8 @@ export function LeadEnquiryPopup() {
 
   useEffect(() => {
     if (!open) return;
+
+    trackAnalyticsEvent("lead_popup_open", { source: "homepage_timer" });
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -69,6 +72,7 @@ export function LeadEnquiryPopup() {
     window.sessionStorage.setItem(popupSessionKey, "true");
     setLastWhatsAppLink(link);
     setSubmitted(true);
+    trackAnalyticsEvent("lead_form_submit", { form_type: "lead_popup" });
     window.open(link, "_blank", "noopener,noreferrer");
   }
 

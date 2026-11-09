@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/domestic",
     "/honeymoon",
     "/plan-trip",
+    "/privacy",
   ];
   return [
     ...staticPages.map((path) => ({ url: `${base}${path}`, changeFrequency: "monthly" as const })),

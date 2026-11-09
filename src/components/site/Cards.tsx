@@ -139,6 +139,9 @@ export function PackageCard({ p }: { p: Pkg }) {
               )}
               target="_blank"
               rel="noreferrer"
+              data-analytics-event="package_enquiry"
+              data-analytics-item={p.slug}
+              data-analytics-source="package_card"
               className="flex items-center justify-center gap-1.5"
             >
               <MessageCircle className="size-3.5 text-accent" />

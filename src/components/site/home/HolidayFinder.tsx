@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Compass, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fieldClass } from "@/components/site/EnquiryForm";
+import { trackAnalyticsEvent } from "@/components/site/Analytics";
 
 export function HolidayFinder({ categories }: { categories: readonly string[] }) {
   const router = useRouter();
@@ -14,6 +15,7 @@ export function HolidayFinder({ categories }: { categories: readonly string[] })
         <form
           onSubmit={(event) => {
             event.preventDefault();
+            trackAnalyticsEvent("plan_trip_start", { source: "homepage_finder" });
             router.push("/plan-trip");
           }}
           className="rounded-2xl border border-border/80 bg-card/95 p-4 shadow-lift backdrop-blur-xl sm:rounded-3xl sm:p-7"
