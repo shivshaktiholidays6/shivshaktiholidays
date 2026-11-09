@@ -14,6 +14,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { destinations } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -38,11 +39,12 @@ export function Logo({ light }: { light?: boolean }) {
       {/* Animated Glowing Emblem Badge */}
       <div className="relative shrink-0">
         <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-accent/40 via-accent to-accent/40 blur-xs opacity-75 group-hover:opacity-100 transition-opacity duration-500 animate-emblem-glow" />
-        <img
+        <ResponsiveImage
           src="/logoimg.jpeg"
           alt="Shiv Shakti Holidays"
           width={56}
           height={56}
+          sizes="56px"
           className="relative size-10 xs:size-11 sm:size-12 lg:size-13 rounded-full object-cover bg-white p-0.5 shadow-lift ring-2 ring-accent/70 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shrink-0"
         />
       </div>

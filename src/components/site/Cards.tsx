@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock, MapPin, Sparkles, Star, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { type Destination, type Pkg } from "@/data/catalog";
 import { waLink } from "@/config/site";
 
@@ -26,10 +27,12 @@ export function DestinationCard({
             : "aspect-[4/5]"
       }`}
     >
-      <img
+      <ResponsiveImage
         src={d.image}
-        alt={d.name}
-        loading="lazy"
+        alt={d.imageAlt}
+        focalPoint={d.imagePosition}
+        fill
+        sizes="(max-width: 639px) 46vw, (max-width: 1023px) 48vw, 25vw"
         className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/35 to-transparent" />
@@ -67,10 +70,12 @@ export function PackageCard({ p }: { p: Pkg }) {
         href={`/packages/${p.slug}`}
         className="relative block aspect-[16/9] overflow-hidden sm:aspect-[4/3]"
       >
-        <img
+        <ResponsiveImage
           src={p.image}
-          alt={p.name}
-          loading="lazy"
+          alt={p.imageAlt}
+          focalPoint={p.imagePosition}
+          fill
+          sizes="(max-width: 639px) 94vw, (max-width: 1023px) 48vw, 33vw"
           className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
@@ -180,12 +185,16 @@ export function SectionHead({
 
 export function PageHero({
   image,
+  imageAlt,
+  imagePosition = "center",
   eyebrow,
   title,
   text,
   children,
 }: {
   image: string;
+  imageAlt?: string;
+  imagePosition?: string;
   eyebrow: string;
   title: string;
   text?: string;
@@ -193,7 +202,15 @@ export function PageHero({
 }) {
   return (
     <section className="relative flex min-h-[70vh] items-end overflow-hidden">
-      <img src={image} alt="" className="absolute inset-0 size-full object-cover" />
+      <ResponsiveImage
+        src={image}
+        alt={imageAlt ?? `${title} travel experience`}
+        focalPoint={imagePosition}
+        fill
+        priority
+        sizes="100vw"
+        className="absolute inset-0 size-full object-cover"
+      />
       <div className="absolute inset-0 bg-overlay" />
       <div className="container-x relative pb-20 pt-36 text-primary-foreground animate-fade-up">
         <p className="eyebrow">{eyebrow}</p>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/Cards";
+import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { images } from "@/data/catalog";
 
 export default function Page() {
@@ -24,12 +25,15 @@ export default function Page() {
               <Link href="/contact">Talk to Us</Link>
             </Button>
           </div>
-          <img
-            src={images.bali}
-            alt="Bali temple"
-            loading="lazy"
-            className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lift"
-          />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lift">
+            <ResponsiveImage
+              src={images.bali}
+              alt="Bali temple surrounded by tropical scenery"
+              fill
+              sizes="(max-width: 767px) 94vw, 50vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </section>
     </>

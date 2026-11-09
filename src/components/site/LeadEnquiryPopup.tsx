@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, MapPin, MessageCircle, Sparkles, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { fieldClass } from "@/components/site/EnquiryForm";
 import { images } from "@/data/catalog";
 import { site, waLink } from "@/config/site";
@@ -97,9 +98,11 @@ export function LeadEnquiryPopup() {
         </button>
 
         <div className="relative hidden min-h-full overflow-hidden lg:block">
-          <img
+          <ResponsiveImage
             src={images.kerala}
             alt="Peaceful Kerala backwaters holiday"
+            fill
+            sizes="34vw"
             className="absolute inset-0 size-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/35 to-transparent" />

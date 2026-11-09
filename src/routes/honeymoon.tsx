@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PackageCard, PageHero, SectionHead } from "@/components/site/Cards";
+import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { images, packages } from "@/data/catalog";
 import { waLink, waMessages } from "@/config/site";
 
@@ -37,13 +38,14 @@ export default function Page() {
             {spots.map(([n, img], i) => (
               <div
                 key={n}
-                className={`group relative overflow-hidden rounded-2xl ${i === 0 || i === 5 ? "md:row-span-2" : ""}`}
+                className={`group relative min-h-56 overflow-hidden rounded-2xl ${i === 0 || i === 5 ? "md:row-span-2" : ""}`}
               >
-                <img
+                <ResponsiveImage
                   src={img}
-                  alt={n}
-                  loading="lazy"
-                  className="size-full min-h-56 object-cover transition-transform duration-700 group-hover:scale-110"
+                  alt={`${n} romantic holiday destination`}
+                  fill
+                  sizes="(max-width: 767px) 48vw, 25vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-card-overlay" />
                 <h3 className="absolute bottom-4 left-5 text-2xl text-primary-foreground">{n}</h3>

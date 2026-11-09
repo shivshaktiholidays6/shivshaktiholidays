@@ -82,6 +82,8 @@ export interface Destination {
   region: string;
   scope: Scope;
   image: string;
+  imageAlt: string;
+  imagePosition: string;
   blurb: string;
 }
 
@@ -206,6 +208,8 @@ export const destinations: Destination[] = groups.flatMap(([scope, region, names
     region,
     scope,
     image: specific[name] ?? regionImage[region] ?? hero,
+    imageAlt: `${name} holiday destination`,
+    imagePosition: "center",
     blurb:
       scope === "international"
         ? `Discover ${name} with a holiday planned around your pace, budget and interests.`
@@ -260,6 +264,8 @@ export interface Pkg {
   price: number; // sample "starting from" INR per person — to be confirmed
   types: string[];
   image: string;
+  imageAlt: string;
+  imagePosition: string;
   summary: string;
   highlights: string[];
   mostBooked: boolean;
@@ -286,6 +292,8 @@ const P = (
   price,
   types,
   image,
+  imageAlt: `${name} holiday package`,
+  imagePosition: "center",
   summary: `A thoughtfully planned ${nights + 1}-day journey through ${place}, balancing signature sights with time to unwind.`,
   highlights,
   mostBooked: mostBooked || mostBookedPackageSlugs.some((slug) => slug === slugify(name)),

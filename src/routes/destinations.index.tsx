@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MapPin, Search, X } from "lucide-react";
 import { DestinationCard, SectionHead } from "@/components/site/Cards";
+import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { destinations, regions } from "@/data/catalog";
 
 export default function Page() {
@@ -139,11 +140,16 @@ export default function Page() {
                     onClick={() => router.push(`/destinations/${destination.slug}`)}
                     className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${activeSuggestion === index ? "bg-muted" : "hover:bg-muted"}`}
                   >
-                    <img
-                      src={destination.image}
-                      alt=""
-                      className="size-11 rounded-lg object-cover"
-                    />
+                    <span className="relative size-11 shrink-0 overflow-hidden rounded-lg">
+                      <ResponsiveImage
+                        src={destination.image}
+                        alt=""
+                        focalPoint={destination.imagePosition}
+                        fill
+                        sizes="44px"
+                        className="object-cover"
+                      />
+                    </span>
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold text-primary">{destination.name}</span>
                       <span className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
