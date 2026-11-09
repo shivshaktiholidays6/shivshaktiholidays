@@ -3,6 +3,7 @@ import { Manrope, Playfair_Display } from "next/font/google";
 import { Header } from "@/components/site/Header";
 import { Footer, WhatsAppFloat } from "@/components/site/Footer";
 import { AnalyticsManager } from "@/components/site/Analytics";
+import { getPublishedDestinations } from "@/lib/destinations";
 import "@/styles.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
@@ -24,11 +25,12 @@ export const metadata: Metadata = {
     : undefined,
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const destinationItems = await getPublishedDestinations();
   return (
     <html lang="en" className={`${manrope.variable} ${playfair.variable}`}>
       <body>
-        <Header />
+        <Header destinationItems={destinationItems} />
         <main>{children}</main>
         <Footer />
         <WhatsAppFloat />

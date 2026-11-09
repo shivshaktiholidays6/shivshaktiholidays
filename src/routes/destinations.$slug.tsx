@@ -2,14 +2,22 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PackageCard, PageHero, SectionHead } from "@/components/site/Cards";
 import { EnquiryForm } from "@/components/site/EnquiryForm";
-import { packages, type Destination } from "@/data/catalog";
+import { packages, type Destination, type Pkg } from "@/data/catalog";
 
-export default function DestinationDetail({ d }: { d: Destination }) {
-  const pk = packages.filter((p) => p.destination === d.slug);
+export default function DestinationDetail({
+  d,
+  packageItems = packages,
+}: {
+  d: Destination;
+  packageItems?: Pkg[];
+}) {
+  const pk = packageItems.filter((p) => p.destination === d.slug);
   return (
     <>
       <PageHero
         image={d.image}
+        imageAlt={d.imageAlt}
+        imagePosition={d.imagePosition}
         eyebrow={`${d.region} · ${d.scope === "international" ? "International" : "India"}`}
         title={d.name}
         text={d.blurb}
@@ -20,16 +28,14 @@ export default function DestinationDetail({ d }: { d: Destination }) {
             <div>
               <h2 className="text-3xl text-primary">Overview</h2>
               <p className="mt-4 text-muted-foreground">
-                {d.name} offers a wonderful mix of experiences. Our team will help you choose the
-                right season, stays and experiences for your style of travel — whether you are
-                planning a honeymoon, a family break or an adventure.
+                {d.overview || `${d.name} offers a wonderful mix of experiences. Our team will help you choose the right season, stays and experiences for your style of travel — whether you are planning a honeymoon, a family break or an adventure.`}
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-3">
               {[
-                ["Ideal duration", d.scope === "international" ? "5–8 days" : "4–7 days"],
-                ["Best for", "Couples, families, friends"],
-                ["Planning", "Fully customizable"],
+                ["Ideal duration", d.idealDuration || (d.scope === "international" ? "5–8 days" : "4–7 days")],
+                ["Best for", d.bestFor || "Couples, families, friends"],
+                ["Planning", d.planningLabel || "Fully customizable"],
               ].map(([k, v]) => (
                 <div key={k} className="rounded-xl border border-border bg-card p-5">
                   <p className="eyebrow">{k}</p>

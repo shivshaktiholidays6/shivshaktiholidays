@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
-import { destinations } from "@/data/catalog";
+import { destinations, type Destination } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 import { cn } from "@/lib/utils";
 
@@ -68,7 +68,7 @@ export function Logo({ light }: { light?: boolean }) {
   );
 }
 
-export function Header() {
+export function Header({ destinationItems = destinations }: { destinationItems?: Destination[] }) {
   const path = usePathname();
   const isHome = path === "/";
   const [scrolled, setScrolled] = useState(false);
@@ -91,7 +91,7 @@ export function Header() {
   const solid = scrolled || !isHome || open;
   const results =
     q.length > 1
-      ? destinations.filter((d) => d.name.toLowerCase().includes(q.toLowerCase())).slice(0, 6)
+      ? destinationItems.filter((d) => d.name.toLowerCase().includes(q.toLowerCase())).slice(0, 6)
       : [];
 
   return (
@@ -246,7 +246,7 @@ export function Header() {
                     <button
                       key={dest}
                       onClick={() => {
-                        const found = destinations.find(
+                        const found = destinationItems.find(
                           (d) => d.name.toLowerCase() === dest.toLowerCase(),
                         );
                         if (found) router.push(`/destinations/${found.slug}`);

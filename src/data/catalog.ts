@@ -85,6 +85,13 @@ export interface Destination {
   imageAlt: string;
   imagePosition: string;
   blurb: string;
+  overview?: string | undefined;
+  idealDuration?: string | undefined;
+  bestFor?: string | undefined;
+  planningLabel?: string | undefined;
+  featured?: boolean | undefined;
+  seoTitle?: string | undefined;
+  seoDescription?: string | undefined;
 }
 
 const regionImage: Record<string, string> = {
@@ -269,6 +276,12 @@ export interface Pkg {
   summary: string;
   highlights: string[];
   mostBooked: boolean;
+  itineraryItems?: Array<{ title: string; text: string }>;
+  inclusions?: string[];
+  exclusions?: string[];
+  featured?: boolean;
+  seoTitle?: string | undefined;
+  seoDescription?: string | undefined;
 }
 
 const P = (
@@ -840,6 +853,9 @@ const pilgrimageItineraries: Record<string, Array<{ title: string; text: string 
 };
 
 export function itinerary(p: Pkg) {
+  if (p.itineraryItems?.length) {
+    return p.itineraryItems.map((item, index) => ({ day: index + 1, ...item }));
+  }
   const tailored = pilgrimageItineraries[p.slug];
   if (tailored) return tailored.map((item, index) => ({ day: index + 1, ...item }));
   return Array.from({ length: p.nights + 1 }, (_, i) => ({
@@ -849,7 +865,9 @@ export function itinerary(p: Pkg) {
         ? `Arrival in ${p.place.split(",")[0]}`
         : i === p.nights
           ? "Departure"
-          : p.highlights[(i - 1) % p.highlights.length],
+          : p.highlights.length
+            ? p.highlights[(i - 1) % p.highlights.length]
+            : "Explore local highlights",
     text:
       i === 0
         ? "Meet and assist on arrival, transfer to your hotel and spend the evening at leisure."

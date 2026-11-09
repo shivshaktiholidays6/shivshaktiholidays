@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PackageCard, PageHero, SectionHead } from "@/components/site/Cards";
 import { DestinationRegionExplorer } from "@/components/site/DestinationRegionExplorer";
 import { SectionCTA } from "@/components/site/SectionCTA";
-import { images, packages } from "@/data/catalog";
+import { destinations, images, packages, type Destination, type Pkg } from "@/data/catalog";
 import { waLink, waMessages } from "@/config/site";
 
 const cats = [
@@ -38,7 +38,7 @@ function HolidayStyleCards({ duplicate = false }: { duplicate?: boolean }) {
   );
 }
 
-export default function Page() {
+export default function Page({ packageItems = packages, destinationItems = destinations }: { packageItems?: Pkg[]; destinationItems?: Destination[] }) {
   return (
     <>
       <PageHero
@@ -69,12 +69,12 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <DestinationRegionExplorer scope="domestic" />
+      <DestinationRegionExplorer scope="domestic" destinationItems={destinationItems} />
       <section className="py-24">
         <div className="container-x">
           <SectionHead eyebrow="Popular" title="Domestic Packages" />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {packages
+            {packageItems
               .filter((p) => p.scope === "domestic")
               .slice(0, 6)
               .map((p) => (

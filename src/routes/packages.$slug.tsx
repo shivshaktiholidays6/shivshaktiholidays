@@ -10,14 +10,14 @@ import { PageHero } from "@/components/site/Cards";
 import { EnquiryForm } from "@/components/site/EnquiryForm";
 import { itinerary, type Pkg } from "@/data/catalog";
 
-const inclusions = [
+const defaultInclusions = [
   "Hotel accommodation on twin-sharing",
   "Daily breakfast",
   "Airport / station transfers",
   "Sightseeing as per itinerary",
   "Assistance throughout the trip",
 ];
-const exclusions = [
+const defaultExclusions = [
   "Flights / train tickets unless specified",
   "Visa fees and travel insurance",
   "Lunch, dinner and personal expenses",
@@ -26,6 +26,8 @@ const exclusions = [
 ];
 
 export default function PackageDetail({ p }: { p: Pkg }) {
+  const inclusions = p.inclusions?.length ? p.inclusions : defaultInclusions;
+  const exclusions = p.exclusions?.length ? p.exclusions : defaultExclusions;
   return (
     <>
       <PageHero image={p.image} eyebrow={p.types.join(" · ")} title={p.name}>

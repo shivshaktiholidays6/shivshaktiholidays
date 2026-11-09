@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { updateEnquiryStatus } from "@/lib/admin-actions";
+import { DeleteEnquiryButton } from "@/components/admin/DeleteEnquiryButton";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { requireAdminUser } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
@@ -55,6 +56,7 @@ export default async function AdminDashboardPage({
   const statusFilter = firstValue(params["status"]) || "all";
   const typeFilter = firstValue(params["type"]) || "all";
   const updated = firstValue(params["updated"]) === "1";
+  const deleted = firstValue(params["deleted"]) === "1";
   const actionError = firstValue(params["error"]);
   const supabase = getSupabaseAdmin();
 
@@ -146,9 +148,14 @@ export default async function AdminDashboardPage({
             Enquiry status updated successfully.
           </p>
         )}
+        {deleted && (
+          <p className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            Enquiry deleted successfully.
+          </p>
+        )}
         {actionError && (
           <p className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            The status could not be updated. Please try again.
+            The enquiry action could not be completed. Please try again.
           </p>
         )}
 
@@ -230,7 +237,7 @@ export default async function AdminDashboardPage({
                     <th className="px-5 py-3 font-bold">Trip</th>
                     <th className="px-5 py-3 font-bold">Received</th>
                     <th className="px-5 py-3 font-bold">Status</th>
-                    <th className="px-5 py-3 text-right font-bold">Details</th>
+                    <th className="px-5 py-3 text-right font-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -283,14 +290,22 @@ export default async function AdminDashboardPage({
                           </button>
                         </form>
                       </td>
-                      <td className="px-5 py-4 text-right">
-                        <Link
-                          href={`/admin/enquiries/${enquiry.id}`}
-                          className="inline-flex size-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:border-amber-500 hover:text-amber-700"
-                          aria-label={`View ${enquiry.enquiry_code}`}
-                        >
-                          <ArrowUpRight className="size-4" />
-                        </Link>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/admin/enquiries/${enquiry.id}`}
+                            className="inline-flex size-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:border-amber-500 hover:text-amber-700"
+                            aria-label={`View ${enquiry.enquiry_code}`}
+                            title="View enquiry"
+                          >
+                            <ArrowUpRight className="size-4" />
+                          </Link>
+                          <DeleteEnquiryButton
+                            enquiryId={enquiry.id}
+                            enquiryCode={enquiry.enquiry_code}
+                            returnTo={returnTo}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}

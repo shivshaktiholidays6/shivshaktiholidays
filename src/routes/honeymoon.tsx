@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PackageCard, PageHero, SectionHead } from "@/components/site/Cards";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
-import { images, packages } from "@/data/catalog";
+import { images, packages, type Pkg } from "@/data/catalog";
 import { waLink, waMessages } from "@/config/site";
 
 const spots: Array<[string, string]> = [
@@ -16,7 +16,7 @@ const spots: Array<[string, string]> = [
   ["Mauritius", images.hero],
 ];
 
-export default function Page() {
+export default function Page({ packageItems = packages }: { packageItems?: Pkg[] }) {
   return (
     <>
       <PageHero
@@ -58,7 +58,7 @@ export default function Page() {
         <div className="container-x">
           <SectionHead eyebrow="Couple packages" title="Honeymoon Packages" />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {packages
+            {packageItems
               .filter((p) => p.types.includes("Honeymoon"))
               .map((p) => (
                 <PackageCard key={p.slug} p={p} />

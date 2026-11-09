@@ -211,6 +211,7 @@ export function PageHero({
         focalPoint={imagePosition}
         fill
         priority
+        quality={90}
         sizes="100vw"
         className="absolute inset-0 size-full object-cover"
       />

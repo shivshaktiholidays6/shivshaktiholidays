@@ -15,7 +15,7 @@ import { PackageCard, SectionHead } from "@/components/site/Cards";
 import { SectionCTA } from "@/components/site/SectionCTA";
 import { fieldClass } from "@/components/site/EnquiryForm";
 import { trackAnalyticsEvent } from "@/components/site/Analytics";
-import { categories, mostBookedPackageSlugs, packages } from "@/data/catalog";
+import { categories, mostBookedPackageSlugs, packages, type Pkg } from "@/data/catalog";
 
 const serviceHighlights = [
   [Crown, "VIP darshan support"],
@@ -25,7 +25,7 @@ const serviceHighlights = [
   [ShieldCheck, "Trusted guidance"],
 ] as const;
 
-export default function Page() {
+export default function Page({ packageItems = packages }: { packageItems?: Pkg[] }) {
   const [q, setQ] = useState("");
   const [scope, setScope] = useState("all");
   const [type, setType] = useState("all");
@@ -43,13 +43,15 @@ export default function Page() {
   }, []);
 
   const mostBookedPackages = mostBookedPackageSlugs.flatMap((slug) => {
-    const packageItem = packages.find((item) => item.slug === slug);
+    const packageItem = packageItems.find((item) => item.slug === slug);
     return packageItem ? [packageItem] : [];
   });
-  const spiritualPackages = packages.filter((p) => p.types.includes("Spiritual & Pilgrimage"));
+  const spiritualPackages = packageItems.filter((p) =>
+    p.types.includes("Spiritual & Pilgrimage"),
+  );
 
   const list = useMemo(() => {
-    let filtered = packages.filter(
+    let filtered = packageItems.filter(
       (p) =>
         (!q || (p.name + p.place).toLowerCase().includes(q.toLowerCase())) &&
         (scope === "all" || p.scope === scope) &&
@@ -88,7 +90,7 @@ export default function Page() {
       });
     }
     return filtered;
-  }, [q, scope, type, budget, dur, sort]);
+  }, [packageItems, q, scope, type, budget, dur, sort]);
 
   return (
     <>

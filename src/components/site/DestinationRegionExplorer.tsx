@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import { DestinationCard } from "@/components/site/Cards";
-import { destinations, regions, type Scope } from "@/data/catalog";
+import { destinations as catalogueDestinations, type Destination, type Scope } from "@/data/catalog";
 
-export function DestinationRegionExplorer({ scope }: { scope: Scope }) {
-  const regionNames = regions(scope);
+export function DestinationRegionExplorer({
+  scope,
+  destinationItems = catalogueDestinations,
+}: {
+  scope: Scope;
+  destinationItems?: Destination[];
+}) {
+  const regionNames = Array.from(new Set(destinationItems.filter((d) => d.scope === scope).map((d) => d.region)));
   const [activeRegion, setActiveRegion] = useState(regionNames[0] ?? "");
-  const visibleDestinations = destinations.filter(
+  const visibleDestinations = destinationItems.filter(
     (destination) => destination.scope === scope && destination.region === activeRegion,
   );
 

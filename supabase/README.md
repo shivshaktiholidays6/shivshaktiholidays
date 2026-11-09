@@ -38,3 +38,37 @@ Row Level Security is enabled and browser roles receive no table permissions.
 Authentication verifies the Supabase session and the server checks the email allowlist for every
 dashboard page and status update. The publishable key can identify the Auth project but cannot read
 the `enquiries` table; enquiry access remains server-only.
+
+## Dynamic package management
+
+Run `migrations/202611090002_create_packages.sql` once in the Supabase SQL Editor. It creates the
+`packages` table and a public `package-images` Storage bucket with a 5 MB image limit.
+
+After running the migration, open `/admin/packages` to:
+
+- create and edit packages;
+- upload package images;
+- manage prices, durations, categories, highlights and itineraries;
+- control featured, most-booked and published states;
+- edit SEO titles and descriptions.
+
+Database packages replace catalogue packages with the same slug. Catalogue packages that have not
+been migrated continue to appear, so content can be transferred gradually without empty pages.
+
+## Dynamic destination management
+
+Run `migrations/202611090003_create_destinations.sql` once in the Supabase SQL Editor after the
+package migration. It creates the `destinations` table and a public `destination-images` Storage
+bucket with a 5 MB image limit.
+
+After running the migration, open `/admin/destinations` to:
+
+- create, edit and safely delete destinations;
+- upload high-resolution destination images;
+- manage regions, page descriptions and trip-planning details;
+- feature destinations on the homepage;
+- publish destinations or keep them as drafts;
+- control display order and destination SEO.
+
+Published database destinations replace catalogue destinations with the same slug. A draft override
+hides its matching catalogue destination, allowing the website content to be migrated gradually.

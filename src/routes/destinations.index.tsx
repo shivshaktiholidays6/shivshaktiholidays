@@ -6,9 +6,9 @@ import { MapPin, Search, X } from "lucide-react";
 import { DestinationCard, SectionHead } from "@/components/site/Cards";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { trackAnalyticsEvent } from "@/components/site/Analytics";
-import { destinations, regions } from "@/data/catalog";
+import { destinations as catalogueDestinations, type Destination } from "@/data/catalog";
 
-export default function Page() {
+export default function Page({ destinationItems = catalogueDestinations }: { destinationItems?: Destination[] }) {
   const [scope, setScope] = useState<"international" | "domestic">("international");
   const [region, setRegion] = useState<string>("All");
   const [query, setQuery] = useState("");
@@ -19,7 +19,7 @@ export default function Page() {
   const router = useRouter();
   const normalizedQuery = query.trim().toLowerCase();
   const searchMatches = normalizedQuery
-    ? destinations
+    ? destinationItems
         .filter((d) =>
           [d.name, d.region, d.blurb].some((value) =>
             value.toLowerCase().includes(normalizedQuery),
@@ -27,7 +27,7 @@ export default function Page() {
         )
         .slice(0, 6)
     : [];
-  const list = destinations.filter((d) =>
+  const list = destinationItems.filter((d) =>
     normalizedQuery
       ? [d.name, d.region, d.blurb].some((value) =>
           value.toLowerCase().includes(normalizedQuery),
@@ -198,7 +198,7 @@ export default function Page() {
           ))}
         </div>
         <div className={`mt-5 flex flex-wrap justify-center gap-2 ${normalizedQuery ? "opacity-55" : ""}`}>
-          {["All", ...regions(scope)].map((r) => (
+          {["All", ...Array.from(new Set(destinationItems.filter((d) => d.scope === scope).map((d) => d.region)))].map((r) => (
             <button
               key={r}
               type="button"

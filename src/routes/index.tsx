@@ -25,7 +25,7 @@ import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { CuratedDestinations } from "@/components/site/home/CuratedDestinations";
 import { HolidayFinder } from "@/components/site/home/HolidayFinder";
 import { HomeHero } from "@/components/site/home/HomeHero";
-import { categories, destinations, images, mostBookedPackageSlugs, packages } from "@/data/catalog";
+import { categories, destinations, images, mostBookedPackageSlugs, packages, type Destination, type Pkg } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 
 const homeHeroSlides = [
@@ -87,7 +87,11 @@ const domesticCuratedSlugs = [
   "andaman-and-nicobar-islands",
 ];
 
-export default function Home() {
+export default function Home({ packageItems = packages, destinationItems = destinations }: { packageItems?: Pkg[]; destinationItems?: Destination[] }) {
+  const featuredInternational = destinationItems.filter((item) => item.scope === "international" && item.featured);
+  const featuredDomestic = destinationItems.filter((item) => item.scope === "domestic" && item.featured);
+  const internationalDestinations = [...featuredInternational, ...destinationItems.filter((item) => internationalCuratedSlugs.includes(item.slug) && !featuredInternational.some((featured) => featured.slug === item.slug))].slice(0, 6);
+  const domesticDestinations = [...featuredDomestic, ...destinationItems.filter((item) => domesticCuratedSlugs.includes(item.slug) && !featuredDomestic.some((featured) => featured.slug === item.slug))].slice(0, 6);
   return (
     <>
       <LeadEnquiryPopup />
@@ -122,15 +126,11 @@ export default function Home() {
         </div>
       </section>
 
-      <PopularPackagesSection />
+      <PopularPackagesSection packageItems={packageItems} />
 
       <CuratedDestinations
-        internationalDestinations={destinations.filter((destination) =>
-          internationalCuratedSlugs.includes(destination.slug),
-        )}
-        domesticDestinations={destinations.filter((destination) =>
-          domesticCuratedSlugs.includes(destination.slug),
-        )}
+        internationalDestinations={internationalDestinations}
+        domesticDestinations={domesticDestinations}
       />
 
       {/* ================= HONEYMOON & ROMANCE EDITORIAL SHOWCASE ================= */}
@@ -443,12 +443,13 @@ export default function Home() {
   );
 }
 
-function PopularPackagesSection() {
+function PopularPackagesSection({ packageItems }: { packageItems: Pkg[] }) {
   const slugs = mostBookedPackageSlugs.slice(0, 6);
-  const popularPackages = slugs.flatMap((slug) => {
-    const packageItem = packages.find((item) => item.slug === slug);
+  const preferred = packageItems.filter((item) => item.featured || item.mostBooked);
+  const popularPackages = (preferred.length ? preferred : slugs.flatMap((slug) => {
+    const packageItem = packageItems.find((item) => item.slug === slug);
     return packageItem ? [packageItem] : [];
-  });
+  })).slice(0, 6);
 
   return (
     <section className="bg-muted/70 py-14 sm:py-20 md:py-24 border-y border-border/50">
