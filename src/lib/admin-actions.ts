@@ -11,6 +11,8 @@ import sharp from "sharp";
 const enquiryStatuses = new Set(["new", "contacted", "quoted", "confirmed", "lost"]);
 const packageScopes = new Set(["domestic", "international"]);
 const packageImageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const promotionPlacements = new Set(["sitewide", "homepage"]);
+const promotionThemes = new Set(["diwali", "gold", "navy"]);
 
 function addResultToUrl(returnTo: string, key: "error" | "updated" | "deleted", value: string) {
   const [pathname = "/admin", query = ""] = returnTo.split("?", 2);
@@ -450,4 +452,155 @@ export async function deleteDestination(formData: FormData) {
 
   revalidateDestinationPages(data.slug);
   redirect("/admin/destinations?deleted=1");
+}
+
+function promotionDate(formData: FormData, name: string) {
+  const raw = value(formData, name, 40);
+  if (!raw) return null;
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+}
+
+function revalidatePromotionPages() {
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/promotions");
+}
+
+async function promotionImageUrl(formData: FormData, currentImageUrl: string | null) {
+  const image = formData.get("promotionImageFile");
+  const manualUrl = value(formData, "imageUrl", 1_000);
+  if (!(image instanceof File) || image.size === 0) {
+    if (formData.get("removeImage") === "on") return null;
+    const candidate = manualUrl || currentImageUrl;
+    if (!candidate) return null;
+    if (candidate.startsWith("/") && !candidate.startsWith("//")) return candidate;
+    try {
+      const parsed = new URL(candidate);
+      return parsed.protocol === "https:" &&
+        parsed.hostname.endsWith(".supabase.co") &&
+        parsed.pathname.startsWith("/storage/v1/object/public/")
+        ? candidate
+        : null;
+    } catch {
+      return null;
+    }
+  }
+  if (image.size > 5 * 1024 * 1024 || !packageImageTypes.has(image.type)) return null;
+
+  const imageBuffer = Buffer.from(await image.arrayBuffer());
+  const metadata = await sharp(imageBuffer).metadata();
+  if (!metadata.width || !metadata.height || metadata.width < 900 || metadata.height < 550) return null;
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return null;
+  const extension = image.type === "image/png" ? "png" : image.type === "image/avif" ? "avif" : image.type === "image/webp" ? "webp" : "jpg";
+  const objectPath = `${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage.from("promotion-images").upload(objectPath, imageBuffer, {
+    contentType: image.type,
+    cacheControl: "31536000",
+    upsert: false,
+  });
+  if (error) return null;
+  return supabase.storage.from("promotion-images").getPublicUrl(objectPath).data.publicUrl;
+}
+
+export async function savePromotion(formData: FormData) {
+  await requireAdminUser();
+  const supabase = getSupabaseAdmin();
+  if (!supabase) redirect("/admin/promotions?error=configuration");
+
+  const id = value(formData, "id", 36);
+  const title = value(formData, "title", 120);
+  const message = value(formData, "message", 300);
+  const placement = value(formData, "placement", 30);
+  const theme = value(formData, "theme", 30);
+  const startsAt = promotionDate(formData, "startsAt");
+  const endsAt = promotionDate(formData, "endsAt");
+  const editPath = id ? `/admin/promotions/${id}/edit` : "/admin/promotions/new";
+  const rawCtaHref = value(formData, "ctaHref", 500);
+  const ctaHref = rawCtaHref && ((rawCtaHref.startsWith("/") && !rawCtaHref.startsWith("//")) || rawCtaHref.startsWith("https://"))
+    ? rawCtaHref
+    : null;
+
+  if (
+    !title ||
+    !message ||
+    !promotionPlacements.has(placement) ||
+    !promotionThemes.has(theme) ||
+    startsAt === undefined ||
+    endsAt === undefined ||
+    (startsAt && endsAt && new Date(endsAt) <= new Date(startsAt)) ||
+    (rawCtaHref && !ctaHref)
+  ) {
+    redirect(`${editPath}?error=validation`);
+  }
+
+  let currentImageUrl: string | null = null;
+  if (id) {
+    const { data } = await supabase.from("promotions").select("image_url").eq("id", id).maybeSingle();
+    currentImageUrl = data?.image_url ?? null;
+  }
+  const imageFile = formData.get("promotionImageFile");
+  const manualImageUrl = value(formData, "imageUrl", 1_000);
+  const removingImage = formData.get("removeImage") === "on";
+  const imageUrl = await promotionImageUrl(formData, currentImageUrl);
+  if (!removingImage && ((imageFile instanceof File && imageFile.size > 0) || manualImageUrl) && !imageUrl) {
+    redirect(`${editPath}?error=image`);
+  }
+
+  const payload = {
+    title,
+    message,
+    offer_text: value(formData, "offerText", 120) || null,
+    coupon_code: value(formData, "couponCode", 50).toUpperCase() || null,
+    cta_label: value(formData, "ctaLabel", 60) || null,
+    cta_href: ctaHref,
+    terms_text: value(formData, "termsText", 300) || null,
+    image_url: imageUrl,
+    image_alt: value(formData, "imageAlt", 240) || (imageUrl ? `${title} promotional offer` : null),
+    image_position: value(formData, "imagePosition", 80) || "center",
+    placement,
+    theme,
+    starts_at: startsAt,
+    ends_at: endsAt,
+    active: formData.get("active") === "on",
+    dismissible: formData.get("dismissible") === "on",
+    sort_order: Number(value(formData, "sortOrder", 8)) || 0,
+  };
+
+  const result = id
+    ? await supabase.from("promotions").update(payload).eq("id", id).select("id").single()
+    : await supabase.from("promotions").insert(payload).select("id").single();
+  if (result.error || !result.data) redirect(`${editPath}?error=save`);
+
+  revalidatePromotionPages();
+  redirect(`/admin/promotions/${result.data.id}/edit?saved=1`);
+}
+
+export async function setPromotionActive(formData: FormData) {
+  await requireAdminUser();
+  const id = value(formData, "id", 36);
+  const active = formData.get("active") === "true";
+  if (!/^[0-9a-f-]{36}$/i.test(id)) redirect("/admin/promotions?error=validation");
+
+  const supabase = getSupabaseAdmin();
+  if (!supabase) redirect("/admin/promotions?error=configuration");
+  const { error } = await supabase.from("promotions").update({ active }).eq("id", id);
+  if (error) redirect("/admin/promotions?error=update");
+
+  revalidatePromotionPages();
+  redirect("/admin/promotions?updated=1");
+}
+
+export async function deletePromotion(formData: FormData) {
+  await requireAdminUser();
+  const id = value(formData, "id", 36);
+  if (!/^[0-9a-f-]{36}$/i.test(id)) redirect("/admin/promotions?error=validation");
+
+  const supabase = getSupabaseAdmin();
+  if (!supabase) redirect("/admin/promotions?error=configuration");
+  const { error } = await supabase.from("promotions").delete().eq("id", id);
+  if (error) redirect("/admin/promotions?error=delete");
+
+  revalidatePromotionPages();
+  redirect("/admin/promotions?deleted=1");
 }

@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer, WhatsAppFloat } from "@/components/site/Footer";
 import { AnalyticsManager } from "@/components/site/Analytics";
 import { getPublishedDestinations } from "@/lib/destinations";
+import { getActivePromotion } from "@/lib/promotions";
 import "@/styles.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
@@ -26,11 +27,14 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const destinationItems = await getPublishedDestinations();
+  const [destinationItems, promotion] = await Promise.all([
+    getPublishedDestinations(),
+    getActivePromotion(),
+  ]);
   return (
     <html lang="en" className={`${manrope.variable} ${playfair.variable}`}>
       <body>
-        <Header destinationItems={destinationItems} />
+        <Header destinationItems={destinationItems} promotion={promotion} />
         <main>{children}</main>
         <Footer />
         <WhatsAppFloat />

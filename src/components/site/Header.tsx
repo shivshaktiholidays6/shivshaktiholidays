@@ -18,6 +18,8 @@ import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { destinations, type Destination } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 import { cn } from "@/lib/utils";
+import type { Promotion } from "@/lib/promotions";
+import { PromotionBanner } from "@/components/site/PromotionBanner";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -68,7 +70,7 @@ export function Logo({ light }: { light?: boolean }) {
   );
 }
 
-export function Header({ destinationItems = destinations }: { destinationItems?: Destination[] }) {
+export function Header({ destinationItems = destinations, promotion = null }: { destinationItems?: Destination[]; promotion?: Promotion | null }) {
   const path = usePathname();
   const isHome = path === "/";
   const [scrolled, setScrolled] = useState(false);
@@ -209,6 +211,8 @@ export function Header({ destinationItems = destinations }: { destinationItems?:
           </button>
         </div>
       </div>
+
+      <PromotionBanner promotion={promotion} />
 
       {/* Luxury Search Overlay */}
       {searchOpen && (

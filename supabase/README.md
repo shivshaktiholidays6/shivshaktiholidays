@@ -72,3 +72,16 @@ After running the migration, open `/admin/destinations` to:
 
 Published database destinations replace catalogue destinations with the same slug. A draft override
 hides its matching catalogue destination, allowing the website content to be migrated gradually.
+
+## Offers and promotional banners
+
+Run `migrations/202611090004_create_promotions.sql` once in the Supabase SQL Editor. Then open
+`/admin/promotions` to create reusable Diwali, holiday-season and limited-time campaigns.
+
+Each banner can include an offer badge, coupon code, call-to-action link and terms note. It can be
+scheduled, displayed sitewide or only on the homepage, styled with one of the available themes and
+made dismissible for visitors. Only active banners inside their configured date range appear.
+
+If the promotions table was created before image cards were added, also run
+`migrations/202611090005_add_promotion_images.sql`. An offer with an image appears as a compact
+floating card; an offer without an image continues to use the slim header banner.

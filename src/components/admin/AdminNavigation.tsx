@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, LayoutDashboard, MapPinned, MessageSquareText, PackageOpen } from "lucide-react";
+import { ExternalLink, LayoutDashboard, MapPinned, Megaphone, MessageSquareText, PackageOpen } from "lucide-react";
 
 const baseClass =
   "flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition";
@@ -13,6 +13,7 @@ export function AdminNavigation() {
   const enquiriesActive = pathname.startsWith("/admin/enquiries");
   const packagesActive = pathname.startsWith("/admin/packages");
   const destinationsActive = pathname.startsWith("/admin/destinations");
+  const promotionsActive = pathname.startsWith("/admin/promotions");
 
   return (
     <nav className="flex gap-2 overflow-x-auto p-3 lg:flex-1 lg:flex-col lg:overflow-visible lg:p-4">
@@ -43,6 +44,13 @@ export function AdminNavigation() {
         className={`${baseClass} ${destinationsActive ? "bg-white/15 text-white" : "text-white/75 hover:bg-white/10 hover:text-white"}`}
       >
         <MapPinned className="size-4 text-accent" /> Destinations
+      </Link>
+      <Link
+        href="/admin/promotions"
+        aria-current={promotionsActive ? "page" : undefined}
+        className={`${baseClass} ${promotionsActive ? "bg-white/15 text-white" : "text-white/75 hover:bg-white/10 hover:text-white"}`}
+      >
+        <Megaphone className="size-4 text-accent" /> Offers & Banners
       </Link>
       <Link
         href="/"
