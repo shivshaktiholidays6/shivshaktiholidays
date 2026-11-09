@@ -10,7 +10,7 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 export const metadata: Metadata = {
   metadataBase: new URL("https://shivshaktiholidays.com"),
   title: {
-    default: "Shiv Shakti Holidays — Bespoke Holidays & Custom Trips",
+    default: "Shiv Shakti Holidays — Personalized Holidays & Custom Trips",
     template: "%s — Shiv Shakti Holidays",
   },
   description:

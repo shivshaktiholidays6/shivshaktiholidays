@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/Cards";
 import { EnquiryForm } from "@/components/site/EnquiryForm";
-import { formatINR, itinerary, type Pkg } from "@/data/catalog";
+import { itinerary, type Pkg } from "@/data/catalog";
 
 const inclusions = [
   "Hotel accommodation on twin-sharing",
@@ -38,9 +38,12 @@ export default function PackageDetail({ p }: { p: Pkg }) {
             <Clock className="size-4 text-accent" />
             {p.nights} Nights / {p.nights + 1} Days
           </span>
-          <span>
-            Starting from* <b className="font-display text-xl text-accent">{formatINR(p.price)}</b>{" "}
-            pp
+          <span className="flex items-baseline gap-2">
+            <span>Starting from*</span>
+            <b className="font-sans text-xl font-bold tracking-tight text-accent tabular-nums">
+              ₹{p.price.toLocaleString("en-IN")}
+            </b>
+            <span className="text-xs">per person</span>
           </span>
         </div>
       </PageHero>

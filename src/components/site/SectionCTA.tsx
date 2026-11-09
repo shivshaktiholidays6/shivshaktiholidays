@@ -16,7 +16,7 @@ export function SectionCTA({
       <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            <Sparkles className="size-4" /> Bespoke travel planning
+            <Sparkles className="size-4" /> Personalized travel planning
           </span>
           <h3 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">{title}</h3>
           <p className="mt-3 text-sm leading-relaxed text-primary-foreground/75 sm:text-base">

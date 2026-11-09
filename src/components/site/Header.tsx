@@ -114,7 +114,7 @@ export function Header() {
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 font-medium text-accent">
               <Compass className="size-3" />
-              <span>Bespoke Holidays & Curated Escapes</span>
+              <span>Personalized Holidays & Curated Escapes</span>
             </span>
             <span className="text-primary-foreground/30">·</span>
             <span className="text-primary-foreground/70">Personalized Luxury Travel Planning</span>
@@ -160,6 +160,7 @@ export function Header() {
             <Link
               key={n.to}
               href={n.to}
+              prefetch={false}
               className={`relative inline-flex items-center justify-center px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-all hover:text-accent rounded-full hover:bg-primary-foreground/5 group whitespace-nowrap ${path === n.to ? "text-accent bg-primary-foreground/10" : "text-primary-foreground/85"}`}
             >
               <span>{n.label}</span>
@@ -303,6 +304,7 @@ export function Header() {
               <Link
                 key={n.to}
                 href={n.to}
+                prefetch={false}
                 className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-foreground/10 hover:text-accent ${path === n.to ? "bg-primary-foreground/10 text-accent" : "text-primary-foreground/90"}`}
               >
                 <span>{n.label}</span>

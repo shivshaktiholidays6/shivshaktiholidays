@@ -1,7 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Crown, HeartHandshake, Hotel, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowDown,
+  Crown,
+  HeartHandshake,
+  Hotel,
+  MapPinned,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { PackageCard, SectionHead } from "@/components/site/Cards";
 import { SectionCTA } from "@/components/site/SectionCTA";
 import { fieldClass } from "@/components/site/EnquiryForm";
@@ -22,6 +31,15 @@ export default function Page() {
   const [budget, setBudget] = useState("all");
   const [dur, setDur] = useState("all");
   const [sort, setSort] = useState("rec");
+  const [visibleCount, setVisibleCount] = useState(9);
+
+  useEffect(() => {
+    const requestedType = new URLSearchParams(window.location.search).get("type");
+    if (requestedType && categories.some((category) => category === requestedType)) {
+      setType(requestedType);
+      setVisibleCount(9);
+    }
+  }, []);
 
   const mostBookedPackages = mostBookedPackageSlugs.flatMap((slug) => {
     const packageItem = packages.find((item) => item.slug === slug);
@@ -89,7 +107,28 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="bg-muted/45 py-20">
+      <nav aria-label="Package sections" className="sticky top-16 z-30 border-b border-border/70 bg-background/95 py-3 shadow-xs backdrop-blur-md sm:top-20">
+        <div className="container-x flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {(
+            [
+              ["#most-booked", "Most booked"],
+              ["#spiritual-places", "Spiritual journeys"],
+              ["#all-packages", "All packages"],
+            ] as const
+          ).map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold uppercase tracking-wider text-primary transition hover:border-accent hover:bg-accent/10"
+            >
+              {label}
+              <ArrowDown className="size-3.5 text-accent" aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+      </nav>
+
+      <section id="most-booked" className="scroll-mt-32 bg-muted/45 py-20">
         <div className="container-x">
           <SectionHead
             eyebrow="Best sellers"
@@ -143,7 +182,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="py-20">
+      <section id="all-packages" className="scroll-mt-32 py-20">
         <div className="container-x">
           <SectionHead
             eyebrow="Complete catalogue"
@@ -200,10 +239,21 @@ export default function Page() {
             </select>
           </div>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((p) => (
+            {list.slice(0, visibleCount).map((p) => (
               <PackageCard key={p.slug} p={p} />
             ))}
           </div>
+          {visibleCount < list.length && (
+            <div className="mt-9 text-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => count + 9)}
+                className="rounded-full border border-accent/50 bg-card px-6 py-3 text-xs font-semibold uppercase tracking-wider text-primary shadow-xs transition hover:bg-accent hover:text-accent-foreground"
+              >
+                Show more packages
+              </button>
+            </div>
+          )}
           {!list.length && (
             <p className="py-20 text-center text-muted-foreground">
               No packages match—try widening your filters, or ask us for a custom plan.

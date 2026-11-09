@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Compass,
   Globe2,
@@ -21,17 +21,85 @@ import {
   Search,
   MessageCircle,
   Phone,
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationCard, PackageCard, SectionHead } from "@/components/site/Cards";
 import { SectionCTA } from "@/components/site/SectionCTA";
 import { fieldClass } from "@/components/site/EnquiryForm";
+import { LeadEnquiryPopup } from "@/components/site/LeadEnquiryPopup";
 import { categories, destinations, images, mostBookedPackageSlugs, packages } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 
+const heroSlides = [
+  {
+    id: "world",
+    label: "World Escapes",
+    badge: "Personalized Luxury Escapes & Curated Journeys",
+    title: "Discover The World.",
+    accent: "Create Memories Forever.",
+    description:
+      "From breathtaking Alpine views to iconic European cities, discover international holidays planned around your dreams.",
+    image: images.switzerland,
+    alt: "Beautiful Swiss Alps and scenic international holiday landscape",
+    href: "/international",
+    cta: "Explore International Holidays",
+  },
+  {
+    id: "india",
+    label: "India, Beautifully",
+    badge: "Handpicked Indian Holidays",
+    title: "Fall In Love With India.",
+    accent: "Every Journey Tells A Story.",
+    description:
+      "Snow-draped Kashmir, royal Rajasthan and serene Kerala—experience India through journeys designed with warmth, comfort and care.",
+    image: images.kashmir,
+    alt: "Scenic Kashmir mountains and lake",
+    href: "/domestic",
+    cta: "Discover India Packages",
+  },
+  {
+    id: "spiritual",
+    label: "Journeys Of Faith",
+    badge: "Sacred Journeys, Thoughtfully Planned",
+    title: "Travel With Faith.",
+    accent: "Return With Blessings.",
+    description:
+      "Walk the sacred paths of Char Dham with carefully planned stays, trusted transport and personal assistance throughout your yatra.",
+    image: images.charDham,
+    alt: "Kedarnath temple surrounded by Himalayan mountains",
+    href: "/packages/char-dham-yatra",
+    cta: "Explore Char Dham Yatra",
+  },
+] as const;
+
 export default function Home() {
   const [tab, setTab] = useState<"international" | "domestic">("international");
+  const [activeHero, setActiveHero] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
+  const heroTouchStart = useRef<number | null>(null);
   const router = useRouter();
+  const heroSlide = heroSlides[activeHero] ?? heroSlides[0];
+
+  useEffect(() => {
+    if (heroPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(
+      () => setActiveHero((current) => (current + 1) % heroSlides.length),
+      6000,
+    );
+    return () => window.clearInterval(timer);
+  }, [heroPaused]);
+
+  function previousHero() {
+    setActiveHero((current) => (current - 1 + heroSlides.length) % heroSlides.length);
+  }
+
+  function nextHero() {
+    setActiveHero((current) => (current + 1) % heroSlides.length);
+  }
   const shown =
     tab === "international"
       ? destinations.filter((d) =>
@@ -50,40 +118,63 @@ export default function Home() {
 
   return (
     <>
+      <LeadEnquiryPopup />
       {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[92vh] sm:min-h-screen flex flex-col justify-between overflow-hidden">
-        <img
-          src={images.hero}
-          alt="Overwater villas in the Maldives at sunset"
-          width={1920}
-          height={1088}
-          className="absolute inset-0 size-full object-cover"
-        />
+      <section
+        className="relative flex min-h-[92vh] flex-col justify-between overflow-hidden sm:min-h-screen"
+        aria-roledescription="carousel"
+        aria-label="Featured holiday experiences"
+        onTouchStart={(event) => {
+          heroTouchStart.current = event.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(event) => {
+          if (heroTouchStart.current === null) return;
+          const distance =
+            (event.changedTouches[0]?.clientX ?? heroTouchStart.current) - heroTouchStart.current;
+          if (Math.abs(distance) > 55) {
+            if (distance > 0) previousHero();
+            else nextHero();
+          }
+          heroTouchStart.current = null;
+        }}
+      >
+        {heroSlides.map((item, index) => (
+          <img
+            key={item.id}
+            src={item.image}
+            alt={index === activeHero ? item.alt : ""}
+            width={1920}
+            height={1088}
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchPriority={index === 0 ? "high" : "auto"}
+            className={`absolute inset-0 size-full object-cover object-center transition-[opacity,transform] duration-1000 motion-reduce:transition-none ${
+              index === activeHero ? "scale-105 opacity-100" : "scale-100 opacity-0"
+            }`}
+          />
+        ))}
         {/* Editorial multi-gradient luxury overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/75 via-primary/45 to-primary/95" />
-        <div className="absolute inset-0 bg-radial-[at_top_right] from-accent/20 via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/60 to-primary/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-transparent to-primary/95" />
+        <div className="absolute inset-0 bg-radial-[at_top_right] from-accent/20 via-transparent to-transparent opacity-70" />
 
         <div className="container-x relative z-10 flex flex-1 flex-col justify-center pb-16 pt-24 sm:pb-32 sm:pt-36 text-primary-foreground">
-          <div className="max-w-3xl animate-fade-up">
+          <div key={heroSlide.id} className="max-w-3xl animate-fade-up">
             {/* Luxury pill badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-primary/50 px-3 py-1 sm:px-3.5 sm:py-1.5 backdrop-blur-md shadow-xs">
               <Sparkles className="size-3.5 text-accent animate-pulse" />
               <span className="text-[0.62rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.22em] text-accent">
-                Bespoke Luxury Escapes & Curated Journeys
+                {heroSlide.badge}
               </span>
             </div>
 
             <h1 className="mt-4 sm:mt-5 text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.12] sm:leading-[1.05] font-semibold font-display tracking-tight text-white drop-shadow-sm">
-              Discover The World.
+              {heroSlide.title}
               <br />
-              <em className="text-accent italic font-normal block sm:inline">
-                Create Memories Forever.
-              </em>
+              <em className="text-accent italic font-normal block sm:inline">{heroSlide.accent}</em>
             </h1>
 
             <p className="mt-3 sm:mt-6 max-w-xl text-sm sm:text-lg text-primary-foreground/90 leading-relaxed font-sans font-normal">
-              From pristine overwater villas in the Maldives to royal palaces in Rajasthan, discover
-              tailored holidays handcrafted exclusively around your dreams.
+              {heroSlide.description}
             </p>
 
             <div className="mt-6 sm:mt-9 flex flex-col sm:flex-row gap-3">
@@ -93,8 +184,11 @@ export default function Home() {
                 size="xl"
                 className="w-full sm:w-auto shadow-lift hover:scale-102"
               >
-                <Link href="/packages" className="inline-flex items-center justify-center gap-2">
-                  <span>Explore Holiday Packages</span>
+                <Link
+                  href={heroSlide.href}
+                  className="inline-flex items-center justify-center gap-2"
+                >
+                  <span>{heroSlide.cta}</span>
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -105,42 +199,88 @@ export default function Home() {
                 className="w-full sm:w-auto hover:scale-102"
               >
                 <Link href="/plan-trip" className="inline-flex items-center justify-center">
-                  Plan Bespoke Trip
+                  Plan Personalized Trip
                 </Link>
               </Button>
             </div>
 
+            <div className="mt-7 flex items-center gap-2" aria-label="Hero slide controls">
+              <button
+                type="button"
+                onClick={previousHero}
+                aria-label="Previous hero slide"
+                className="grid size-10 shrink-0 place-items-center rounded-full border border-white/25 bg-primary/35 text-white shadow-sm backdrop-blur-md transition hover:border-accent hover:text-accent"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-primary/30 p-1.5 backdrop-blur-md">
+                {heroSlides.map((item, index) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setActiveHero(index)}
+                    aria-label={`Show ${item.label}`}
+                    aria-current={index === activeHero}
+                    className={`h-7 rounded-full px-2.5 text-[0.62rem] font-semibold uppercase tracking-wider transition sm:px-3 ${
+                      index === activeHero
+                        ? "bg-accent text-accent-foreground shadow-sm"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    <span className="sm:hidden">0{index + 1}</span>
+                    <span className="hidden sm:inline">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={nextHero}
+                aria-label="Next hero slide"
+                className="grid size-10 shrink-0 place-items-center rounded-full border border-white/25 bg-primary/35 text-white shadow-sm backdrop-blur-md transition hover:border-accent hover:text-accent"
+              >
+                <ChevronRight className="size-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setHeroPaused((current) => !current)}
+                aria-label={heroPaused ? "Resume hero slideshow" : "Pause hero slideshow"}
+                className="hidden size-10 shrink-0 place-items-center rounded-full border border-white/25 bg-primary/35 text-white shadow-sm backdrop-blur-md transition hover:border-accent hover:text-accent sm:grid"
+              >
+                {heroPaused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
+              </button>
+            </div>
+
             {/* Quick Trust Highlights in Hero */}
-            <div className="mt-8 sm:mt-14 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-4 sm:gap-10 border-t border-primary-foreground/15 pt-5 sm:pt-6 text-xs text-primary-foreground/80">
-              <div className="flex items-center gap-2.5">
+            <div className="mt-8 grid grid-cols-3 items-start gap-2 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/80 sm:mt-14 sm:flex sm:flex-wrap sm:items-center sm:gap-10 sm:pt-6">
+              <div className="flex min-w-0 flex-col items-center gap-1.5 text-center sm:flex-row sm:gap-2.5 sm:text-left">
                 <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">
                   ✦
                 </span>
                 <div>
-                  <strong className="block font-semibold text-white">500+ Curated Trips</strong>
-                  <span className="text-[0.72rem] text-primary-foreground/70">
+                  <strong className="block text-[0.62rem] font-semibold leading-tight text-white sm:text-xs">500+ Curated Trips</strong>
+                  <span className="hidden text-[0.72rem] text-primary-foreground/70 sm:block">
                     Custom tailored itineraries
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex min-w-0 flex-col items-center gap-1.5 text-center sm:flex-row sm:gap-2.5 sm:text-left">
                 <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">
                   ★
                 </span>
                 <div>
-                  <strong className="block font-semibold text-white">4.9 / 5 Guest Rating</strong>
-                  <span className="text-[0.72rem] text-primary-foreground/70">
+                  <strong className="block text-[0.62rem] font-semibold leading-tight text-white sm:text-xs">4.9 / 5 Guest Rating</strong>
+                  <span className="hidden text-[0.72rem] text-primary-foreground/70 sm:block">
                     Verified traveler praises
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1">
-                <span className="grid size-7 place-items-center rounded-full bg-accent/20 text-accent font-display font-bold text-sm shrink-0">
+              <div className="flex min-w-0 flex-col items-center gap-1.5 text-center sm:flex-row sm:gap-2.5 sm:text-left">
+                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent/20 font-display text-[0.58rem] font-bold text-accent sm:text-sm">
                   24/7
                 </span>
                 <div>
-                  <strong className="block font-semibold text-white">Dedicated Concierge</strong>
-                  <span className="text-[0.72rem] text-primary-foreground/70">
+                  <strong className="block text-[0.62rem] font-semibold leading-tight text-white sm:text-xs">Dedicated Concierge</strong>
+                  <span className="hidden text-[0.72rem] text-primary-foreground/70 sm:block">
                     Personal travel specialist
                   </span>
                 </div>
@@ -168,7 +308,7 @@ export default function Home() {
                 </span>
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-                    Find Your Bespoke Holiday
+                    Find Your Personalized Holiday
                   </span>
                   <span className="hidden md:inline text-xs text-muted-foreground ml-2">
                     · Tell us where and when you wish to travel
@@ -297,9 +437,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-8 sm:mt-12 grid gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-3">
             {shown.map((d) => (
-              <DestinationCard key={d.slug} d={d} />
+              <DestinationCard key={d.slug} d={d} compactMobile />
             ))}
           </div>
 
@@ -354,7 +494,7 @@ export default function Home() {
               Make Your Beginning Unforgettable.
             </h2>
             <p className="mt-4 text-sm sm:text-base text-primary-foreground/80 leading-relaxed font-sans font-light">
-              Private pool villas, scenic sunsets, and bespoke romantic touches — from the Maldives
+              Private pool villas, scenic sunsets, and personalized romantic touches — from the Maldives
               and Santorini to Kashmir, Udaipur, and Switzerland.
             </p>
 
@@ -543,7 +683,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-10 sm:mt-14 md:mt-16 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-14 sm:gap-6 md:mt-16 md:grid-cols-4">
             {[
               [
                 "Discover Your Destination",
@@ -564,13 +704,15 @@ export default function Home() {
             ].map(([t, d], i) => (
               <div
                 key={t}
-                className="relative rounded-2xl border border-accent/25 bg-primary-foreground/5 p-6 backdrop-blur-sm transition-all duration-300 hover:border-accent/60"
+                className="relative min-h-44 rounded-xl border border-accent/25 bg-primary-foreground/5 p-3.5 backdrop-blur-sm transition-all duration-300 hover:border-accent/60 sm:min-h-0 sm:rounded-2xl sm:p-6"
               >
-                <span className="font-display text-4xl sm:text-5xl font-bold text-accent block">
+                <span className="block font-display text-2xl font-bold text-accent sm:text-5xl">
                   0{i + 1}
                 </span>
-                <h3 className="mt-3 text-lg font-semibold text-white font-display">{t}</h3>
-                <p className="mt-2 text-xs sm:text-sm text-primary-foreground/75 leading-relaxed font-light">
+                <h3 className="mt-2 text-sm font-semibold leading-snug text-white font-display sm:mt-3 sm:text-lg">
+                  {t}
+                </h3>
+                <p className="mt-1.5 line-clamp-3 text-[0.65rem] font-light leading-relaxed text-primary-foreground/75 sm:mt-2 sm:line-clamp-none sm:text-sm">
                   {d}
                 </p>
               </div>
@@ -579,7 +721,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= BESPOKE TRAVEL DESIGNER / VIP CONCIERGE BANNER ================= */}
+      {/* ================= PERSONALIZED TRAVEL DESIGNER / VIP CONCIERGE BANNER ================= */}
       <section className="py-14 sm:py-20 md:py-24">
         <div className="container-x">
           <div className="relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-primary via-primary/95 to-secondary p-8 sm:p-12 md:p-16 text-primary-foreground shadow-lift">
@@ -592,7 +734,7 @@ export default function Home() {
               </h2>
               <p className="mt-4 text-sm sm:text-base text-primary-foreground/80 leading-relaxed font-light">
                 Speak directly with our senior travel designers. Whether it's an anniversary escape,
-                a multi-country family tour, or a corporate retreat, we craft completely bespoke
+                a multi-country family tour, or a corporate retreat, we craft fully personalized
                 itineraries from scratch.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3.5">

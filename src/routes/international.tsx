@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DestinationCard, PackageCard, PageHero, SectionHead } from "@/components/site/Cards";
+import { PackageCard, PageHero, SectionHead } from "@/components/site/Cards";
+import { DestinationRegionExplorer } from "@/components/site/DestinationRegionExplorer";
 import { SectionCTA } from "@/components/site/SectionCTA";
-import { destinations, images, packages, regions } from "@/data/catalog";
+import { images, packages } from "@/data/catalog";
 import { waLink, waMessages } from "@/config/site";
 
 export default function Page() {
@@ -24,26 +25,14 @@ export default function Page() {
           </Button>
         </div>
       </PageHero>
-      {regions("international").map((r, i) => (
-        <section key={r} className={i % 2 ? "bg-muted py-16" : "py-16"}>
-          <div className="container-x">
-            <h2 className="text-3xl text-primary">{r}</h2>
-            <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
-              {destinations
-                .filter((d) => d.region === r)
-                .map((d) => (
-                  <DestinationCard key={d.slug} d={d} tall />
-                ))}
-            </div>
-          </div>
-        </section>
-      ))}
+      <DestinationRegionExplorer scope="international" />
       <section className="py-24">
         <div className="container-x">
           <SectionHead eyebrow="Popular" title="International Packages" />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {packages
               .filter((p) => p.scope === "international")
+              .slice(0, 6)
               .map((p) => (
                 <PackageCard key={p.slug} p={p} />
               ))}

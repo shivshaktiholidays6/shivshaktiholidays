@@ -1,14 +1,30 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock, MapPin, Sparkles, Star, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatINR, type Destination, type Pkg } from "@/data/catalog";
+import { type Destination, type Pkg } from "@/data/catalog";
 import { waLink } from "@/config/site";
 
-export function DestinationCard({ d, tall }: { d: Destination; tall?: boolean }) {
+export function DestinationCard({
+  d,
+  tall,
+  compactMobile = false,
+}: {
+  d: Destination;
+  tall?: boolean;
+  compactMobile?: boolean;
+}) {
   return (
     <Link
       href={`/destinations/${d.slug}`}
-      className={`group relative block overflow-hidden rounded-2xl border border-border/40 shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/50 hover:shadow-lift ${tall ? "aspect-[3/4]" : "aspect-[4/5]"}`}
+      className={`group relative block overflow-hidden rounded-xl border border-border/40 shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/50 hover:shadow-lift sm:rounded-2xl ${
+        compactMobile
+          ? tall
+            ? "aspect-[4/5] sm:aspect-[3/4]"
+            : "aspect-[4/5]"
+          : tall
+            ? "aspect-[3/4]"
+            : "aspect-[4/5]"
+      }`}
     >
       <img
         src={d.image}
@@ -17,21 +33,23 @@ export function DestinationCard({ d, tall }: { d: Destination; tall?: boolean })
         className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/35 to-transparent" />
-      <div className="absolute left-3.5 top-3.5 z-10 sm:left-4 sm:top-4">
-        <span className="inline-flex items-center gap-1 rounded-full bg-card/85 px-2.5 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-primary backdrop-blur-md border border-card/40 shadow-xs">
-          <Sparkles className="size-2.5 text-accent" />
+      <div className={`${compactMobile ? "left-2 top-2" : "left-3.5 top-3.5"} absolute z-10 sm:left-4 sm:top-4`}>
+        <span className="inline-flex items-center gap-1 rounded-full border border-card/40 bg-card/85 px-2 py-0.5 text-[0.55rem] font-semibold uppercase tracking-wider text-primary shadow-xs backdrop-blur-md sm:px-2.5 sm:text-[0.62rem]">
+          <Sparkles className="size-2.5 text-accent" aria-hidden="true" />
           <span>Curated</span>
         </span>
       </div>
-      <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 text-primary-foreground z-10">
-        <p className="eyebrow text-accent/90">{d.region}</p>
-        <h3 className="mt-1 text-xl sm:text-2xl font-semibold text-white group-hover:text-accent transition-colors font-display">
+      <div className={`absolute inset-x-0 bottom-0 z-10 text-primary-foreground ${compactMobile ? "p-3" : "p-4"} sm:p-5`}>
+        <p className={`${compactMobile ? "text-[0.56rem] tracking-[0.18em]" : "eyebrow"} font-semibold uppercase text-accent/90 sm:text-[0.72rem] sm:tracking-[0.28em]`}>
+          {d.region}
+        </p>
+        <h3 className={`${compactMobile ? "mt-0.5 text-base leading-tight" : "mt-1 text-xl"} font-display font-semibold text-white transition-colors group-hover:text-accent sm:mt-1 sm:text-2xl`}>
           {d.name}
         </h3>
-        <p className="mt-1.5 line-clamp-2 text-xs sm:text-sm text-primary-foreground/80 font-sans leading-relaxed">
+        <p className={`${compactMobile ? "hidden sm:line-clamp-2" : "line-clamp-2"} mt-1.5 text-xs font-sans leading-relaxed text-primary-foreground/80 sm:text-sm`}>
           {d.blurb}
         </p>
-        <div className="mt-3 flex items-center justify-between border-t border-primary-foreground/15 pt-2.5">
+        <div className={`${compactMobile ? "hidden sm:flex" : "flex"} mt-3 items-center justify-between border-t border-primary-foreground/15 pt-2.5`}>
           <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-accent transition-all group-hover:tracking-widest">
             Explore Destination{" "}
             <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -44,8 +62,11 @@ export function DestinationCard({ d, tall }: { d: Destination; tall?: boolean })
 
 export function PackageCard({ p }: { p: Pkg }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-lift">
-      <Link href={`/packages/${p.slug}`} className="relative block aspect-[4/3] overflow-hidden">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-border/70 bg-card shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-lift sm:rounded-2xl">
+      <Link
+        href={`/packages/${p.slug}`}
+        className="relative block aspect-[16/9] overflow-hidden sm:aspect-[4/3]"
+      >
         <img
           src={p.image}
           alt={p.name}
@@ -54,49 +75,50 @@ export function PackageCard({ p }: { p: Pkg }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
         <span
-          className={`absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider backdrop-blur-md border shadow-xs ${p.mostBooked ? "gold-gradient border-accent/60 text-accent-foreground" : "bg-card/90 border-border/50 text-primary"}`}
+          className={`absolute left-2.5 top-2.5 rounded-full border px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-wider shadow-xs backdrop-blur-md sm:left-4 sm:top-4 sm:px-3 sm:text-[0.65rem] ${p.mostBooked ? "gold-gradient border-accent/60 text-accent-foreground" : "bg-card/90 border-border/50 text-primary"}`}
         >
           {p.mostBooked ? "Most Booked" : p.types[0]}
         </span>
-        <span className="absolute right-3 top-3 sm:right-4 sm:top-4 inline-flex items-center gap-1 rounded-full bg-primary/80 px-2.5 py-1 text-[0.65rem] font-semibold text-accent backdrop-blur-md border border-accent/20">
+        <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-full border border-accent/20 bg-primary/80 px-2 py-1 text-[0.6rem] font-semibold text-accent backdrop-blur-md sm:right-4 sm:top-4 sm:px-2.5 sm:text-[0.65rem]">
           <Star className="size-3 fill-accent text-accent" />
           <span>4.9</span>
         </span>
       </Link>
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
+      <div className="flex flex-1 flex-col p-3.5 sm:p-5">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="flex items-center gap-1 font-medium text-foreground/85">
+          <span className="flex min-w-0 items-center gap-1 font-medium text-foreground/85">
             <MapPin className="size-3.5 text-accent" />
-            {p.place}
+            <span className="truncate">{p.place}</span>
           </span>
           <span className="flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[0.7rem] font-medium text-muted-foreground">
             <Clock className="size-3 text-accent" />
             {p.nights}N / {p.nights + 1}D
           </span>
         </div>
-        <h3 className="mt-2 text-lg sm:text-xl font-semibold text-primary leading-snug font-display group-hover:text-secondary transition-colors">
+        <h3 className="mt-2 text-base font-semibold leading-snug text-primary transition-colors group-hover:text-secondary sm:text-xl font-display">
           {p.name}
         </h3>
-        <p className="mt-1.5 line-clamp-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+        <p className="mt-1 line-clamp-1 text-xs leading-relaxed text-muted-foreground sm:mt-1.5 sm:line-clamp-2 sm:text-sm">
           {p.summary}
         </p>
-        <div className="mt-4 flex items-end justify-between border-t border-border/70 pt-3.5">
+        <div className="mt-3 flex items-end justify-between border-t border-border/70 pt-3 sm:mt-4 sm:pt-3.5">
           <div>
             <span className="block text-[0.65rem] uppercase tracking-wider text-muted-foreground">
               Starting from*
             </span>
-            <div className="flex items-baseline gap-1">
-              <span className="font-display text-xl font-bold text-primary">
-                {formatINR(p.price)}
+            <div className="mt-0.5 flex items-baseline gap-1.5">
+              <span className="font-sans text-xl font-bold tracking-[-0.035em] text-primary tabular-nums sm:text-2xl">
+                <span className="mr-0.5 text-[0.82em] font-semibold text-accent">₹</span>
+                {p.price.toLocaleString("en-IN")}
               </span>
-              <span className="text-[0.7rem] text-muted-foreground">/ person</span>
+              <span className="text-[0.68rem] font-medium text-muted-foreground">per person</span>
             </div>
           </div>
-          <span className="text-[0.68rem] text-accent font-semibold uppercase tracking-wider">
+          <span className="hidden text-[0.68rem] font-semibold uppercase tracking-wider text-accent sm:block">
             All-Inclusive
           </span>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4">
           <Button asChild variant="navy" size="sm" className="w-full text-xs sm:text-sm">
             <Link href={`/packages/${p.slug}`}>View Details</Link>
           </Button>
