@@ -1,4 +1,4 @@
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Navigation, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EnquiryForm } from "@/components/site/EnquiryForm";
 import { site, waLink, waMessages } from "@/config/site";
@@ -51,6 +51,40 @@ export default function Page() {
         </div>
         <div className="rounded-2xl bg-card p-8 shadow-soft lg:col-span-3">
           <EnquiryForm />
+        </div>
+      </div>
+
+      <div className="container-x mt-12">
+        <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-soft lg:grid lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+            <p className="eyebrow">Visit our office</p>
+            <h2 className="mt-3 text-3xl text-primary sm:text-4xl">Meet us in Roorkee</h2>
+            <p className="mt-4 max-w-md leading-relaxed text-muted-foreground">
+              Visit our office to discuss your itinerary, hotel preferences and travel plans with
+              our holiday specialists.
+            </p>
+            <div className="mt-6 flex items-start gap-3 rounded-2xl bg-muted/60 p-4 text-sm leading-relaxed text-primary">
+              <MapPin className="mt-0.5 size-5 shrink-0 text-accent" />
+              <span>{site.address}</span>
+            </div>
+            <Button asChild variant="gold" size="xl" className="mt-6 w-fit">
+              <a href={site.mapsUrl} target="_blank" rel="noreferrer">
+                <Navigation className="size-4" />
+                Get directions
+              </a>
+            </Button>
+          </div>
+
+          <div className="min-h-[22rem] overflow-hidden border-t border-border lg:min-h-[28rem] lg:border-l lg:border-t-0">
+            <iframe
+              title={`${site.name} office location on Google Maps`}
+              src={site.mapEmbedUrl}
+              className="h-full min-h-[22rem] w-full border-0 lg:min-h-[28rem]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
         </div>
       </div>
     </section>

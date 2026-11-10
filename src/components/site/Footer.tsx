@@ -114,7 +114,18 @@ export function Footer() {
               <a href={`mailto:${site.email}`}>{site.email}</a>
             </li>
             <li className="flex items-start gap-2.5">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-accent" /> {site.address}
+              <MapPin className="mt-0.5 size-4 shrink-0 text-accent" />
+              <span>
+                {site.address}
+                <a
+                  href={site.mapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 block w-fit font-semibold text-accent underline-offset-4 hover:underline"
+                >
+                  Get directions
+                </a>
+              </span>
             </li>
           </ul>
         </div>

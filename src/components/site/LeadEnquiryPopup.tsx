@@ -367,7 +367,7 @@ export function LeadEnquiryPopup() {
                   type="submit"
                   variant="gold"
                   size="xl"
-                  className="mt-1 h-11 w-full sm:h-auto"
+                  className="mt-1 h-11 min-h-11 w-full px-5 sm:h-12 sm:min-h-12 lg:text-[0.8rem]"
                   disabled={submitting}
                 >
                   <MessageCircle className="size-5" />

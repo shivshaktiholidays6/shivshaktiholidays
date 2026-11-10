@@ -10,6 +10,9 @@ export const site = {
   whatsapp: "919568000777",
   email: "shivshaktiholidays.rke@gmail.com",
   address: "Opp. Old Kachari Gate, Bus Stand, Roorkee, Uttarakhand 247667",
+  mapsUrl: "https://maps.app.goo.gl/MFgyizvZrK8R7obo7",
+  mapEmbedUrl:
+    "https://www.google.com/maps?q=Shiv%20Shakti%20Holidays%2C%20Opp.%20Old%20Kachari%20Gate%2C%20Bus%20Stand%2C%20Roorkee%2C%20Uttarakhand%20247667&output=embed",
   location: {
     streetAddress: "Opp. Old Kachari Gate, Bus Stand",
     locality: "Roorkee",
