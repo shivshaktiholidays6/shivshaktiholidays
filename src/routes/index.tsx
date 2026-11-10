@@ -10,8 +10,6 @@ import {
   Headphones,
   Layers,
   ArrowRight,
-  Star,
-  Quote,
   CheckCircle2,
   Users,
   MessageCircle,
@@ -25,8 +23,10 @@ import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { CuratedDestinations } from "@/components/site/home/CuratedDestinations";
 import { HolidayFinder } from "@/components/site/home/HolidayFinder";
 import { HomeHero } from "@/components/site/home/HomeHero";
+import { TestimonialsCarousel } from "@/components/site/home/TestimonialsCarousel";
 import { categories, destinations, images, mostBookedPackageSlugs, packages, type Destination, type Pkg } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
+import worldEscapesHero from "@/assets/world-escapes-hero-hd.png";
 
 const homeHeroSlides = [
   {
@@ -37,8 +37,8 @@ const homeHeroSlides = [
     accent: "Create Memories Forever.",
     description:
       "From breathtaking Alpine views to iconic European cities, discover international holidays planned around your dreams.",
-    image: images.switzerland,
-    alt: "Beautiful Swiss Alps and scenic international holiday landscape",
+    image: worldEscapesHero.src,
+    alt: "Swiss Alpine village beside a turquoise lake and snow-capped mountains",
     href: "/international",
     cta: "Explore International Holidays",
   },
@@ -268,73 +268,7 @@ export default function Home({ packageItems = packages, destinationItems = desti
       </section>
 
       {/* ================= GUEST STORIES / TESTIMONIALS ================= */}
-      <section className="bg-muted/50 py-14 sm:py-20 md:py-24 border-y border-border/50">
-        <div className="container-x">
-          <SectionHead
-            eyebrow="Guest Praises"
-            title="Stories From Our Travellers"
-            text="Read how our guests experienced sublime journeys and effortless hospitality."
-          />
-
-          <div className="mt-10 sm:mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                quote:
-                  "Every detail of our Bali honeymoon was flawlessly orchestrated. From the private pool villa to the sunset dinner, it was truly magical.",
-                author: "Rohan & Sneha M.",
-                city: "Mumbai",
-                pkg: "Bali Romantic Escape",
-                rating: 5,
-              },
-              {
-                quote:
-                  "The Switzerland trip was a dream come true for our family. Scenic train passes, breathtaking mountain hotels, and 24/7 care on WhatsApp made it effortless.",
-                author: "Ananya & Vikram K.",
-                city: "New Delhi",
-                pkg: "Switzerland Scenic Escape",
-                rating: 5,
-              },
-              {
-                quote:
-                  "The luxury houseboat in Kerala and private tea estate stay in Munnar exceeded all expectations. Shiv Shakti Holidays provides genuine 5-star planning.",
-                author: "Dr. Rajesh Patel",
-                city: "Ahmedabad",
-                pkg: "Kerala Backwaters & Hills",
-                rating: 5,
-              },
-            ].map((review, i) => (
-              <div
-                key={i}
-                className="relative flex flex-col justify-between rounded-2xl border border-border/70 bg-card p-6 sm:p-8 shadow-xs transition-all duration-300 hover:shadow-soft hover:border-accent/40"
-              >
-                <div>
-                  {/* Rating Stars */}
-                  <div className="flex items-center gap-1 text-accent">
-                    {[...Array(review.rating)].map((_, idx) => (
-                      <Star key={idx} className="size-4 fill-accent" />
-                    ))}
-                  </div>
-
-                  {/* Quote */}
-                  <p className="mt-4 text-xs sm:text-sm text-foreground/80 italic leading-relaxed">
-                    "{review.quote}"
-                  </p>
-                </div>
-
-                <div className="mt-6 border-t border-border/60 pt-4 flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-semibold text-primary">{review.author}</h4>
-                    <span className="text-[0.72rem] text-muted-foreground">{review.city}</span>
-                  </div>
-                  <span className="rounded-full bg-accent/10 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-wider text-accent">
-                    {review.pkg}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsCarousel />
 
       {/* ================= FOUR STEPS TO YOUR JOURNEY ================= */}
       <section className="bg-primary py-14 sm:py-20 md:py-24 text-primary-foreground relative overflow-hidden">

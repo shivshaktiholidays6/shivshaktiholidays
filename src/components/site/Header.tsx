@@ -51,16 +51,19 @@ export function Logo({ light }: { light?: boolean }) {
         />
       </div>
 
-      {/* Styled, Big & Animated Brand Name */}
-      <div className="leading-none flex flex-col justify-center min-w-0">
-        <span className="font-display text-base xs:text-lg sm:text-2xl lg:text-[1.72rem] font-bold tracking-tight inline-block drop-shadow-sm whitespace-nowrap">
-          <span className="animate-gold-shimmer inline-block transition-all duration-300 group-hover:scale-[1.02]">
-            Shiv Shakti
+      {/* Refined luxury wordmark */}
+      <div className="flex min-w-0 flex-col justify-center leading-none">
+        <span className="inline-flex items-baseline whitespace-nowrap font-display text-base font-semibold tracking-[-0.035em] drop-shadow-sm xs:text-lg sm:text-2xl lg:text-[1.72rem]">
+          <span className="text-[#fff8e8] transition-colors duration-300 group-hover:text-white">
+            Shiv
+          </span>
+          <span className="ml-1 bg-gradient-to-br from-amber-200 via-accent to-amber-500 bg-clip-text pr-0.5 italic text-transparent transition-all duration-300 group-hover:translate-x-0.5 xs:ml-1.5">
+            Shakti
           </span>
         </span>
-        <div className="mt-0.5 sm:mt-1 flex items-center gap-1 sm:gap-1.5">
+        <div className="mt-0.5 flex items-center gap-1 sm:mt-1 sm:gap-1.5">
           <span className="h-px w-2 xs:w-3 sm:w-4 bg-gradient-to-r from-transparent to-accent/90" />
-          <span className="block text-[0.52rem] xs:text-[0.62rem] sm:text-[0.68rem] font-bold uppercase tracking-[0.2em] sm:tracking-[0.36em] text-accent transition-all duration-500 group-hover:tracking-[0.44em] group-hover:text-amber-300 whitespace-nowrap">
+          <span className="block whitespace-nowrap text-[0.48rem] font-semibold uppercase tracking-[0.28em] text-amber-300/95 transition-all duration-500 group-hover:text-amber-200 xs:text-[0.56rem] xs:tracking-[0.34em] sm:text-[0.64rem] sm:tracking-[0.42em]">
             Holidays
           </span>
           <span className="h-px w-2 xs:w-3 sm:w-4 bg-gradient-to-l from-transparent to-accent/90" />
