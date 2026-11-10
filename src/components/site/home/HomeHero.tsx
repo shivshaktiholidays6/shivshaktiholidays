@@ -72,19 +72,15 @@ export function HomeHero({
         heroTouchStart.current = null;
       }}
     >
-      {slides.map((item, index) => (
-        <ResponsiveImage
-          key={item.id}
-          src={item.image}
-          alt={index === activeHero ? item.alt : ""}
-          fill
-          priority={index === 0}
-          sizes="100vw"
-          className={`absolute inset-0 size-full object-cover object-center transition-[opacity,transform] duration-1000 motion-reduce:transition-none ${
-            index === activeHero ? "scale-105 opacity-100" : "scale-100 opacity-0"
-          }`}
-        />
-      ))}
+      <ResponsiveImage
+        key={heroSlide.id}
+        src={heroSlide.image}
+        alt={heroSlide.alt}
+        fill
+        priority={activeHero === 0}
+        sizes="100vw"
+        className="absolute inset-0 size-full animate-[hero-image-in_1s_ease-out_both] object-cover object-center motion-reduce:animate-none"
+      />
       <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/60 to-primary/20" />
       <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-transparent to-primary/95" />
       <div className="absolute inset-0 bg-radial-[at_top_right] from-accent/20 via-transparent to-transparent opacity-70" />

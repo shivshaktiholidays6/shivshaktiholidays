@@ -15,7 +15,7 @@ export function Footer() {
           </p>
           <div className="mt-4 flex items-center gap-5" aria-label="Social media">
             <a
-              href="https://www.instagram.com/shiv.shaktiholidays/"
+              href={site.social.instagram}
               target="_blank"
               rel="noreferrer"
               aria-label="Follow Shiv Shakti Holidays on Instagram"

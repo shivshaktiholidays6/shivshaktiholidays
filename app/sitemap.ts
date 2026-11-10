@@ -21,14 +21,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/privacy",
   ];
   return [
-    ...staticPages.map((path) => ({ url: `${base}${path}`, changeFrequency: "monthly" as const })),
+    ...staticPages.map((path) => ({
+      url: `${base}${path}`,
+      changeFrequency: path === "" ? ("weekly" as const) : ("monthly" as const),
+      priority: path === "" ? 1 : path === "/packages" || path === "/destinations" ? 0.9 : 0.7,
+    })),
     ...destinations.map((d) => ({
       url: `${base}/destinations/${d.slug}`,
       changeFrequency: "monthly" as const,
+      priority: 0.8,
     })),
     ...packages.map((p) => ({
       url: `${base}/packages/${p.slug}`,
       changeFrequency: "weekly" as const,
+      priority: 0.8,
     })),
   ];
 }

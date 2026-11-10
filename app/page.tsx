@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Personalized Luxury Holidays & Custom Trips",
   description:
     "Explore domestic, international and spiritual holiday packages planned around your travel style.",
+  alternates: { canonical: "/" },
+  openGraph: { url: "/" },
 };
 
 export const revalidate = 300;

@@ -4,5 +4,6 @@ import Contact from "@/routes/contact";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Contact Shiv Shakti Holidays to plan your next domestic or international trip.",
+  alternates: { canonical: "/contact" },
 };
 export default Contact;

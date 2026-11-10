@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
-import { destinations, type Destination } from "@/data/catalog";
+import type { Destination } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 import { cn } from "@/lib/utils";
 import type { Promotion } from "@/lib/promotions";
@@ -73,7 +73,7 @@ export function Logo({ light }: { light?: boolean }) {
   );
 }
 
-export function Header({ destinationItems = destinations, promotion = null }: { destinationItems?: Destination[]; promotion?: Promotion | null }) {
+export function Header({ destinationItems, promotion = null }: { destinationItems: Destination[]; promotion?: Promotion | null }) {
   const path = usePathname();
   const isHome = path === "/";
   const [scrolled, setScrolled] = useState(false);

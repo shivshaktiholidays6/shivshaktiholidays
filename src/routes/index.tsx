@@ -25,7 +25,7 @@ import { HomeHero } from "@/components/site/home/HomeHero";
 import { TestimonialsCarousel } from "@/components/site/home/TestimonialsCarousel";
 import { categories, destinations, images, mostBookedPackageSlugs, packages, type Destination, type Pkg } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
-import worldEscapesHero from "@/assets/world-escapes-hero-hd.png";
+import worldEscapesHero from "@/assets/world-escapes-hero-hd.webp";
 
 const homeHeroSlides = [
   {

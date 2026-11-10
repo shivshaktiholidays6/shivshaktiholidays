@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "India Holiday Packages",
   description:
     "Discover India with customizable family, honeymoon, adventure and pilgrimage packages.",
+  alternates: { canonical: "/domestic" },
 };
 export const revalidate = 300;
 

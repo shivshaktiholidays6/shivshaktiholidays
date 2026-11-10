@@ -5,6 +5,7 @@ import { getPublishedPackages } from "@/lib/packages";
 export const metadata: Metadata = {
   title: "Holiday Packages",
   description: "Browse domestic, international, honeymoon and pilgrimage holiday packages.",
+  alternates: { canonical: "/packages" },
 };
 export const revalidate = 300;
 

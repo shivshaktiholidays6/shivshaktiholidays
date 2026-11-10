@@ -7,7 +7,11 @@ export const site = {
   whatsapp: "919568000777",
   email: "shivshaktiholidays.rke@gmail.com",
   address: "Opp. Old Kachari Gate, Bus Stand, Roorkee, Uttarakhand 247667",
-  social: { instagram: "#", facebook: "#", youtube: "#" },
+  social: {
+    instagram: "https://www.instagram.com/shiv.shaktiholidays/",
+    facebook: "#",
+    youtube: "#",
+  },
 };
 
 export const waMessages = {

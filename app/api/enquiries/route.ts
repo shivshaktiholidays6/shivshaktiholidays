@@ -42,6 +42,17 @@ function clientIdentifier(request: Request) {
 
 function isRateLimited(identifier: string) {
   const now = Date.now();
+
+  if (requestBuckets.size > 1_000) {
+    for (const [key, value] of requestBuckets) {
+      if (value.expiresAt <= now) requestBuckets.delete(key);
+    }
+  }
+  if (requestBuckets.size > 10_000) {
+    const oldestKey = requestBuckets.keys().next().value as string | undefined;
+    if (oldestKey) requestBuckets.delete(oldestKey);
+  }
+
   const bucket = requestBuckets.get(identifier);
 
   if (!bucket || bucket.expiresAt <= now) {
@@ -60,6 +71,17 @@ function enquiryCode() {
 }
 
 export async function POST(request: Request) {
+  const requestUrl = new URL(request.url);
+  const origin = request.headers.get("origin");
+  const fetchSite = request.headers.get("sec-fetch-site");
+  if ((origin && origin !== requestUrl.origin) || fetchSite === "cross-site") {
+    return NextResponse.json({ message: "Cross-site enquiry requests are not allowed." }, { status: 403 });
+  }
+
+  if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
+    return NextResponse.json({ message: "Enquiries must use JSON." }, { status: 415 });
+  }
+
   const contentLength = Number(request.headers.get("content-length") ?? 0);
   if (contentLength > 16_000) {
     return NextResponse.json({ message: "Enquiry is too large." }, { status: 413 });

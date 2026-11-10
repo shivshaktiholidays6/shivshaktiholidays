@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { fieldClass } from "@/components/site/EnquiryForm";
 import { trackAnalyticsEvent } from "@/components/site/Analytics";
-import { images } from "@/data/catalog";
+import keralaImage from "@/assets/kerala.jpg";
 import { site, waLink } from "@/config/site";
 import { saveEnquiry } from "@/lib/enquiries";
 
@@ -156,7 +156,7 @@ export function LeadEnquiryPopup() {
 
         <div className="relative hidden min-h-full overflow-hidden lg:block">
           <ResponsiveImage
-            src={images.kerala}
+            src={keralaImage}
             alt="Peaceful Kerala backwaters holiday"
             fill
             sizes="34vw"

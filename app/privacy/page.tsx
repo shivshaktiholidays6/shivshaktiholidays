@@ -4,6 +4,7 @@ import { site } from "@/config/site";
 export const metadata: Metadata = {
   title: "Privacy & Analytics",
   description: "How Shiv Shakti Holidays handles enquiries and optional website analytics.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

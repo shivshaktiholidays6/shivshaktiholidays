@@ -5,6 +5,7 @@ import { getPublishedDestinations } from "@/lib/destinations";
 export const metadata: Metadata = {
   title: "Holiday Destinations",
   description: "Explore popular destinations across India and around the world.",
+  alternates: { canonical: "/destinations" },
 };
 export const revalidate = 300;
 
