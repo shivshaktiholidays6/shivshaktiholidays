@@ -133,7 +133,7 @@ export function LeadEnquiryPopup() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-black/45 p-3 sm:p-5"
+      className="fixed inset-0 z-[100] grid items-end justify-items-center overflow-y-auto bg-black/45 p-2 pb-[5.25rem] sm:place-items-center sm:p-5"
       role="presentation"
       onMouseDown={(event) => {
         if (event.currentTarget === event.target) dismiss();
@@ -143,13 +143,13 @@ export function LeadEnquiryPopup() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="enquiry-popup-title"
-        className="relative my-auto grid max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl overflow-y-auto rounded-2xl border border-white/20 bg-card shadow-2xl lg:grid-cols-[0.68fr_1.32fr]"
+        className="relative grid max-h-[calc(100dvh-6.25rem)] w-full max-w-[26rem] overflow-y-auto rounded-[1.4rem] border border-white/20 bg-card shadow-2xl sm:my-auto sm:max-h-[calc(100dvh-2.5rem)] sm:max-w-2xl lg:max-w-4xl lg:grid-cols-[0.68fr_1.32fr]"
       >
         <button
           type="button"
           onClick={dismiss}
           aria-label="Close enquiry form"
-          className="absolute right-3 top-3 z-20 grid size-10 place-items-center rounded-full bg-background/90 text-primary shadow-md transition hover:bg-background hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-xl bg-muted text-primary shadow-sm transition hover:bg-background hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:size-10 sm:rounded-full"
         >
           <X className="size-5" />
         </button>
@@ -182,9 +182,9 @@ export function LeadEnquiryPopup() {
           </div>
         </div>
 
-        <div className="p-5 pt-14 sm:p-7 sm:pt-12 lg:p-8">
+        <div className="p-4 pt-12 sm:p-7 sm:pt-12 lg:p-8">
           {submitted ? (
-            <div className="flex min-h-[460px] flex-col items-center justify-center text-center">
+            <div className="flex min-h-[360px] flex-col items-center justify-center text-center sm:min-h-[460px]">
               <span className="grid size-16 place-items-center rounded-full bg-emerald-100 text-emerald-700">
                 <CheckCircle2 className="size-8" />
               </span>
@@ -204,15 +204,15 @@ export function LeadEnquiryPopup() {
             </div>
           ) : (
             <>
-              <p className="eyebrow">Let&apos;s plan something beautiful</p>
-              <h2 id="enquiry-popup-title" className="mt-1.5 text-3xl text-primary">
+              <p className="eyebrow hidden sm:block">Let&apos;s plan something beautiful</p>
+              <h2 id="enquiry-popup-title" className="text-2xl text-primary sm:mt-1.5 sm:text-3xl">
                 Need assistance?
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              <p className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-base">
                 Tell us about your trip and receive a personalised quotation on WhatsApp.
               </p>
 
-              <form onSubmit={submit} className="mt-5 grid gap-2.5" noValidate={false}>
+              <form onSubmit={submit} className="mt-4 grid gap-2 sm:mt-5 sm:gap-2.5" noValidate={false}>
                 <input
                   name="company"
                   tabIndex={-1}
@@ -367,7 +367,7 @@ export function LeadEnquiryPopup() {
                   type="submit"
                   variant="gold"
                   size="xl"
-                  className="mt-1 w-full"
+                  className="mt-1 h-11 w-full sm:h-auto"
                   disabled={submitting}
                 >
                   <MessageCircle className="size-5" />

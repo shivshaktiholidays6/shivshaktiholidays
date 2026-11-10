@@ -6,7 +6,6 @@ import { QuickQueryFloat } from "@/components/site/QuickQueryFloat";
 import { LeadEnquiryPopup } from "@/components/site/LeadEnquiryPopup";
 import { AnalyticsManager } from "@/components/site/Analytics";
 import { JsonLd } from "@/components/site/JsonLd";
-import { getPublishedDestinations } from "@/lib/destinations";
 import { getActivePromotion } from "@/lib/promotions";
 import "@/styles.css";
 
@@ -68,10 +67,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [destinationItems, promotion] = await Promise.all([
-    getPublishedDestinations(),
-    getActivePromotion(),
-  ]);
+  const promotion = await getActivePromotion();
 
   return (
     <html lang="en" className={`${manrope.variable} ${playfair.variable}`}>
@@ -110,7 +106,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             },
           ]}
         />
-        <Header destinationItems={destinationItems} promotion={promotion} />
+        <Header promotion={promotion} />
         <main>{children}</main>
         <Footer />
         <LeadEnquiryPopup />

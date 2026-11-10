@@ -202,7 +202,7 @@ export default function Home({ packageItems = packages, destinationItems = desti
       </section>
 
       {/* ================= WHY CHOOSE US ================= */}
-      <section className="py-14 sm:py-20 md:py-24 bg-background">
+      <section className="overflow-hidden bg-background py-10 sm:py-20 md:py-24">
         <div className="container-x">
           <SectionHead
             eyebrow="The Fine Art of Travel"
@@ -210,7 +210,7 @@ export default function Home({ packageItems = packages, destinationItems = desti
             text="We believe luxury is found in the details. Discover why travelers choose Shiv Shakti Holidays for their signature journeys."
           />
 
-          <div className="mt-8 sm:mt-12 md:mt-14 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:pb-0 md:mt-14 lg:grid-cols-3">
             {[
               [
                 Sparkles,
@@ -247,21 +247,24 @@ export default function Home({ packageItems = packages, destinationItems = desti
               return (
                 <div
                   key={t as string}
-                  className="group relative rounded-2xl border border-border/70 bg-card p-6 sm:p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/50 hover:shadow-soft"
+                  className="group relative min-h-[168px] shrink-0 basis-[84%] snap-center rounded-2xl border border-border/70 bg-card p-4 transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/50 hover:shadow-soft sm:min-h-0 sm:basis-auto sm:p-8"
                 >
-                  <div className="grid size-12 place-items-center rounded-xl bg-accent/15 text-accent transition-transform duration-300 group-hover:scale-110">
-                    <Icon className="size-6 text-accent" strokeWidth={1.5} />
+                  <div className="grid size-10 place-items-center rounded-xl bg-accent/15 text-accent transition-transform duration-300 group-hover:scale-110 sm:size-12">
+                    <Icon className="size-5 text-accent sm:size-6" strokeWidth={1.5} />
                   </div>
-                  <h3 className="mt-5 text-lg sm:text-xl font-semibold text-primary font-display group-hover:text-secondary transition-colors">
+                  <h3 className="mt-3 text-base font-semibold text-primary font-display group-hover:text-secondary transition-colors sm:mt-5 sm:text-xl">
                     {t as string}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  <p className="mt-1.5 text-[0.72rem] leading-relaxed text-muted-foreground sm:mt-2 sm:text-sm">
                     {d as string}
                   </p>
                 </div>
               );
             })}
           </div>
+          <p className="mt-1 text-center text-[0.68rem] font-medium uppercase tracking-wider text-muted-foreground sm:hidden">
+            Swipe to explore
+          </p>
         </div>
       </section>
 
