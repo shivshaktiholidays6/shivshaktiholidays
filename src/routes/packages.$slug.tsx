@@ -1,4 +1,5 @@
 import { Check, X, Clock, MapPin, Sparkles } from "lucide-react";
+import Link from "next/link";
 import {
   Accordion,
   AccordionContent,
@@ -50,10 +51,37 @@ export default function PackageDetail({ p }: { p: Pkg }) {
         </div>
       </PageHero>
       <section className="py-16 pb-32 lg:pb-16">
+        <div className="container-x">
+          <nav aria-label="Breadcrumb" className="mb-8 text-sm text-muted-foreground">
+            <ol className="flex flex-wrap items-center gap-2">
+              <li>
+                <Link href="/" className="hover:text-primary">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link href="/packages" className="hover:text-primary">
+                  Packages
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li aria-current="page" className="text-primary">
+                {p.name}
+              </li>
+            </ol>
+          </nav>
+        </div>
         <div className="container-x grid gap-12 lg:grid-cols-3">
           <div className="space-y-14 lg:col-span-2">
             <div>
               <p className="text-lg text-muted-foreground">{p.summary}</p>
+              <Link
+                href="/destinations"
+                className="mt-4 inline-flex text-sm font-semibold text-primary underline decoration-accent/60 underline-offset-4 hover:text-accent"
+              >
+                Explore more destination guides
+              </Link>
               <div className="mt-7 overflow-hidden rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/10 via-card to-primary/5 p-5 shadow-sm sm:p-6">
                 <div className="flex items-start gap-4">
                   <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-sm">

@@ -6,6 +6,7 @@ import { isAdminEmail, requireAdminUser } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
+import { site } from "@/config/site";
 import sharp from "sharp";
 
 const enquiryStatuses = new Set(["new", "contacted", "quoted", "confirmed", "lost"]);
@@ -22,7 +23,9 @@ function addResultToUrl(returnTo: string, key: "error" | "updated" | "deleted", 
 }
 
 export async function adminLogin(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
   const password = String(formData.get("password") ?? "");
   const supabase = await getSupabaseServerClient();
 
@@ -92,7 +95,9 @@ export async function deleteEnquiry(formData: FormData) {
 }
 
 function value(formData: FormData, name: string, maximumLength: number) {
-  return String(formData.get(name) ?? "").trim().slice(0, maximumLength);
+  return String(formData.get(name) ?? "")
+    .trim()
+    .slice(0, maximumLength);
 }
 
 function lineList(formData: FormData, name: string, maximumItems = 30) {
@@ -112,21 +117,71 @@ function packageSlug(input: string) {
     .slice(0, 120);
 }
 
+function optionalPublicUrl(raw: string) {
+  if (!raw) return null;
+  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === "https:" ? parsed.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function canonicalUrl(raw: string) {
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw, site.url);
+    if (parsed.origin !== new URL(site.url).origin) return undefined;
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return undefined;
+  }
+}
+
+async function saveSlugRedirect(
+  contentType: "package" | "destination",
+  oldSlug: string,
+  newSlug: string,
+) {
+  if (oldSlug === newSlug) return;
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return;
+
+  await supabase
+    .from("content_redirects")
+    .delete()
+    .eq("content_type", contentType)
+    .eq("old_slug", newSlug);
+  await supabase
+    .from("content_redirects")
+    .update({ new_slug: newSlug })
+    .eq("content_type", contentType)
+    .eq("new_slug", oldSlug);
+  await supabase
+    .from("content_redirects")
+    .upsert(
+      { content_type: contentType, old_slug: oldSlug, new_slug: newSlug },
+      { onConflict: "content_type,old_slug" },
+    );
+}
+
 function itineraryFromForm(formData: FormData): Json {
   return lineList(formData, "itinerary", 60).flatMap((line) => {
     const separator = line.indexOf("|");
     if (separator < 1) return [];
     const title = line.slice(0, separator).trim().slice(0, 160);
-    const text = line.slice(separator + 1).trim().slice(0, 1_000);
+    const text = line
+      .slice(separator + 1)
+      .trim()
+      .slice(0, 1_000);
     return title && text ? [{ title, text }] : [];
   });
 }
 
-async function packageImageUrl(
-  formData: FormData,
-  slug: string,
-  currentImageUrl: string | null,
-) {
+async function packageImageUrl(formData: FormData, slug: string, currentImageUrl: string | null) {
   const image = formData.get("imageFile");
   const manualUrl = value(formData, "imageUrl", 1_000);
   if (!(image instanceof File) || image.size === 0) {
@@ -183,6 +238,8 @@ export async function savePackage(formData: FormData) {
   const place = value(formData, "place", 200);
   const scope = value(formData, "scope", 30);
   const summary = value(formData, "summary", 1_000);
+  const socialImageUrl = optionalPublicUrl(value(formData, "socialImageUrl", 1_000));
+  const customCanonicalUrl = canonicalUrl(value(formData, "canonicalUrl", 1_000));
   const nights = Number(value(formData, "nights", 3));
   const price = Number(value(formData, "price", 10));
   const editPath = id ? `/admin/packages/${id}/edit` : "/admin/packages/new";
@@ -198,21 +255,25 @@ export async function savePackage(formData: FormData) {
     nights < 1 ||
     nights > 60 ||
     !Number.isInteger(price) ||
-    price < 0
+    price < 0 ||
+    socialImageUrl === undefined ||
+    customCanonicalUrl === undefined
   ) {
     redirect(`${editPath}?error=validation`);
   }
 
   let currentImageUrl: string | null = null;
   let currentDestinationSlug: string | null = null;
+  let currentSlug: string | null = null;
   if (id) {
     const { data } = await supabase
       .from("packages")
-      .select("image_url, destination_slug")
+      .select("image_url, destination_slug, slug")
       .eq("id", id)
       .maybeSingle();
     currentImageUrl = data?.image_url ?? null;
     currentDestinationSlug = data?.destination_slug ?? null;
+    currentSlug = data?.slug ?? null;
   }
   const imageUrl = await packageImageUrl(formData, slug, currentImageUrl);
   if (!imageUrl) redirect(`${editPath}?error=image`);
@@ -246,12 +307,20 @@ export async function savePackage(formData: FormData) {
     sort_order: Number(value(formData, "sortOrder", 8)) || 0,
     seo_title: value(formData, "seoTitle", 160) || null,
     seo_description: value(formData, "seoDescription", 320) || null,
+    social_image_url: socialImageUrl,
+    noindex: formData.get("noindex") === "on",
+    canonical_url: customCanonicalUrl,
   };
 
   const result = id
     ? await supabase.from("packages").update(payload).eq("id", id).select("id").single()
     : await supabase.from("packages").insert(payload).select("id").single();
   if (result.error || !result.data) redirect(`${editPath}?error=save`);
+
+  if (currentSlug && currentSlug !== slug) {
+    await saveSlugRedirect("package", currentSlug, slug);
+    revalidatePath(`/packages/${currentSlug}`);
+  }
 
   revalidatePath("/packages");
   revalidatePath(`/packages/${slug}`);
@@ -294,6 +363,36 @@ export async function setPackagePublished(formData: FormData) {
   revalidatePath("/sitemap.xml");
   revalidatePath("/admin/packages");
   redirect("/admin/packages?updated=1");
+}
+
+export async function deletePackage(formData: FormData) {
+  await requireAdminUser();
+  const id = value(formData, "id", 36);
+  if (!/^[0-9a-f-]{36}$/i.test(id)) redirect("/admin/packages?error=validation");
+
+  const supabase = getSupabaseAdmin();
+  if (!supabase) redirect("/admin/packages?error=configuration");
+  const { data, error } = await supabase
+    .from("packages")
+    .delete()
+    .eq("id", id)
+    .select("slug, destination_slug")
+    .single();
+  if (error || !data) redirect("/admin/packages?error=delete");
+
+  await supabase
+    .from("content_redirects")
+    .delete()
+    .eq("content_type", "package")
+    .or(`old_slug.eq.${data.slug},new_slug.eq.${data.slug}`);
+
+  revalidatePath("/packages");
+  revalidatePath(`/packages/${data.slug}`);
+  revalidatePath(`/destinations/${data.destination_slug}`);
+  revalidatePath("/");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/admin/packages");
+  redirect("/admin/packages?deleted=1");
 }
 
 async function destinationImageUrl(
@@ -368,20 +467,32 @@ export async function saveDestination(formData: FormData) {
   const region = value(formData, "region", 120);
   const scope = value(formData, "scope", 30);
   const blurb = value(formData, "blurb", 600);
+  const socialImageUrl = optionalPublicUrl(value(formData, "socialImageUrl", 1_000));
+  const customCanonicalUrl = canonicalUrl(value(formData, "canonicalUrl", 1_000));
   const editPath = id ? `/admin/destinations/${id}/edit` : "/admin/destinations/new";
 
-  if (!name || !slug || !region || !packageScopes.has(scope) || !blurb) {
+  if (
+    !name ||
+    !slug ||
+    !region ||
+    !packageScopes.has(scope) ||
+    !blurb ||
+    socialImageUrl === undefined ||
+    customCanonicalUrl === undefined
+  ) {
     redirect(`${editPath}?error=validation`);
   }
 
   let currentImageUrl: string | null = null;
+  let currentSlug: string | null = null;
   if (id) {
     const { data } = await supabase
       .from("destinations")
-      .select("image_url")
+      .select("image_url, slug")
       .eq("id", id)
       .maybeSingle();
     currentImageUrl = data?.image_url ?? null;
+    currentSlug = data?.slug ?? null;
   }
   const imageUrl = await destinationImageUrl(formData, slug, currentImageUrl);
   if (!imageUrl) redirect(`${editPath}?error=image`);
@@ -404,12 +515,20 @@ export async function saveDestination(formData: FormData) {
     sort_order: Number(value(formData, "sortOrder", 8)) || 0,
     seo_title: value(formData, "seoTitle", 160) || null,
     seo_description: value(formData, "seoDescription", 320) || null,
+    social_image_url: socialImageUrl,
+    noindex: formData.get("noindex") === "on",
+    canonical_url: customCanonicalUrl,
   };
 
   const result = id
     ? await supabase.from("destinations").update(payload).eq("id", id).select("id").single()
     : await supabase.from("destinations").insert(payload).select("id").single();
   if (result.error || !result.data) redirect(`${editPath}?error=save`);
+
+  if (currentSlug && currentSlug !== slug) {
+    await saveSlugRedirect("destination", currentSlug, slug);
+    revalidatePath(`/destinations/${currentSlug}`);
+  }
 
   revalidateDestinationPages(slug);
   redirect(`/admin/destinations/${result.data.id}/edit?saved=1`);
@@ -450,6 +569,12 @@ export async function deleteDestination(formData: FormData) {
     .single();
   if (error || !data) redirect("/admin/destinations?error=delete");
 
+  await supabase
+    .from("content_redirects")
+    .delete()
+    .eq("content_type", "destination")
+    .or(`old_slug.eq.${data.slug},new_slug.eq.${data.slug}`);
+
   revalidateDestinationPages(data.slug);
   redirect("/admin/destinations?deleted=1");
 }
@@ -489,16 +614,26 @@ async function promotionImageUrl(formData: FormData, currentImageUrl: string | n
 
   const imageBuffer = Buffer.from(await image.arrayBuffer());
   const metadata = await sharp(imageBuffer).metadata();
-  if (!metadata.width || !metadata.height || metadata.width < 900 || metadata.height < 550) return null;
+  if (!metadata.width || !metadata.height || metadata.width < 900 || metadata.height < 550)
+    return null;
   const supabase = getSupabaseAdmin();
   if (!supabase) return null;
-  const extension = image.type === "image/png" ? "png" : image.type === "image/avif" ? "avif" : image.type === "image/webp" ? "webp" : "jpg";
+  const extension =
+    image.type === "image/png"
+      ? "png"
+      : image.type === "image/avif"
+        ? "avif"
+        : image.type === "image/webp"
+          ? "webp"
+          : "jpg";
   const objectPath = `${crypto.randomUUID()}.${extension}`;
-  const { error } = await supabase.storage.from("promotion-images").upload(objectPath, imageBuffer, {
-    contentType: image.type,
-    cacheControl: "31536000",
-    upsert: false,
-  });
+  const { error } = await supabase.storage
+    .from("promotion-images")
+    .upload(objectPath, imageBuffer, {
+      contentType: image.type,
+      cacheControl: "31536000",
+      upsert: false,
+    });
   if (error) return null;
   return supabase.storage.from("promotion-images").getPublicUrl(objectPath).data.publicUrl;
 }
@@ -517,9 +652,12 @@ export async function savePromotion(formData: FormData) {
   const endsAt = promotionDate(formData, "endsAt");
   const editPath = id ? `/admin/promotions/${id}/edit` : "/admin/promotions/new";
   const rawCtaHref = value(formData, "ctaHref", 500);
-  const ctaHref = rawCtaHref && ((rawCtaHref.startsWith("/") && !rawCtaHref.startsWith("//")) || rawCtaHref.startsWith("https://"))
-    ? rawCtaHref
-    : null;
+  const ctaHref =
+    rawCtaHref &&
+    ((rawCtaHref.startsWith("/") && !rawCtaHref.startsWith("//")) ||
+      rawCtaHref.startsWith("https://"))
+      ? rawCtaHref
+      : null;
 
   if (
     !title ||
@@ -536,14 +674,22 @@ export async function savePromotion(formData: FormData) {
 
   let currentImageUrl: string | null = null;
   if (id) {
-    const { data } = await supabase.from("promotions").select("image_url").eq("id", id).maybeSingle();
+    const { data } = await supabase
+      .from("promotions")
+      .select("image_url")
+      .eq("id", id)
+      .maybeSingle();
     currentImageUrl = data?.image_url ?? null;
   }
   const imageFile = formData.get("promotionImageFile");
   const manualImageUrl = value(formData, "imageUrl", 1_000);
   const removingImage = formData.get("removeImage") === "on";
   const imageUrl = await promotionImageUrl(formData, currentImageUrl);
-  if (!removingImage && ((imageFile instanceof File && imageFile.size > 0) || manualImageUrl) && !imageUrl) {
+  if (
+    !removingImage &&
+    ((imageFile instanceof File && imageFile.size > 0) || manualImageUrl) &&
+    !imageUrl
+  ) {
     redirect(`${editPath}?error=image`);
   }
 

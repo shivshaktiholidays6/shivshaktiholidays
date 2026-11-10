@@ -92,6 +92,10 @@ export interface Destination {
   featured?: boolean | undefined;
   seoTitle?: string | undefined;
   seoDescription?: string | undefined;
+  socialImage?: string | undefined;
+  noIndex?: boolean | undefined;
+  canonicalUrl?: string | undefined;
+  updatedAt?: string | undefined;
 }
 
 const regionImage: Record<string, string> = {
@@ -282,6 +286,10 @@ export interface Pkg {
   featured?: boolean;
   seoTitle?: string | undefined;
   seoDescription?: string | undefined;
+  socialImage?: string | undefined;
+  noIndex?: boolean | undefined;
+  canonicalUrl?: string | undefined;
+  updatedAt?: string | undefined;
 }
 
 const P = (

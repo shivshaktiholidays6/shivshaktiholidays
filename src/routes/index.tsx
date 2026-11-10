@@ -23,7 +23,15 @@ import { CuratedDestinations } from "@/components/site/home/CuratedDestinations"
 import { HolidayFinder } from "@/components/site/home/HolidayFinder";
 import { HomeHero } from "@/components/site/home/HomeHero";
 import { TestimonialsCarousel } from "@/components/site/home/TestimonialsCarousel";
-import { categories, destinations, images, mostBookedPackageSlugs, packages, type Destination, type Pkg } from "@/data/catalog";
+import {
+  categories,
+  destinations,
+  images,
+  mostBookedPackageSlugs,
+  packages,
+  type Destination,
+  type Pkg,
+} from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
 import worldEscapesHero from "@/assets/world-escapes-hero-hd.webp";
 
@@ -86,11 +94,35 @@ const domesticCuratedSlugs = [
   "andaman-and-nicobar-islands",
 ];
 
-export default function Home({ packageItems = packages, destinationItems = destinations }: { packageItems?: Pkg[]; destinationItems?: Destination[] }) {
-  const featuredInternational = destinationItems.filter((item) => item.scope === "international" && item.featured);
-  const featuredDomestic = destinationItems.filter((item) => item.scope === "domestic" && item.featured);
-  const internationalDestinations = [...featuredInternational, ...destinationItems.filter((item) => internationalCuratedSlugs.includes(item.slug) && !featuredInternational.some((featured) => featured.slug === item.slug))].slice(0, 6);
-  const domesticDestinations = [...featuredDomestic, ...destinationItems.filter((item) => domesticCuratedSlugs.includes(item.slug) && !featuredDomestic.some((featured) => featured.slug === item.slug))].slice(0, 6);
+export default function Home({
+  packageItems = packages,
+  destinationItems = destinations,
+}: {
+  packageItems?: Pkg[];
+  destinationItems?: Destination[];
+}) {
+  const featuredInternational = destinationItems.filter(
+    (item) => item.scope === "international" && item.featured,
+  );
+  const featuredDomestic = destinationItems.filter(
+    (item) => item.scope === "domestic" && item.featured,
+  );
+  const internationalDestinations = [
+    ...featuredInternational,
+    ...destinationItems.filter(
+      (item) =>
+        internationalCuratedSlugs.includes(item.slug) &&
+        !featuredInternational.some((featured) => featured.slug === item.slug),
+    ),
+  ].slice(0, 6);
+  const domesticDestinations = [
+    ...featuredDomestic,
+    ...destinationItems.filter(
+      (item) =>
+        domesticCuratedSlugs.includes(item.slug) &&
+        !featuredDomestic.some((featured) => featured.slug === item.slug),
+    ),
+  ].slice(0, 6);
   return (
     <>
       <HomeHero slides={homeHeroSlides} />
@@ -166,8 +198,8 @@ export default function Home({ packageItems = packages, destinationItems = desti
               Make Your Beginning Unforgettable.
             </h2>
             <p className="mt-4 text-sm sm:text-base text-primary-foreground/80 leading-relaxed font-sans font-light">
-              Private pool villas, scenic sunsets, and personalized romantic touches — from the Maldives
-              and Santorini to Kashmir, Udaipur, and Switzerland.
+              Private pool villas, scenic sunsets, and personalized romantic touches — from the
+              Maldives and Santorini to Kashmir, Udaipur, and Switzerland.
             </p>
 
             {/* Romance Highlights List */}
@@ -207,7 +239,7 @@ export default function Home({ packageItems = packages, destinationItems = desti
           <SectionHead
             eyebrow="The Fine Art of Travel"
             title="Your Dreams. Our Travel Planning."
-            text="We believe luxury is found in the details. Discover why travelers choose Shiv Shakti Holidays for their signature journeys."
+            text="Based in Roorkee, Uttarakhand, Shiv Shakti Holidays plans thoughtful domestic and international journeys around your interests, pace and budget."
           />
 
           <div className="mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:pb-0 md:mt-14 lg:grid-cols-3">
@@ -269,7 +301,6 @@ export default function Home({ packageItems = packages, destinationItems = desti
       </section>
 
       {/* ================= GUEST STORIES / TESTIMONIALS ================= */}
-      <TestimonialsCarousel />
 
       {/* ================= FOUR STEPS TO YOUR JOURNEY ================= */}
       <section className="bg-primary py-14 sm:py-20 md:py-24 text-primary-foreground relative overflow-hidden">
@@ -330,6 +361,8 @@ export default function Home({ packageItems = packages, destinationItems = desti
         </div>
       </section>
 
+      <TestimonialsCarousel />
+
       {/* ================= PERSONALIZED TRAVEL DESIGNER / VIP CONCIERGE BANNER ================= */}
       <section className="py-14 sm:py-20 md:py-24">
         <div className="container-x">
@@ -381,10 +414,14 @@ export default function Home({ packageItems = packages, destinationItems = desti
 function PopularPackagesSection({ packageItems }: { packageItems: Pkg[] }) {
   const slugs = mostBookedPackageSlugs.slice(0, 6);
   const preferred = packageItems.filter((item) => item.featured || item.mostBooked);
-  const popularPackages = (preferred.length ? preferred : slugs.flatMap((slug) => {
-    const packageItem = packageItems.find((item) => item.slug === slug);
-    return packageItem ? [packageItem] : [];
-  })).slice(0, 6);
+  const popularPackages = (
+    preferred.length
+      ? preferred
+      : slugs.flatMap((slug) => {
+          const packageItem = packageItems.find((item) => item.slug === slug);
+          return packageItem ? [packageItem] : [];
+        })
+  ).slice(0, 6);
 
   return (
     <section className="bg-muted/70 py-14 sm:py-20 md:py-24 border-y border-border/50">

@@ -7,6 +7,8 @@ import { LeadEnquiryPopup } from "@/components/site/LeadEnquiryPopup";
 import { AnalyticsManager } from "@/components/site/Analytics";
 import { JsonLd } from "@/components/site/JsonLd";
 import { getActivePromotion } from "@/lib/promotions";
+import { site } from "@/config/site";
+import { searchIndexingAllowed } from "@/lib/seo";
 import "@/styles.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -17,14 +19,14 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shivshaktiholidays.com"),
-  applicationName: "Shiv Shakti Holidays",
+  metadataBase: new URL(site.url),
+  applicationName: site.name,
   title: {
-    default: "Shiv Shakti Holidays — Personalized Holidays & Custom Trips",
+    default: "Shiv Shakti Holidays | Tour & Travel Agency in Roorkee",
     template: "%s — Shiv Shakti Holidays",
   },
   description:
-    "Domestic and international holiday packages, spiritual journeys, honeymoons and custom trips planned around you.",
+    "Plan domestic and international tours, Char Dham journeys, honeymoons and customized holidays with a trusted travel agency in Roorkee.",
   keywords: [
     "holiday packages",
     "custom tours India",
@@ -34,36 +36,56 @@ export const metadata: Metadata = {
     "spiritual journeys",
     "travel agency Roorkee",
   ],
-  authors: [{ name: "Shiv Shakti Holidays", url: "https://shivshaktiholidays.com" }],
-  creator: "Shiv Shakti Holidays",
-  publisher: "Shiv Shakti Holidays",
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  publisher: site.name,
   category: "travel",
+  manifest: "/site.webmanifest",
   robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    index: searchIndexingAllowed,
+    follow: searchIndexingAllowed,
+    googleBot: {
+      index: searchIndexingAllowed,
+      follow: searchIndexingAllowed,
+      "max-image-preview": "large",
+    },
   },
   icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://shivshaktiholidays.com",
-    siteName: "Shiv Shakti Holidays",
-    title: "Shiv Shakti Holidays — Personalized Holidays & Custom Trips",
+    url: site.url,
+    siteName: site.name,
+    title: "Shiv Shakti Holidays | Tour & Travel Agency in Roorkee",
     description:
-      "Domestic and international holidays, pilgrimages and custom journeys planned around you.",
-    images: [{ url: "/logoimg.jpeg", alt: "Shiv Shakti Holidays" }],
+      "Plan domestic and international tours, spiritual journeys, honeymoons and customized holidays from Roorkee.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Shiv Shakti Holidays — personalized tours and holiday packages",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shiv Shakti Holidays",
-    description: "Personalized domestic and international holidays planned around you.",
-    images: ["/logoimg.jpeg"],
+    title: "Shiv Shakti Holidays | Tour & Travel Agency in Roorkee",
+    description: "Personalized domestic and international holidays planned from Roorkee.",
+    images: ["/opengraph-image"],
   },
   formatDetection: { email: false, address: false, telephone: false },
-  verification: process.env["GOOGLE_SITE_VERIFICATION"]
-    ? { google: process.env["GOOGLE_SITE_VERIFICATION"] }
-    : undefined,
+  verification:
+    process.env["GOOGLE_SITE_VERIFICATION"] || process.env["BING_SITE_VERIFICATION"]
+      ? {
+          ...(process.env["GOOGLE_SITE_VERIFICATION"]
+            ? { google: process.env["GOOGLE_SITE_VERIFICATION"] }
+            : {}),
+          ...(process.env["BING_SITE_VERIFICATION"]
+            ? { other: { "msvalidate.01": process.env["BING_SITE_VERIFICATION"] } }
+            : {}),
+        }
+      : undefined,
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -77,32 +99,53 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             {
               "@context": "https://schema.org",
               "@type": ["TravelAgency", "LocalBusiness"],
-              "@id": "https://shivshaktiholidays.com/#business",
-              name: "Shiv Shakti Holidays",
-              url: "https://shivshaktiholidays.com",
-              logo: "https://shivshaktiholidays.com/logoimg.jpeg",
-              image: "https://shivshaktiholidays.com/logoimg.jpeg",
-              email: "shivshaktiholidays.rke@gmail.com",
-              telephone: ["+91 95680 00777", "+91 98975 99995"],
+              "@id": `${site.url}/#business`,
+              name: site.name,
+              url: site.url,
+              logo: `${site.url}/logoimg.jpeg`,
+              image: `${site.url}/logoimg.jpeg`,
+              email: site.email,
+              telephone: [site.phone, site.phoneSecondary],
               address: {
                 "@type": "PostalAddress",
-                streetAddress: "Opp. Old Kachari Gate, Bus Stand",
-                addressLocality: "Roorkee",
-                addressRegion: "Uttarakhand",
-                postalCode: "247667",
-                addressCountry: "IN",
+                streetAddress: site.location.streetAddress,
+                addressLocality: site.location.locality,
+                addressRegion: site.location.region,
+                postalCode: site.location.postalCode,
+                addressCountry: site.location.country,
               },
-              sameAs: ["https://www.instagram.com/shiv.shaktiholidays/"],
+              sameAs: [site.social.instagram],
               priceRange: "₹₹",
+              areaServed: [
+                { "@type": "City", name: "Roorkee" },
+                { "@type": "State", name: "Uttarakhand" },
+                { "@type": "Country", name: "India" },
+              ],
+              contactPoint: [
+                {
+                  "@type": "ContactPoint",
+                  telephone: "+91-95680-00777",
+                  contactType: "customer service",
+                  areaServed: "IN",
+                  availableLanguage: ["English", "Hindi"],
+                },
+                {
+                  "@type": "ContactPoint",
+                  telephone: "+91-98975-99995",
+                  contactType: "sales",
+                  areaServed: "IN",
+                  availableLanguage: ["English", "Hindi"],
+                },
+              ],
             },
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "@id": "https://shivshaktiholidays.com/#website",
-              url: "https://shivshaktiholidays.com",
-              name: "Shiv Shakti Holidays",
-              publisher: { "@id": "https://shivshaktiholidays.com/#business" },
-              inLanguage: "en-IN",
+              "@id": `${site.url}/#website`,
+              url: site.url,
+              name: site.name,
+              publisher: { "@id": `${site.url}/#business` },
+              inLanguage: site.language,
             },
           ]}
         />

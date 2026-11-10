@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const indexingAllowed =
+  process.env["SITE_ENVIRONMENT"] === "production" &&
+  process.env["ALLOW_SEARCH_INDEXING"] === "true";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -34,7 +38,20 @@ const nextConfig: NextConfig = {
             value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
           },
           { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+          ...(!indexingAllowed
+            ? [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }]
+            : []),
         ],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.shivshaktiholidays.com" }],
+        destination: "https://shivshaktiholidays.com/:path*",
+        permanent: true,
       },
     ];
   },

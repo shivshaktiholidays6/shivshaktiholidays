@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Domestic from "@/routes/domestic";
 import { getPublishedPackages } from "@/lib/packages";
 import { getPublishedDestinations } from "@/lib/destinations";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "India Holiday Packages",
+export const metadata: Metadata = createPageMetadata({
+  title: "India Tour Packages from Roorkee",
   description:
-    "Discover India with customizable family, honeymoon, adventure and pilgrimage packages.",
-  alternates: { canonical: "/domestic" },
-};
+    "Discover customizable India tour packages from Roorkee for families, couples, groups, pilgrimages, beaches, mountains and weekend holidays.",
+  path: "/domestic",
+});
 export const revalidate = 300;
 
 export default async function DomesticPage() {

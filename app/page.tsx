@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Home from "@/routes/index";
 import { getPublishedPackages } from "@/lib/packages";
 import { getPublishedDestinations } from "@/lib/destinations";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Personalized Luxury Holidays & Custom Trips",
+export const metadata: Metadata = createPageMetadata({
+  title: "Tour & Travel Agency in Roorkee",
   description:
-    "Explore domestic, international and spiritual holiday packages planned around your travel style.",
-  alternates: { canonical: "/" },
-  openGraph: { url: "/" },
-};
+    "Plan domestic and international tours, Char Dham journeys, honeymoons and customized holidays with Shiv Shakti Holidays in Roorkee.",
+  path: "/",
+});
 
 export const revalidate = 300;
 

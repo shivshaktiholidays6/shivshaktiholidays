@@ -1,8 +1,13 @@
 import "server-only";
 
-import { destinations as catalogueDestinations, type Destination, type Scope } from "@/data/catalog";
+import {
+  destinations as catalogueDestinations,
+  type Destination,
+  type Scope,
+} from "@/data/catalog";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import type { Database } from "@/lib/supabase/database.types";
+import { getRedirectedContentSlugs } from "@/lib/content-redirects";
 
 export type DestinationRow = Database["public"]["Tables"]["destinations"]["Row"];
 
@@ -23,6 +28,10 @@ export function destinationRowToDestination(row: DestinationRow): Destination {
     featured: row.featured,
     seoTitle: row.seo_title ?? undefined,
     seoDescription: row.seo_description ?? undefined,
+    socialImage: row.social_image_url ?? undefined,
+    noIndex: row.noindex,
+    canonicalUrl: row.canonical_url ?? undefined,
+    updatedAt: row.updated_at,
   };
 }
 
@@ -30,18 +39,21 @@ export async function getPublishedDestinations(): Promise<Destination[]> {
   const supabase = getSupabaseAdmin();
   if (!supabase) return catalogueDestinations;
 
-  const { data, error } = await supabase
-    .from("destinations")
-    .select("*")
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: false });
+  const [{ data, error }, redirectedSlugs] = await Promise.all([
+    supabase
+      .from("destinations")
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false }),
+    getRedirectedContentSlugs("destination"),
+  ]);
 
   if (error || !data?.length) return catalogueDestinations;
   const managedSlugs = new Set(data.map((row) => row.slug));
-  const managedDestinations = data
-    .filter((row) => row.published)
-    .map(destinationRowToDestination);
-  const remainingCatalogue = catalogueDestinations.filter((item) => !managedSlugs.has(item.slug));
+  const managedDestinations = data.filter((row) => row.published).map(destinationRowToDestination);
+  const remainingCatalogue = catalogueDestinations.filter(
+    (item) => !managedSlugs.has(item.slug) && !redirectedSlugs.has(item.slug),
+  );
   return [...managedDestinations, ...remainingCatalogue];
 }
 

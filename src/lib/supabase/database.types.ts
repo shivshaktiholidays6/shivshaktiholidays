@@ -98,6 +98,9 @@ export interface Database {
           sort_order: number;
           seo_title: string | null;
           seo_description: string | null;
+          social_image_url: string | null;
+          noindex: boolean;
+          canonical_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -125,6 +128,9 @@ export interface Database {
           sort_order?: number;
           seo_title?: string | null;
           seo_description?: string | null;
+          social_image_url?: string | null;
+          noindex?: boolean;
+          canonical_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -151,6 +157,9 @@ export interface Database {
           sort_order: number;
           seo_title: string | null;
           seo_description: string | null;
+          social_image_url: string | null;
+          noindex: boolean;
+          canonical_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -173,10 +182,33 @@ export interface Database {
           sort_order?: number;
           seo_title?: string | null;
           seo_description?: string | null;
+          social_image_url?: string | null;
+          noindex?: boolean;
+          canonical_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["destinations"]["Insert"]>;
+        Relationships: [];
+      };
+      content_redirects: {
+        Row: {
+          id: string;
+          content_type: "package" | "destination";
+          old_slug: string;
+          new_slug: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          content_type: "package" | "destination";
+          old_slug: string;
+          new_slug: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["content_redirects"]["Insert"]>;
         Relationships: [];
       };
       promotions: {

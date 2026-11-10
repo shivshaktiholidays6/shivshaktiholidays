@@ -23,17 +23,40 @@ export default function DestinationDetail({
         text={d.blurb}
       />
       <section className="py-20">
+        <nav aria-label="Breadcrumb" className="container-x mb-8 text-sm text-muted-foreground">
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link href="/" className="hover:text-primary">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link href="/destinations" className="hover:text-primary">
+                Destinations
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" className="text-primary">
+              {d.name}
+            </li>
+          </ol>
+        </nav>
         <div className="container-x grid gap-12 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-10">
             <div>
               <h2 className="text-3xl text-primary">Overview</h2>
               <p className="mt-4 text-muted-foreground">
-                {d.overview || `${d.name} offers a wonderful mix of experiences. Our team will help you choose the right season, stays and experiences for your style of travel — whether you are planning a honeymoon, a family break or an adventure.`}
+                {d.overview ||
+                  `${d.name} offers a wonderful mix of experiences. Our team will help you choose the right season, stays and experiences for your style of travel — whether you are planning a honeymoon, a family break or an adventure.`}
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-3">
               {[
-                ["Ideal duration", d.idealDuration || (d.scope === "international" ? "5–8 days" : "4–7 days")],
+                [
+                  "Ideal duration",
+                  d.idealDuration || (d.scope === "international" ? "5–8 days" : "4–7 days"),
+                ],
                 ["Best for", d.bestFor || "Couples, families, friends"],
                 ["Planning", d.planningLabel || "Fully customizable"],
               ].map(([k, v]) => (

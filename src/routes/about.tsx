@@ -13,9 +13,9 @@ export default function Page() {
           <div>
             <h2 className="text-4xl text-primary">Who We Are</h2>
             <p className="mt-5 text-muted-foreground">
-              Shiv Shakti Holidays is an independent travel and holiday company offering domestic
-              and international tour packages, customized holidays, honeymoons, family vacations,
-              group tours, adventure experiences and luxury travel.
+              Shiv Shakti Holidays is an independent travel and holiday company based in Roorkee,
+              Uttarakhand, offering domestic and international tour packages, customized holidays,
+              honeymoons, family vacations, group tours, adventure experiences and luxury travel.
             </p>
             <p className="mt-4 text-muted-foreground">
               Our approach is simple: listen carefully, plan honestly and stay with you throughout

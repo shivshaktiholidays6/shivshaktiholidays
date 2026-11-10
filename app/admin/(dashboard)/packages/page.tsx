@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Edit3, Eye, EyeOff, Plus, Search } from "lucide-react";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
+import { DeletePackageButton } from "@/components/admin/DeletePackageButton";
 import { setPackagePublished } from "@/lib/admin-actions";
 import { requireAdminUser } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 function first(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
 export default async function AdminPackagesPage({
@@ -25,6 +26,7 @@ export default async function AdminPackagesPage({
   const query = first(params["q"]).trim().toLowerCase();
   const publishedFilter = first(params["published"]) || "all";
   const updated = first(params["updated"]) === "1";
+  const deleted = first(params["deleted"]) === "1";
   const actionError = first(params["error"]);
   const supabase = getSupabaseAdmin();
 
@@ -41,7 +43,8 @@ export default async function AdminPackagesPage({
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-900">
           <h1 className="text-xl font-bold">Package database setup required</h1>
           <p className="mt-2 text-sm">
-            Run <code>202611090002_create_packages.sql</code> in the Supabase SQL Editor, then refresh this page.
+            Run <code>202611090002_create_packages.sql</code> in the Supabase SQL Editor, then
+            refresh this page.
           </p>
         </div>
       </div>
@@ -60,9 +63,13 @@ export default async function AdminPackagesPage({
       <div className="mx-auto max-w-[1400px]">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-600">Content management</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-600">
+              Content management
+            </p>
             <h1 className="mt-1 text-3xl font-bold text-slate-950 sm:text-4xl">Holiday Packages</h1>
-            <p className="mt-2 text-sm text-slate-500">Create, update, publish and organise website packages.</p>
+            <p className="mt-2 text-sm text-slate-500">
+              Create, update, publish and organise website packages.
+            </p>
           </div>
           <Link
             href="/admin/packages/new"
@@ -75,6 +82,11 @@ export default async function AdminPackagesPage({
         {updated && (
           <p className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
             Package publishing status updated.
+          </p>
+        )}
+        {deleted && (
+          <p className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            Package deleted successfully. Its public URL and related redirect history were removed.
           </p>
         )}
         {actionError && (
@@ -114,8 +126,13 @@ export default async function AdminPackagesPage({
             <div className="grid min-h-64 place-items-center p-8 text-center">
               <div>
                 <p className="font-semibold text-slate-700">No database packages yet</p>
-                <p className="mt-1 text-sm text-slate-500">The existing website catalogue remains active until you add and publish packages.</p>
-                <Link href="/admin/packages/new" className="mt-4 inline-flex text-sm font-bold text-amber-700">
+                <p className="mt-1 text-sm text-slate-500">
+                  The existing website catalogue remains active until you add and publish packages.
+                </p>
+                <Link
+                  href="/admin/packages/new"
+                  className="mt-4 inline-flex text-sm font-bold text-amber-700"
+                >
                   Create your first package →
                 </Link>
               </div>
@@ -139,7 +156,13 @@ export default async function AdminPackagesPage({
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className="relative size-14 overflow-hidden rounded-xl bg-slate-100">
-                            <ResponsiveImage src={item.image_url} alt="" fill sizes="56px" className="object-cover" />
+                            <ResponsiveImage
+                              src={item.image_url}
+                              alt=""
+                              fill
+                              sizes="56px"
+                              className="object-cover"
+                            />
                           </div>
                           <div>
                             <p className="font-bold text-slate-900">{item.name}</p>
@@ -148,10 +171,16 @@ export default async function AdminPackagesPage({
                         </div>
                       </td>
                       <td className="px-5 py-4 capitalize text-slate-600">{item.scope}</td>
-                      <td className="px-5 py-4 text-slate-600">{item.nights}N / {item.nights + 1}D</td>
-                      <td className="px-5 py-4 font-bold text-slate-900">₹{item.price.toLocaleString("en-IN")}</td>
+                      <td className="px-5 py-4 text-slate-600">
+                        {item.nights}N / {item.nights + 1}D
+                      </td>
+                      <td className="px-5 py-4 font-bold text-slate-900">
+                        ₹{item.price.toLocaleString("en-IN")}
+                      </td>
                       <td className="px-5 py-4">
-                        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${item.published ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-xs font-bold ${item.published ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}
+                        >
                           {item.published ? "Published" : "Draft"}
                         </span>
                       </td>
@@ -176,14 +205,25 @@ export default async function AdminPackagesPage({
                           </Link>
                           <form action={setPackagePublished}>
                             <input type="hidden" name="id" value={item.id} />
-                            <input type="hidden" name="published" value={item.published ? "false" : "true"} />
+                            <input
+                              type="hidden"
+                              name="published"
+                              value={item.published ? "false" : "true"}
+                            />
                             <button
                               className="grid size-9 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:border-amber-500 hover:text-amber-700"
-                              aria-label={item.published ? `Unpublish ${item.name}` : `Publish ${item.name}`}
+                              aria-label={
+                                item.published ? `Unpublish ${item.name}` : `Publish ${item.name}`
+                              }
                             >
-                              {item.published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                              {item.published ? (
+                                <EyeOff className="size-4" />
+                              ) : (
+                                <Eye className="size-4" />
+                              )}
                             </button>
                           </form>
+                          <DeletePackageButton id={item.id} name={item.name} />
                         </div>
                       </td>
                     </tr>

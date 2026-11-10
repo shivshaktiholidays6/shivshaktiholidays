@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Privacy & Analytics",
   description: "How Shiv Shakti Holidays handles enquiries and optional website analytics.",
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
@@ -28,8 +29,8 @@ export default function PrivacyPage() {
               Information you enter into an enquiry is used to prepare and respond to your travel
               request. Enquiries are stored securely so our team can follow up, manage their status,
               and avoid losing your request. We do not send form details to analytics. When you
-              continue to WhatsApp, your message is also handled according to WhatsApp&apos;s own terms
-              and privacy practices.
+              continue to WhatsApp, your message is also handled according to WhatsApp&apos;s own
+              terms and privacy practices.
             </p>
           </div>
           <div>
@@ -43,7 +44,10 @@ export default function PrivacyPage() {
             <h2 className="text-2xl text-primary">Contact</h2>
             <p className="mt-3">
               For privacy questions, contact {site.name} at{" "}
-              <a className="text-primary underline underline-offset-4" href={`mailto:${site.email}`}>
+              <a
+                className="text-primary underline underline-offset-4"
+                href={`mailto:${site.email}`}
+              >
                 {site.email}
               </a>
               .

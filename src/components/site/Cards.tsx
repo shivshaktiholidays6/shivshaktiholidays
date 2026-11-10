@@ -36,23 +36,35 @@ export function DestinationCard({
         className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/35 to-transparent" />
-      <div className={`${compactMobile ? "left-2 top-2" : "left-3.5 top-3.5"} absolute z-10 sm:left-4 sm:top-4`}>
+      <div
+        className={`${compactMobile ? "left-2 top-2" : "left-3.5 top-3.5"} absolute z-10 sm:left-4 sm:top-4`}
+      >
         <span className="inline-flex items-center gap-1 rounded-full border border-card/40 bg-card/85 px-2 py-0.5 text-[0.55rem] font-semibold uppercase tracking-wider text-primary shadow-xs backdrop-blur-md sm:px-2.5 sm:text-[0.62rem]">
           <Sparkles className="size-2.5 text-accent" aria-hidden="true" />
           <span>Curated</span>
         </span>
       </div>
-      <div className={`absolute inset-x-0 bottom-0 z-10 text-primary-foreground ${compactMobile ? "p-3" : "p-4"} sm:p-5`}>
-        <p className={`${compactMobile ? "text-[0.56rem] tracking-[0.18em]" : "eyebrow"} font-semibold uppercase text-accent/90 sm:text-[0.72rem] sm:tracking-[0.28em]`}>
+      <div
+        className={`absolute inset-x-0 bottom-0 z-10 text-primary-foreground ${compactMobile ? "p-3" : "p-4"} sm:p-5`}
+      >
+        <p
+          className={`${compactMobile ? "text-[0.56rem] tracking-[0.18em]" : "eyebrow"} font-semibold uppercase text-accent/90 sm:text-[0.72rem] sm:tracking-[0.28em]`}
+        >
           {d.region}
         </p>
-        <h3 className={`${compactMobile ? "mt-0.5 text-base leading-tight" : "mt-1 text-xl"} font-display font-semibold text-white transition-colors group-hover:text-accent sm:mt-1 sm:text-2xl`}>
+        <h3
+          className={`${compactMobile ? "mt-0.5 text-base leading-tight" : "mt-1 text-xl"} font-display font-semibold text-white transition-colors group-hover:text-accent sm:mt-1 sm:text-2xl`}
+        >
           {d.name}
         </h3>
-        <p className={`${compactMobile ? "hidden sm:line-clamp-2" : "line-clamp-2"} mt-1.5 text-xs font-sans leading-relaxed text-primary-foreground/80 sm:text-sm`}>
+        <p
+          className={`${compactMobile ? "hidden sm:line-clamp-2" : "line-clamp-2"} mt-1.5 text-xs font-sans leading-relaxed text-primary-foreground/80 sm:text-sm`}
+        >
           {d.blurb}
         </p>
-        <div className={`${compactMobile ? "hidden sm:flex" : "flex"} mt-3 items-center justify-between border-t border-primary-foreground/15 pt-2.5`}>
+        <div
+          className={`${compactMobile ? "hidden sm:flex" : "flex"} mt-3 items-center justify-between border-t border-primary-foreground/15 pt-2.5`}
+        >
           <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-accent transition-all group-hover:tracking-widest">
             Explore Destination{" "}
             <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -159,11 +171,13 @@ export function SectionHead({
   title,
   text,
   center = true,
+  as: Heading = "h2",
 }: {
   eyebrow: string;
   title: string;
   text?: string | undefined;
   center?: boolean;
+  as?: "h1" | "h2";
 }) {
   return (
     <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
@@ -172,9 +186,9 @@ export function SectionHead({
         <p className="eyebrow">{eyebrow}</p>
         <span className="h-px w-6 bg-accent/70" />
       </div>
-      <h2 className="mt-2.5 sm:mt-3 text-2.5xl sm:text-4xl md:text-5xl text-primary leading-tight font-display">
+      <Heading className="mt-2.5 sm:mt-3 text-2.5xl sm:text-4xl md:text-5xl text-primary leading-tight font-display">
         {title}
-      </h2>
+      </Heading>
       {text && (
         <p
           className={`mt-3 sm:mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed ${center ? "max-w-xl mx-auto" : ""}`}

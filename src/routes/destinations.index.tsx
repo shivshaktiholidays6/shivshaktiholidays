@@ -8,7 +8,11 @@ import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { trackAnalyticsEvent } from "@/components/site/Analytics";
 import { destinations as catalogueDestinations, type Destination } from "@/data/catalog";
 
-export default function Page({ destinationItems = catalogueDestinations }: { destinationItems?: Destination[] }) {
+export default function Page({
+  destinationItems = catalogueDestinations,
+}: {
+  destinationItems?: Destination[];
+}) {
   const [scope, setScope] = useState<"international" | "domestic">("international");
   const [region, setRegion] = useState<string>("All");
   const [query, setQuery] = useState("");
@@ -29,9 +33,7 @@ export default function Page({ destinationItems = catalogueDestinations }: { des
     : [];
   const list = destinationItems.filter((d) =>
     normalizedQuery
-      ? [d.name, d.region, d.blurb].some((value) =>
-          value.toLowerCase().includes(normalizedQuery),
-        )
+      ? [d.name, d.region, d.blurb].some((value) => value.toLowerCase().includes(normalizedQuery))
       : d.scope === scope && (region === "All" || d.region === region),
   );
 
@@ -62,6 +64,7 @@ export default function Page({ destinationItems = catalogueDestinations }: { des
     <section className="pb-24 pt-36">
       <div className="container-x">
         <SectionHead
+          as="h1"
           eyebrow="Destinations"
           title="Where Would You Like To Go?"
           text="Explore extraordinary destinations and discover your next unforgettable holiday."
@@ -197,8 +200,15 @@ export default function Page({ destinationItems = catalogueDestinations }: { des
             </button>
           ))}
         </div>
-        <div className={`mt-5 flex flex-wrap justify-center gap-2 ${normalizedQuery ? "opacity-55" : ""}`}>
-          {["All", ...Array.from(new Set(destinationItems.filter((d) => d.scope === scope).map((d) => d.region)))].map((r) => (
+        <div
+          className={`mt-5 flex flex-wrap justify-center gap-2 ${normalizedQuery ? "opacity-55" : ""}`}
+        >
+          {[
+            "All",
+            ...Array.from(
+              new Set(destinationItems.filter((d) => d.scope === scope).map((d) => d.region)),
+            ),
+          ].map((r) => (
             <button
               key={r}
               type="button"

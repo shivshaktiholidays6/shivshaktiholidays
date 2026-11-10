@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import DestinationDetail from "@/routes/destinations.$slug";
 import { destinations } from "@/data/catalog";
 import { getPublishedDestination } from "@/lib/destinations";
 import { getPublishedPackages } from "@/lib/packages";
 import { JsonLd } from "@/components/site/JsonLd";
+import { getContentRedirect } from "@/lib/content-redirects";
+import { site } from "@/config/site";
+import { searchIndexingAllowed } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -18,34 +21,47 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  if (await getContentRedirect("destination", slug)) return {};
   const d = await getPublishedDestination(slug);
   if (!d) return {};
+  const title = d.seoTitle || `${d.name} Tour Packages & Travel Guide`;
+  const description = d.seoDescription || d.blurb;
+  const image = d.socialImage || d.image;
   return {
-    title: d.seoTitle || `${d.name} Holidays`,
-    description: d.seoDescription || d.blurb,
-    alternates: { canonical: `/destinations/${d.slug}` },
+    title,
+    description,
+    alternates: { canonical: d.canonicalUrl || `/destinations/${d.slug}` },
+    robots: {
+      index: searchIndexingAllowed && !d.noIndex,
+      follow: searchIndexingAllowed,
+    },
     openGraph: {
       type: "website",
       url: `/destinations/${d.slug}`,
-      title: d.seoTitle || `${d.name} Holidays`,
-      description: d.seoDescription || d.blurb,
-      images: [{ url: d.image, alt: d.imageAlt }],
+      siteName: site.name,
+      title: `${title} | ${site.name}`,
+      description,
+      images: [{ url: image, alt: d.imageAlt }],
     },
     twitter: {
       card: "summary_large_image",
-      title: d.seoTitle || `${d.name} Holidays`,
-      description: d.seoDescription || d.blurb,
-      images: [d.image],
+      title: `${title} | ${site.name}`,
+      description,
+      images: [image],
     },
   };
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const redirectedSlug = await getContentRedirect("destination", slug);
+  if (redirectedSlug) permanentRedirect(`/destinations/${redirectedSlug}`);
   const d = await getPublishedDestination(slug);
-  if (!d) notFound();
+  if (!d) {
+    notFound();
+  }
   const packageItems = await getPublishedPackages();
-  const url = `https://shivshaktiholidays.com/destinations/${d.slug}`;
+  const url = `${site.url}/destinations/${d.slug}`;
 
   return (
     <>
@@ -73,13 +89,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://shivshaktiholidays.com",
+                item: site.url,
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Destinations",
-                item: "https://shivshaktiholidays.com/destinations",
+                item: `${site.url}/destinations`,
               },
               { "@type": "ListItem", position: 3, name: d.name, item: url },
             ],

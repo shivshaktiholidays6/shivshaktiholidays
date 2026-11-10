@@ -6,6 +6,7 @@ import type { PackageRow } from "@/lib/packages";
 import type { Json } from "@/lib/supabase/database.types";
 import { PackageImageUpload } from "@/components/admin/PackageImageUpload";
 import { PackageSubmitButton } from "@/components/admin/PackageSubmitButton";
+import { SeoEditor } from "@/components/admin/SeoEditor";
 
 const inputClass =
   "mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15";
@@ -46,7 +47,13 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <label className="text-sm font-semibold text-slate-700">
             Package name*
-            <input name="name" required maxLength={160} defaultValue={packageItem?.name} className={inputClass} />
+            <input
+              name="name"
+              required
+              maxLength={160}
+              defaultValue={packageItem?.name}
+              className={inputClass}
+            />
           </label>
           <label className="text-sm font-semibold text-slate-700">
             URL slug
@@ -54,11 +61,14 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
               name="slug"
               maxLength={160}
               defaultValue={packageItem?.slug}
-              readOnly={Boolean(packageItem)}
               placeholder="Generated from the package name"
-              className={`${inputClass} read-only:bg-slate-100 read-only:text-slate-500`}
+              className={inputClass}
             />
-            {packageItem && <span className="mt-1 block text-xs font-normal text-slate-400">The slug stays fixed after creation to preserve existing links.</span>}
+            {packageItem && (
+              <span className="mt-1 block text-xs font-normal text-amber-700">
+                Changing this URL creates a permanent redirect from the old address.
+              </span>
+            )}
           </label>
           <label className="text-sm font-semibold text-slate-700">
             Destination slug*
@@ -84,7 +94,12 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
           </label>
           <label className="text-sm font-semibold text-slate-700">
             Scope*
-            <select name="scope" required defaultValue={packageItem?.scope ?? "domestic"} className={inputClass}>
+            <select
+              name="scope"
+              required
+              defaultValue={packageItem?.scope ?? "domestic"}
+              className={inputClass}
+            >
               <option value="domestic">Domestic</option>
               <option value="international">International</option>
             </select>
@@ -132,7 +147,10 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
         <h2 className="text-xl font-bold text-slate-950">Holiday categories</h2>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {categories.map((category) => (
-            <label key={category} className="flex items-center gap-2 rounded-xl border border-slate-200 p-3 text-xs font-semibold text-slate-700">
+            <label
+              key={category}
+              className="flex items-center gap-2 rounded-xl border border-slate-200 p-3 text-xs font-semibold text-slate-700"
+            >
               <input
                 type="checkbox"
                 name="types"
@@ -165,7 +183,12 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
           </label>
           <label className="text-sm font-semibold text-slate-700">
             Accessible image description
-            <input name="imageAlt" defaultValue={packageItem?.image_alt} maxLength={240} className={inputClass} />
+            <input
+              name="imageAlt"
+              defaultValue={packageItem?.image_alt}
+              maxLength={240}
+              className={inputClass}
+            />
           </label>
           <label className="text-sm font-semibold text-slate-700">
             Image focal position
@@ -186,7 +209,12 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <label className="text-sm font-semibold text-slate-700">
             Highlights
-            <textarea name="highlights" rows={7} defaultValue={packageItem?.highlights.join("\n")} className={inputClass} />
+            <textarea
+              name="highlights"
+              rows={7}
+              defaultValue={packageItem?.highlights.join("\n")}
+              className={inputClass}
+            />
           </label>
           <label className="text-sm font-semibold text-slate-700">
             Day-by-day itinerary
@@ -197,14 +225,19 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
               placeholder="Arrival in Bali | Airport pickup and hotel check-in."
               className={inputClass}
             />
-            <span className="mt-1 block text-xs font-normal text-slate-400">Format: Day title | Day description</span>
+            <span className="mt-1 block text-xs font-normal text-slate-400">
+              Format: Day title | Day description
+            </span>
           </label>
           <label className="text-sm font-semibold text-slate-700">
             Inclusions
             <textarea
               name="inclusions"
               rows={7}
-              defaultValue={(packageItem?.inclusions.length ? packageItem.inclusions : defaultInclusions).join("\n")}
+              defaultValue={(packageItem?.inclusions.length
+                ? packageItem.inclusions
+                : defaultInclusions
+              ).join("\n")}
               className={inputClass}
             />
           </label>
@@ -213,7 +246,10 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
             <textarea
               name="exclusions"
               rows={7}
-              defaultValue={(packageItem?.exclusions.length ? packageItem.exclusions : defaultExclusions).join("\n")}
+              defaultValue={(packageItem?.exclusions.length
+                ? packageItem.exclusions
+                : defaultExclusions
+              ).join("\n")}
               className={inputClass}
             />
           </label>
@@ -228,8 +264,16 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
             ["featured", "Featured package", packageItem?.featured],
             ["mostBooked", "Most booked", packageItem?.most_booked],
           ].map(([name, label, checked]) => (
-            <label key={String(name)} className="flex items-center gap-3 rounded-xl border border-slate-200 p-4 text-sm font-semibold text-slate-700">
-              <input type="checkbox" name={String(name)} defaultChecked={Boolean(checked)} className="size-4 accent-amber-600" />
+            <label
+              key={String(name)}
+              className="flex items-center gap-3 rounded-xl border border-slate-200 p-4 text-sm font-semibold text-slate-700"
+            >
+              <input
+                type="checkbox"
+                name={String(name)}
+                defaultChecked={Boolean(checked)}
+                className="size-4 accent-amber-600"
+              />
               {String(label)}
             </label>
           ))}
@@ -237,22 +281,33 @@ export function PackageForm({ packageItem }: { packageItem?: PackageRow | undefi
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className="text-sm font-semibold text-slate-700">
             Display order
-            <input name="sortOrder" type="number" defaultValue={packageItem?.sort_order ?? 0} className={inputClass} />
+            <input
+              name="sortOrder"
+              type="number"
+              defaultValue={packageItem?.sort_order ?? 0}
+              className={inputClass}
+            />
           </label>
           <div />
-          <label className="text-sm font-semibold text-slate-700">
-            SEO title
-            <input name="seoTitle" maxLength={160} defaultValue={packageItem?.seo_title ?? ""} className={inputClass} />
-          </label>
-          <label className="text-sm font-semibold text-slate-700">
-            SEO description
-            <textarea name="seoDescription" maxLength={320} rows={3} defaultValue={packageItem?.seo_description ?? ""} className={inputClass} />
-          </label>
         </div>
+        <SeoEditor
+          contentType="package"
+          defaultName={packageItem?.name ?? ""}
+          defaultDescription={packageItem?.summary ?? ""}
+          defaultSlug={packageItem?.slug ?? ""}
+          seoTitle={packageItem?.seo_title}
+          seoDescription={packageItem?.seo_description}
+          socialImageUrl={packageItem?.social_image_url}
+          canonicalUrl={packageItem?.canonical_url}
+          noindex={packageItem?.noindex}
+        />
       </section>
 
       <div className="sticky bottom-3 z-10 flex items-center justify-end gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
-        <Link href="/admin/packages" className="rounded-xl px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100">
+        <Link
+          href="/admin/packages"
+          className="rounded-xl px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+        >
           Cancel
         </Link>
         <PackageSubmitButton />
