@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { CheckCircle2, MapPin, MessageCircle, Sparkles, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
@@ -13,23 +14,43 @@ import { saveEnquiry } from "@/lib/enquiries";
 const popupSessionKey = "shiv-shakti-enquiry-popup-seen";
 
 export function LeadEnquiryPopup() {
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [lastWhatsAppLink, setLastWhatsAppLink] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [openSource, setOpenSource] = useState<"automatic_timer" | "quick_query">(
+    "automatic_timer",
+  );
 
   useEffect(() => {
+    if (isAdmin) return;
     if (window.sessionStorage.getItem(popupSessionKey)) return;
 
     const timer = window.setTimeout(() => setOpen(true), 6500);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin) return;
+
+    function openQuickQuery() {
+      setOpenSource("quick_query");
+      setSubmitted(false);
+      setSubmitError("");
+      setOpen(true);
+    }
+
+    window.addEventListener("open-lead-enquiry", openQuickQuery);
+    return () => window.removeEventListener("open-lead-enquiry", openQuickQuery);
+  }, [isAdmin]);
 
   useEffect(() => {
     if (!open) return;
 
-    trackAnalyticsEvent("lead_popup_open", { source: "homepage_timer" });
+    trackAnalyticsEvent("lead_popup_open", { source: openSource });
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -43,7 +64,7 @@ export function LeadEnquiryPopup() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [open]);
+  }, [open, openSource]);
 
   function dismiss() {
     window.sessionStorage.setItem(popupSessionKey, "true");
@@ -108,7 +129,7 @@ export function LeadEnquiryPopup() {
     }
   }
 
-  if (!open) return null;
+  if (isAdmin || !open) return null;
 
   return (
     <div

@@ -134,16 +134,3 @@ export function Footer() {
   );
 }
 
-export function WhatsAppFloat() {
-  return (
-    <a
-      href={waLink(waMessages.general)}
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Chat on WhatsApp"
-      className="fixed bottom-24 right-5 z-40 grid size-14 place-items-center rounded-full bg-accent text-accent-foreground shadow-lift transition hover:scale-105 lg:bottom-6"
-    >
-      <MessageCircle className="size-6" />
-    </a>
-  );
-}

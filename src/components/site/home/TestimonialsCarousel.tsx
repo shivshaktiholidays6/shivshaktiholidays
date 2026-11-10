@@ -9,6 +9,10 @@ import keralaImage from "@/assets/kerala.jpg";
 import kashmirImage from "@/assets/kashmir.jpg";
 import chardhamImage from "@/assets/chardham-kedarnath.webp";
 import dubaiImage from "@/assets/dubai.jpg";
+import thailandImage from "@/assets/thailand.webp";
+import rajasthanImage from "@/assets/rajasthan.jpg";
+import goaImage from "@/assets/goa.webp";
+import vaishnoDeviImage from "@/assets/vaishno-devi.webp";
 
 const reviews = [
   {
@@ -64,6 +68,42 @@ const reviews = [
     packageName: "Dubai Luxury Experience",
     image: dubaiImage,
     alt: "Dubai skyline during a luxury holiday",
+  },
+  {
+    quote:
+      "Thailand had the perfect balance of beaches, sightseeing and free time. The hotels were excellent, and every transfer arrived exactly when promised.",
+    author: "Nikhil & Pooja R.",
+    city: "Bengaluru",
+    packageName: "Thailand Explorer",
+    image: thailandImage,
+    alt: "Clear blue water and tropical islands in Thailand",
+  },
+  {
+    quote:
+      "Our Rajasthan tour felt truly royal. Jaipur, Jodhpur and Udaipur were connected smoothly, and the heritage stays made the journey unforgettable.",
+    author: "Amit & Neha G.",
+    city: "Kolkata",
+    packageName: "Rajasthan Royal Experience",
+    image: rajasthanImage,
+    alt: "Historic Rajasthan palace and royal architecture",
+  },
+  {
+    quote:
+      "The Goa holiday was relaxed and very well paced. Our resort was close to the beach, the sightseeing was enjoyable and the sunset cruise was a highlight.",
+    author: "Sahil Kapoor",
+    city: "Chandigarh",
+    packageName: "Goa Beach Holiday",
+    image: goaImage,
+    alt: "Sunny Goa beach and tropical coastline",
+  },
+  {
+    quote:
+      "The Vaishno Devi pilgrimage was arranged with great attention to our comfort. The transport, hotel and darshan guidance helped our family travel confidently.",
+    author: "Kavita Verma",
+    city: "Kanpur",
+    packageName: "Vaishno Devi Pilgrimage",
+    image: vaishnoDeviImage,
+    alt: "Vaishno Devi pilgrimage route in the mountains",
   },
 ] as const;
 

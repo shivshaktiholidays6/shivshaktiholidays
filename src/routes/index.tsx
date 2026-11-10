@@ -18,7 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { PackageCard, SectionHead } from "@/components/site/Cards";
 import { SectionCTA } from "@/components/site/SectionCTA";
-import { LeadEnquiryPopup } from "@/components/site/LeadEnquiryPopup";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
 import { CuratedDestinations } from "@/components/site/home/CuratedDestinations";
 import { HolidayFinder } from "@/components/site/home/HolidayFinder";
@@ -94,7 +93,6 @@ export default function Home({ packageItems = packages, destinationItems = desti
   const domesticDestinations = [...featuredDomestic, ...destinationItems.filter((item) => domesticCuratedSlugs.includes(item.slug) && !featuredDomestic.some((featured) => featured.slug === item.slug))].slice(0, 6);
   return (
     <>
-      <LeadEnquiryPopup />
       <HomeHero slides={homeHeroSlides} />
       <HolidayFinder categories={categories} />
 

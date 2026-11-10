@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import { Header } from "@/components/site/Header";
-import { Footer, WhatsAppFloat } from "@/components/site/Footer";
+import { Footer } from "@/components/site/Footer";
+import { QuickQueryFloat } from "@/components/site/QuickQueryFloat";
+import { LeadEnquiryPopup } from "@/components/site/LeadEnquiryPopup";
 import { AnalyticsManager } from "@/components/site/Analytics";
 import { getPublishedDestinations } from "@/lib/destinations";
 import { getActivePromotion } from "@/lib/promotions";
@@ -37,7 +39,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Header destinationItems={destinationItems} promotion={promotion} />
         <main>{children}</main>
         <Footer />
-        <WhatsAppFloat />
+        <LeadEnquiryPopup />
+        <QuickQueryFloat />
         <AnalyticsManager />
       </body>
     </html>
