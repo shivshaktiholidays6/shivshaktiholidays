@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDown,
+  ArrowRight,
   Crown,
   HeartHandshake,
   Hotel,
   MapPinned,
   ShieldCheck,
   Sparkles,
+  X,
 } from "lucide-react";
 import { PackageCard, SectionHead } from "@/components/site/Cards";
 import { SectionCTA } from "@/components/site/SectionCTA";
@@ -25,6 +27,16 @@ const serviceHighlights = [
   [ShieldCheck, "Trusted guidance"],
 ] as const;
 
+interface FinderContext {
+  destination: string;
+  departureCity: string;
+  departureDate: string;
+  returnDate: string;
+  adults: string;
+  kids: string;
+  category: string;
+}
+
 export default function Page({ packageItems = packages }: { packageItems?: Pkg[] }) {
   const [q, setQ] = useState("");
   const [scope, setScope] = useState("all");
@@ -33,14 +45,39 @@ export default function Page({ packageItems = packages }: { packageItems?: Pkg[]
   const [dur, setDur] = useState("all");
   const [sort, setSort] = useState("rec");
   const [visibleCount, setVisibleCount] = useState(9);
+  const [finderContext, setFinderContext] = useState<FinderContext | null>(null);
 
   useEffect(() => {
-    const requestedType = new URLSearchParams(window.location.search).get("type");
+    const params = new URLSearchParams(window.location.search);
+    const requestedDestination = params.get("destination")?.trim() ?? "";
+    const requestedType = params.get("category") || params.get("type");
+
+    if (requestedDestination) setQ(requestedDestination);
     if (requestedType && categories.some((category) => category === requestedType)) {
       setType(requestedType);
-      setVisibleCount(9);
     }
+    if (params.get("source") === "holiday-finder") {
+      setFinderContext({
+        destination: requestedDestination,
+        departureCity: params.get("departureCity")?.trim() ?? "",
+        departureDate: params.get("departureDate") ?? "",
+        returnDate: params.get("returnDate") ?? "",
+        adults: params.get("adults") ?? "",
+        kids: params.get("kids") ?? "",
+        category: requestedType ?? "",
+      });
+    }
+    setVisibleCount(9);
   }, []);
+
+  const customTripHref = useMemo(() => {
+    if (!finderContext) return "/plan-trip";
+    const params = new URLSearchParams({ source: "holiday-finder" });
+    Object.entries(finderContext).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
+    return `/plan-trip?${params.toString()}`;
+  }, [finderContext]);
 
   const mostBookedPackages = mostBookedPackageSlugs.flatMap((slug) => {
     const packageItem = packageItems.find((item) => item.slug === slug);
@@ -53,7 +90,7 @@ export default function Page({ packageItems = packages }: { packageItems?: Pkg[]
   const list = useMemo(() => {
     let filtered = packageItems.filter(
       (p) =>
-        (!q || (p.name + p.place).toLowerCase().includes(q.toLowerCase())) &&
+        (!q || `${p.name} ${p.place} ${p.destination}`.toLowerCase().includes(q.toLowerCase())) &&
         (scope === "all" || p.scope === scope) &&
         (type === "all" ||
           p.types.includes(type) ||
@@ -192,6 +229,41 @@ export default function Page({ packageItems = packages }: { packageItems?: Pkg[]
             title="Find Your Perfect Holiday"
             text="Filter every sample itinerary by destination, holiday style, budget and duration."
           />
+          {finderContext && (
+            <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-accent/30 bg-accent/10 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+                  Your holiday search
+                </p>
+                <p className="mt-1 text-sm font-medium text-primary sm:text-base">
+                  {[finderContext.destination, finderContext.category].filter(Boolean).join(" · ") ||
+                    "All available packages"}
+                </p>
+                {(finderContext.departureDate || finderContext.adults) && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {finderContext.departureDate &&
+                      `${finderContext.departureDate}${finderContext.returnDate ? ` to ${finderContext.returnDate}` : ""}`}
+                    {finderContext.departureDate && finderContext.adults && " · "}
+                    {finderContext.adults &&
+                      `${finderContext.adults} adult${finderContext.adults === "1" ? "" : "s"}${finderContext.kids && finderContext.kids !== "0" ? `, ${finderContext.kids} child${finderContext.kids === "1" ? "" : "ren"}` : ""}`}
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setQ("");
+                  setType("all");
+                  setFinderContext(null);
+                  setVisibleCount(9);
+                  window.history.replaceState(null, "", "/packages#all-packages");
+                }}
+                className="inline-flex min-h-10 items-center justify-center gap-2 self-start rounded-full border border-accent/35 bg-card px-4 text-xs font-semibold uppercase tracking-wider text-primary transition hover:border-accent sm:self-auto"
+              >
+                <X className="size-3.5" /> Clear search
+              </button>
+            </div>
+          )}
           <div className="mt-10 grid gap-3 rounded-2xl bg-card p-4 shadow-soft md:grid-cols-6">
             <input
               value={q}
@@ -269,7 +341,7 @@ export default function Page({ packageItems = packages }: { packageItems?: Pkg[]
             </select>
           </div>
           <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
-            <span>{list.length} packages</span>
+            <span aria-live="polite">{list.length} matching packages</span>
             <select
               value={sort}
               onChange={(e) => {
@@ -307,9 +379,22 @@ export default function Page({ packageItems = packages }: { packageItems?: Pkg[]
             </div>
           )}
           {!list.length && (
-            <p className="py-20 text-center text-muted-foreground">
-              No packages match—try widening your filters, or ask us for a custom plan.
-            </p>
+            <div className="my-10 rounded-3xl border border-accent/30 bg-accent/10 px-5 py-10 text-center sm:px-10">
+              <p className="eyebrow">Personalized alternative</p>
+              <h3 className="mt-3 text-2xl font-semibold text-primary sm:text-3xl">
+                No exact package found—let us create one
+              </h3>
+              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Your destination, dates and traveller details are saved. Continue to the planner and
+                we will prepare a customized holiday around your requirements.
+              </p>
+              <Link
+                href={customTripHref}
+                className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-accent-foreground shadow-soft transition hover:-translate-y-0.5 hover:bg-accent/90"
+              >
+                Create a Customized Trip <ArrowRight className="size-4" />
+              </Link>
+            </div>
           )}
           <SectionCTA />
         </div>

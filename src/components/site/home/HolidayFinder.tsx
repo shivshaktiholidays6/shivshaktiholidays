@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Compass, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fieldClass } from "@/components/site/EnquiryForm";
@@ -8,6 +9,7 @@ import { trackAnalyticsEvent } from "@/components/site/Analytics";
 
 export function HolidayFinder({ categories }: { categories: readonly string[] }) {
   const router = useRouter();
+  const [error, setError] = useState("");
 
   return (
     <section className="relative z-20 -mt-8 sm:-mt-16 lg:-mt-14">
@@ -15,8 +17,39 @@ export function HolidayFinder({ categories }: { categories: readonly string[] })
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            trackAnalyticsEvent("plan_trip_start", { source: "homepage_finder" });
-            router.push("/plan-trip");
+            setError("");
+            const values = new FormData(event.currentTarget);
+            const departureDate = String(values.get("departureDate") ?? "");
+            const returnDate = String(values.get("returnDate") ?? "");
+
+            if (departureDate && returnDate && returnDate < departureDate) {
+              setError("Return date must be after the departure date.");
+              return;
+            }
+
+            const params = new URLSearchParams();
+            const fields = [
+              "destination",
+              "departureCity",
+              "departureDate",
+              "returnDate",
+              "adults",
+              "kids",
+              "category",
+            ] as const;
+
+            fields.forEach((field) => {
+              const value = String(values.get(field) ?? "").trim();
+              if (value) params.set(field, value);
+            });
+            params.set("source", "holiday-finder");
+
+            trackAnalyticsEvent("holiday_search", {
+              source: "homepage_finder",
+              has_destination: Boolean(params.get("destination")),
+              holiday_style: params.get("category") || "all",
+            });
+            router.push(`/packages?${params.toString()}#all-packages`);
           }}
           className="rounded-2xl border border-border/80 bg-card/95 p-4 shadow-lift backdrop-blur-xl sm:rounded-3xl sm:p-7"
         >
@@ -47,18 +80,19 @@ export function HolidayFinder({ categories }: { categories: readonly string[] })
               <input name="returnDate" type="date" aria-label="Return date" className={fieldClass} />
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <input name="adults" type="number" min={1} placeholder="Adults" className={fieldClass} />
-              <input name="kids" type="number" min={0} placeholder="Kids" className={fieldClass} />
+              <input name="adults" type="number" min={1} max={100} defaultValue={2} placeholder="Adults" className={fieldClass} />
+              <input name="kids" type="number" min={0} max={100} defaultValue={0} placeholder="Kids" className={fieldClass} />
             </div>
             <select name="category" className={fieldClass} defaultValue="">
               <option value="" disabled>Holiday Style</option>
-              {categories.map((category) => <option key={category}>{category}</option>)}
+              {categories.map((category) => <option key={category} value={category}>{category}</option>)}
             </select>
             <Button type="submit" variant="navy" className="min-h-11 h-11 flex items-center justify-center gap-1.5 text-xs font-semibold uppercase tracking-wider shadow-soft transition-all hover:shadow-lift sm:col-span-2 sm:h-full lg:col-span-1">
               <Search className="size-4" />
               <span>Find Holidays</span>
             </Button>
           </div>
+          {error && <p className="mt-3 text-sm font-medium text-destructive">{error}</p>}
         </form>
       </div>
     </section>

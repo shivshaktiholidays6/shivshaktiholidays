@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fieldClass } from "@/components/site/EnquiryForm";
@@ -76,6 +76,44 @@ export default function Page() {
   const [error, setError] = useState("");
   const [done, setDone] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") !== "holiday-finder") return;
+
+    const category = params.get("category") ?? "";
+    const preferenceMap: Record<string, string> = {
+      Honeymoon: "Honeymoon",
+      Family: "Family",
+      Luxury: "Luxury",
+      Adventure: "Adventure",
+      "Group Tours": "Friends",
+      "Spiritual & Pilgrimage": "Spiritual",
+    };
+    const validDate = (value: string | null) =>
+      value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+    const validCount = (value: string | null, fallback: string) =>
+      value && /^\d{1,3}$/.test(value) ? value : fallback;
+
+    setF((current) => ({
+      ...current,
+      scope:
+        category === "International"
+          ? "International"
+          : category === "Domestic"
+            ? "Domestic"
+            : "Not Decided Yet",
+      from: (params.get("departureCity") ?? "").slice(0, 100),
+      dest: (params.get("destination") ?? "").slice(0, 120),
+      start: validDate(params.get("departureDate")),
+      end: validDate(params.get("returnDate")),
+      adults: validCount(params.get("adults"), "2"),
+      children: validCount(params.get("kids"), "0"),
+    }));
+    if (preferenceMap[category]) setTypes([preferenceMap[category]]);
+    setPrefilled(true);
+  }, []);
   const set = (k: K, v: string) => setF((s) => ({ ...s, [k]: v }));
   const inp = (k: K, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
     <input
@@ -185,6 +223,11 @@ export default function Page() {
       <div className="container-x max-w-3xl">
         <p className="eyebrow text-center">Customized holiday planner</p>
         <h1 className="mt-3 text-center text-4xl text-primary md:text-5xl">Plan My Trip</h1>
+        {prefilled && (
+          <p className="mx-auto mt-4 max-w-xl rounded-full border border-accent/25 bg-accent/10 px-4 py-2 text-center text-xs font-medium text-primary sm:text-sm">
+            Your holiday search details have been added. Review them as you continue.
+          </p>
+        )}
         <div className="mt-10 flex gap-1.5">
           {steps.map((s, i) => (
             <div
