@@ -1,12 +1,13 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isAdminEmail, requireAdminUser } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
 import { site } from "@/config/site";
+import { promotionCacheTag } from "@/lib/promotions";
 import sharp from "sharp";
 
 const enquiryStatuses = new Set(["new", "contacted", "quoted", "confirmed", "lost"]);
@@ -587,6 +588,7 @@ function promotionDate(formData: FormData, name: string) {
 }
 
 function revalidatePromotionPages() {
+  updateTag(promotionCacheTag);
   revalidatePath("/", "layout");
   revalidatePath("/admin/promotions");
 }

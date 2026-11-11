@@ -98,14 +98,7 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
       )}
     >
       {/* Top micro concierge strip (desktop) */}
-      <div
-        className={cn(
-          "hidden lg:block border-b border-primary-foreground/10 transition-all duration-300",
-          scrolled
-            ? "h-0 overflow-hidden opacity-0 py-0"
-            : "bg-primary/30 backdrop-blur-xs py-1.5 text-[0.72rem] text-primary-foreground/80",
-        )}
-      >
+      <div className="hidden border-b border-primary-foreground/10 bg-primary/70 py-1.5 text-[0.72rem] text-primary-foreground/80 backdrop-blur-md lg:block">
         <div className="container-x flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 font-medium text-accent">
@@ -189,6 +182,17 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
             {open ? <X className="size-4.5 sm:size-5" /> : <Menu className="size-4.5 sm:size-5" />}
           </button>
         </div>
+      </div>
+
+      <div className="hidden h-8 items-center justify-center border-t border-primary-foreground/10 bg-primary/75 text-primary-foreground backdrop-blur-md max-sm:flex">
+        <a
+          href={`tel:${site.phone}`}
+          aria-label={`Call ${site.phone}`}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide transition-colors hover:text-accent"
+        >
+          <Phone className="size-3.5 text-accent" />
+          <span>{site.phone.replace(/^\+91\s*/, "")}</span>
+        </a>
       </div>
 
       <PromotionBanner promotion={promotion} />
