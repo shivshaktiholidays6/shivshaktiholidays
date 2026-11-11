@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   description:
     "Plan domestic and international tours, Char Dham journeys, honeymoons and customized holidays with a trusted travel agency in Roorkee.",
   keywords: [
+    "char dham yatra packages from roorkee",
+    "best travel agency in roorkee",
+    "thailand packages",
     "holiday packages",
     "custom tours India",
     "international holidays",
