@@ -44,13 +44,13 @@ export function Logo({ light }: { light?: boolean }) {
           width={56}
           height={56}
           sizes="56px"
-          className="relative size-8 shrink-0 rounded-full bg-white object-cover p-0.5 shadow-lift ring-1 ring-accent/70 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 xs:size-9 sm:size-12 sm:ring-2 lg:size-13"
+          className="relative size-8 shrink-0 rounded-full bg-white object-cover p-0.5 shadow-lift ring-1 ring-accent/70 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 xs:size-9 sm:size-12 sm:ring-2 lg:size-11"
         />
       </div>
 
       {/* Refined luxury wordmark */}
       <div className="flex min-w-0 flex-col justify-center leading-none">
-        <span className="inline-flex items-baseline whitespace-nowrap font-display text-sm font-semibold tracking-[-0.035em] drop-shadow-sm xs:text-base sm:text-2xl lg:text-[1.72rem]">
+        <span className="inline-flex items-baseline whitespace-nowrap font-display text-sm font-semibold tracking-[-0.035em] drop-shadow-sm xs:text-base sm:text-2xl lg:text-[1.5rem]">
           <span className="text-[#fff8e8] transition-colors duration-300 group-hover:text-white">
             Shiv
           </span>
@@ -98,7 +98,7 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
       )}
     >
       {/* Top micro concierge strip (desktop) */}
-      <div className="hidden border-b border-primary-foreground/10 bg-primary/70 py-1.5 text-[0.72rem] text-primary-foreground/80 backdrop-blur-md lg:block">
+      <div className="hidden border-b border-primary-foreground/10 bg-primary/70 py-1 text-[0.68rem] text-primary-foreground/80 backdrop-blur-md lg:block">
         <div className="container-x flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 font-medium text-accent">
@@ -138,7 +138,7 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
       <div
         className={cn(
           "container-x flex items-center justify-between gap-2 sm:gap-4 transition-all duration-300",
-          scrolled ? "h-14 sm:h-18 lg:h-20" : "h-15 sm:h-20 lg:h-22",
+          scrolled ? "h-14 sm:h-18 lg:h-16" : "h-15 sm:h-20 lg:h-18",
         )}
       >
         <Logo light={true} />
