@@ -26,14 +26,24 @@ import { TestimonialsCarousel } from "@/components/site/home/TestimonialsCarouse
 import {
   categories,
   destinations,
-  images,
   mostBookedPackageSlugs,
   packages,
   type Destination,
   type Pkg,
 } from "@/data/catalog";
 import { site, waLink, waMessages } from "@/config/site";
-import worldEscapesHero from "@/assets/world-escapes-hero-hd.webp";
+import worldEscapesHero from "@/assets/home-v2/international-hero.webp";
+import kashmirHero from "@/assets/home-v2/kashmir-hero.webp";
+import kedarnathHero from "@/assets/home-v2/kedarnath-hero.webp";
+import honeymoonMaldives from "@/assets/home-v2/honeymoon-maldives.webp";
+import dubaiHero from "@/assets/home-v2/dubai-burj-full-v2.webp";
+import londonHero from "@/assets/home-v2/london-westminster.webp";
+import thailandHero from "@/assets/thailand.webp";
+import singaporeHero from "@/assets/singapore.webp";
+import baliHero from "@/assets/bali.jpg";
+import keralaHero from "@/assets/kerala.jpg";
+import rajasthanHero from "@/assets/rajasthan.jpg";
+import goaHero from "@/assets/goa.webp";
 
 const homeHeroSlides = [
   {
@@ -46,6 +56,7 @@ const homeHeroSlides = [
       "From breathtaking Alpine views to iconic European cities, discover international holidays planned around your dreams.",
     image: worldEscapesHero.src,
     alt: "Swiss Alpine village beside a turquoise lake and snow-capped mountains",
+    focalPoint: "65% center",
     href: "/international",
     cta: "Explore International Holidays",
   },
@@ -57,8 +68,9 @@ const homeHeroSlides = [
     accent: "Every Journey Tells A Story.",
     description:
       "Snow-draped Kashmir, royal Rajasthan and serene Kerala—experience India through journeys designed with warmth, comfort and care.",
-    image: images.kashmir,
-    alt: "Scenic Kashmir mountains and lake",
+    image: kashmirHero.src,
+    alt: "Shikara on Dal Lake beneath the snow-capped mountains of Kashmir",
+    focalPoint: "65% center",
     href: "/domestic",
     cta: "Discover India Packages",
   },
@@ -70,10 +82,123 @@ const homeHeroSlides = [
     accent: "Return With Blessings.",
     description:
       "Walk the sacred paths of Char Dham with carefully planned stays, trusted transport and personal assistance throughout your yatra.",
-    image: images.charDham,
-    alt: "Kedarnath temple surrounded by Himalayan mountains",
+    image: kedarnathHero.src,
+    alt: "Kedarnath Temple surrounded by snow-covered Himalayan mountains",
+    focalPoint: "68% center",
     href: "/packages/char-dham-yatra",
     cta: "Explore Char Dham Yatra",
+  },
+  {
+    id: "dubai",
+    label: "Dubai",
+    badge: "Iconic City Escapes",
+    title: "Rise Above The Ordinary.",
+    accent: "Dubai Awaits.",
+    description:
+      "See the Burj Khalifa, golden deserts and dazzling waterfronts on a Dubai holiday designed around you.",
+    image: dubaiHero.src,
+    alt: "Burj Khalifa and the Dubai skyline glowing at sunset",
+    focalPoint: "72% center",
+    href: "/destinations/dubai",
+    cta: "Explore Dubai",
+  },
+  {
+    id: "thailand",
+    label: "Thailand",
+    badge: "Thailand Explorer",
+    title: "Tropical Days.",
+    accent: "Unforgettable Nights.",
+    description:
+      "Sail between limestone islands, unwind on clear-water beaches and discover Thailand's vibrant culture.",
+    image: thailandHero.src,
+    alt: "Traditional long-tail boat on a turquoise beach in Thailand",
+    focalPoint: "35% center",
+    href: "/destinations/thailand",
+    cta: "Explore Thailand",
+  },
+  {
+    id: "london",
+    label: "London",
+    badge: "Timeless British Escape",
+    title: "Meet A City Of Icons.",
+    accent: "London Never Stands Still.",
+    description:
+      "Walk beside the Thames, see Big Ben and discover royal landmarks, celebrated culture and timeless neighbourhoods.",
+    image: londonHero.src,
+    alt: "Big Ben and the Palace of Westminster beside the River Thames at golden hour",
+    focalPoint: "70% center",
+    href: "/international",
+    cta: "Explore London Holidays",
+  },
+  {
+    id: "singapore",
+    label: "Singapore",
+    badge: "The Lion City",
+    title: "Future Meets Culture.",
+    accent: "Welcome To Singapore.",
+    description:
+      "Discover dazzling gardens, iconic architecture and world-class experiences in one effortless city escape.",
+    image: singaporeHero.src,
+    alt: "Marina Bay Sands and Gardens by the Bay in Singapore",
+    focalPoint: "50% center",
+    href: "/destinations/singapore",
+    cta: "Explore Singapore",
+  },
+  {
+    id: "bali",
+    label: "Bali",
+    badge: "Island Of The Gods",
+    title: "Slow Down In Paradise.",
+    accent: "Bali Is Calling.",
+    description:
+      "Temple sunrises, emerald rice terraces and private villas create a restorative island journey.",
+    image: baliHero.src,
+    alt: "Balinese temple and green rice terraces at sunrise",
+    focalPoint: "65% center",
+    href: "/destinations/bali",
+    cta: "Explore Bali",
+  },
+  {
+    id: "kerala",
+    label: "Kerala",
+    badge: "God's Own Country",
+    title: "Drift Into Calm.",
+    accent: "Experience Kerala.",
+    description:
+      "Cruise peaceful backwaters, stay among palms and discover the warm flavours of southern India.",
+    image: keralaHero.src,
+    alt: "Traditional houseboat on the palm-lined Kerala backwaters",
+    focalPoint: "50% center",
+    href: "/destinations/kerala",
+    cta: "Explore Kerala",
+  },
+  {
+    id: "rajasthan",
+    label: "Rajasthan",
+    badge: "Royal Indian Journeys",
+    title: "Live A Royal Story.",
+    accent: "Rediscover Rajasthan.",
+    description:
+      "Palaces, desert sunsets and timeless hospitality come together in India's most regal escape.",
+    image: rajasthanHero.src,
+    alt: "Historic lakeside palace in Rajasthan at sunset",
+    focalPoint: "30% center",
+    href: "/destinations/rajasthan",
+    cta: "Explore Rajasthan",
+  },
+  {
+    id: "goa",
+    label: "Goa",
+    badge: "Sun, Sea & Heritage",
+    title: "Find Your Easy Rhythm.",
+    accent: "Goa Feels Different.",
+    description:
+      "Golden beaches, Portuguese heritage and relaxed coastal days make every Goa escape feel effortless.",
+    image: goaHero.src,
+    alt: "Golden beach and Portuguese church on the coast of Goa",
+    focalPoint: "70% center",
+    href: "/destinations/goa",
+    cta: "Explore Goa",
   },
 ] as const;
 
@@ -167,11 +292,11 @@ export default function Home({
       <section className="grid md:grid-cols-2 overflow-hidden border-b border-border/60">
         <div className="relative min-h-[18rem] sm:min-h-[24rem] md:min-h-[32rem]">
           <ResponsiveImage
-            src={images.europe}
-            alt="Santorini sunset with luxury infinity view"
+            src={honeymoonMaldives}
+            alt="Couple enjoying a sunset from a private overwater villa in the Maldives"
             fill
             sizes="(max-width: 767px) 100vw, 50vw"
-            className="absolute inset-0 size-full object-cover transition-transform duration-1000 hover:scale-105"
+            className="absolute inset-0 size-full object-cover object-[62%_center] transition-transform duration-1000 hover:scale-105 md:object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
 

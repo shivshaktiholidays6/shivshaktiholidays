@@ -15,6 +15,7 @@ export interface HomeHeroSlide {
   description: string;
   image: string;
   alt: string;
+  focalPoint: string;
   href: string;
   cta: string;
 }
@@ -29,7 +30,7 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
     if (heroPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(
       () => setActiveHero((current) => (current + 1) % slides.length),
-      6000,
+      2000,
     );
     return () => window.clearInterval(timer);
   }, [heroPaused, slides.length]);
@@ -65,31 +66,31 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
         key={heroSlide.id}
         src={heroSlide.image}
         alt={heroSlide.alt}
+        focalPoint={heroSlide.focalPoint}
         fill
         priority={activeHero === 0}
         sizes="100vw"
-        className="absolute inset-0 size-full animate-[hero-image-in_1s_ease-out_both] object-cover object-center motion-reduce:animate-none"
+        className="absolute inset-0 size-full animate-[hero-image-in_1s_ease-out_both] object-cover motion-reduce:animate-none"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/60 to-primary/20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-transparent to-primary/95" />
-      <div className="absolute inset-0 bg-radial-[at_top_right] from-accent/20 via-transparent to-transparent opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/82 via-white/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/25" />
 
-      <div className="container-x relative z-10 flex flex-1 flex-col justify-center pb-16 pt-24 text-primary-foreground sm:pb-32 sm:pt-36">
+      <div className="container-x relative z-10 flex flex-1 flex-col justify-center pb-16 pt-28 text-primary sm:pb-32 sm:pt-40">
         <div key={heroSlide.id} className="max-w-3xl animate-fade-up">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-primary/50 px-3 py-1 shadow-xs backdrop-blur-md sm:px-3.5 sm:py-1.5">
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent/45 bg-white px-3 py-1 shadow-xs sm:px-3.5 sm:py-1.5">
             <Sparkles className="size-3.5 animate-pulse text-accent" />
-            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-accent sm:text-[0.68rem] sm:tracking-[0.22em]">
+            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#9a6516] sm:text-[0.68rem] sm:tracking-[0.22em]">
               {heroSlide.badge}
             </span>
           </div>
 
-          <h1 className="mt-4 text-3xl font-semibold leading-[1.12] tracking-tight text-white drop-shadow-sm font-display sm:mt-5 sm:text-5xl sm:leading-[1.05] md:text-6xl lg:text-7xl">
+          <h1 className="mt-4 text-3xl font-semibold leading-[1.12] tracking-tight text-primary drop-shadow-sm font-display sm:mt-5 sm:text-5xl sm:leading-[1.05] md:text-6xl lg:text-7xl">
             {heroSlide.title}
             <br />
-            <em className="block font-normal italic text-accent sm:inline">{heroSlide.accent}</em>
+            <em className="block font-normal italic text-[#a66b12] sm:inline">{heroSlide.accent}</em>
           </h1>
 
-          <p className="mt-3 max-w-xl text-sm font-normal leading-relaxed text-primary-foreground/90 font-sans sm:mt-6 sm:text-lg">
+          <p className="mt-3 max-w-xl text-sm font-medium leading-relaxed text-primary/75 font-sans sm:mt-6 sm:text-lg">
             {heroSlide.description}
           </p>
 
@@ -105,23 +106,28 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button asChild variant="glass" size="xl" className="w-full hover:scale-102 sm:w-auto">
+            <Button
+              asChild
+              variant="outline"
+              size="xl"
+              className="w-full border-primary/20 bg-white text-primary shadow-sm hover:scale-102 hover:bg-white sm:w-auto"
+            >
               <Link href="/plan-trip" className="inline-flex items-center justify-center">
                 Plan Personalized Trip
               </Link>
             </Button>
           </div>
 
-          <div className="mt-7 flex items-center gap-2" aria-label="Hero slide controls">
+          <div className="mt-7 flex items-center gap-1.5" aria-label="Hero slide controls">
             <button
               type="button"
               onClick={previousHero}
               aria-label="Previous hero slide"
-              className="grid size-10 shrink-0 place-items-center rounded-full border border-white/25 bg-primary/35 text-white shadow-sm backdrop-blur-md transition hover:border-accent hover:text-accent"
+              className="grid size-9 shrink-0 place-items-center rounded-full border border-primary/15 bg-white text-primary shadow-sm transition hover:border-accent hover:text-accent"
             >
               <ChevronLeft className="size-4" />
             </button>
-            <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-primary/30 p-1.5 backdrop-blur-md">
+            <div className="flex items-center gap-1 rounded-full border border-primary/10 bg-white px-2 py-2 shadow-xs">
               {slides.map((item, index) => (
                 <button
                   key={item.id}
@@ -129,18 +135,16 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
                   onClick={() => setActiveHero(index)}
                   aria-label={`Show ${item.label}`}
                   aria-current={index === activeHero}
-                  className={`h-7 rounded-full px-2.5 text-[0.62rem] font-semibold uppercase tracking-wider transition sm:px-3 ${index === activeHero ? "bg-accent text-accent-foreground shadow-sm" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
-                >
-                  <span className="sm:hidden">0{index + 1}</span>
-                  <span className="hidden sm:inline">{item.label}</span>
-                </button>
+                  title={item.label}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${index === activeHero ? "w-5 bg-accent shadow-sm" : "w-1.5 bg-primary/25 hover:bg-primary/50"}`}
+                />
               ))}
             </div>
             <button
               type="button"
               onClick={nextHero}
               aria-label="Next hero slide"
-              className="grid size-10 shrink-0 place-items-center rounded-full border border-white/25 bg-primary/35 text-white shadow-sm backdrop-blur-md transition hover:border-accent hover:text-accent"
+              className="grid size-9 shrink-0 place-items-center rounded-full border border-primary/15 bg-white text-primary shadow-sm transition hover:border-accent hover:text-accent"
             >
               <ChevronRight className="size-4" />
             </button>
@@ -148,13 +152,13 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
               type="button"
               onClick={() => setHeroPaused((current) => !current)}
               aria-label={heroPaused ? "Resume hero slideshow" : "Pause hero slideshow"}
-              className="hidden size-10 shrink-0 place-items-center rounded-full border border-white/25 bg-primary/35 text-white shadow-sm backdrop-blur-md transition hover:border-accent hover:text-accent sm:grid"
+              className="grid size-9 shrink-0 place-items-center rounded-full border border-primary/15 bg-white text-primary shadow-sm transition hover:border-accent hover:text-accent"
             >
               {heroPaused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
             </button>
           </div>
 
-          <div className="mt-8 grid grid-cols-3 items-start gap-2 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/80 sm:mt-14 sm:flex sm:flex-wrap sm:items-center sm:gap-10 sm:pt-6">
+          <div className="mt-8 grid grid-cols-3 items-start gap-2 border-t border-primary/10 pt-5 text-xs text-primary/75 sm:mt-14 sm:flex sm:flex-wrap sm:items-center sm:gap-10 sm:pt-6">
             {[
               ["✦", "Custom Itineraries", "Travel plans shaped around you"],
               ["↗", "India & Worldwide", "Domestic and international holidays"],
@@ -168,10 +172,10 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
                   {icon}
                 </span>
                 <div>
-                  <strong className="block text-[0.62rem] font-semibold leading-tight text-white sm:text-xs">
+                  <strong className="block text-[0.62rem] font-semibold leading-tight text-primary sm:text-xs">
                     {title}
                   </strong>
-                  <span className="hidden text-[0.72rem] text-primary-foreground/70 sm:block">
+                  <span className="hidden text-[0.72rem] text-primary/60 sm:block">
                     {text}
                   </span>
                 </div>

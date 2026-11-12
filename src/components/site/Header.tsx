@@ -10,6 +10,7 @@ import {
   Phone,
   MessageCircle,
   ArrowRight,
+  Flower2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveImage } from "@/components/site/ResponsiveImage";
@@ -33,7 +34,7 @@ export function Logo({ light }: { light?: boolean }) {
   return (
     <Link
       href="/"
-      className="flex min-w-0 shrink items-center gap-1.5 xs:gap-2 sm:gap-3.5 group select-none"
+      className="group flex min-w-0 shrink items-center gap-2.5 select-none sm:gap-4"
     >
       {/* Animated Glowing Emblem Badge */}
       <div className="relative shrink-0">
@@ -41,29 +42,34 @@ export function Logo({ light }: { light?: boolean }) {
         <ResponsiveImage
           src="/logoimg.jpeg"
           alt="Shiv Shakti Holidays"
-          width={56}
-          height={56}
-          sizes="56px"
-          className="relative size-8 shrink-0 rounded-full bg-white object-cover p-0.5 shadow-lift ring-1 ring-accent/70 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 xs:size-9 sm:size-12 sm:ring-2 lg:size-11"
+          width={96}
+          height={96}
+          sizes="(min-width: 640px) 80px, (min-width: 480px) 64px, 60px"
+          className="relative size-[3.75rem] shrink-0 rounded-full bg-white object-cover p-0.5 shadow-lift ring-1 ring-accent/70 transition-all duration-500 group-hover:scale-105 xs:size-16 sm:size-20 sm:ring-2"
         />
       </div>
 
-      {/* Refined luxury wordmark */}
-      <div className="flex min-w-0 flex-col justify-center leading-none">
-        <span className="inline-flex items-baseline whitespace-nowrap font-display text-sm font-semibold tracking-[-0.035em] drop-shadow-sm xs:text-base sm:text-2xl lg:text-[1.5rem]">
-          <span className="text-[#fff8e8] transition-colors duration-300 group-hover:text-white">
-            Shiv
-          </span>
-          <span className="ml-1 bg-gradient-to-br from-amber-200 via-accent to-amber-500 bg-clip-text pr-0.5 italic text-transparent transition-all duration-300 group-hover:translate-x-0.5 xs:ml-1.5">
-            Shakti
-          </span>
+      {/* Luxury serif wordmark inspired by the approved brand reference */}
+      <div className="flex min-w-0 flex-col items-center justify-center leading-none">
+        <div className="mb-0.5 flex w-full items-center justify-center gap-1 text-accent sm:mb-1 sm:gap-1.5">
+          <span className="h-px w-5 bg-gradient-to-r from-transparent to-accent/80 sm:w-8" />
+          <Flower2 className="size-3.5 shrink-0 sm:size-4.5" strokeWidth={1.35} aria-hidden="true" />
+          <span className="h-px w-5 bg-gradient-to-l from-transparent to-accent/80 sm:w-8" />
+        </div>
+        <span
+          className={cn(
+            "whitespace-nowrap font-display text-[1.5rem] font-semibold tracking-[-0.055em] drop-shadow-sm transition-colors duration-300 xs:text-[1.7rem] sm:text-[2.25rem] lg:text-[2.4rem]",
+            light ? "text-[#fff8e8] group-hover:text-white" : "text-primary group-hover:text-secondary",
+          )}
+        >
+          Shiv Shakti
         </span>
-        <div className="mt-0.5 flex items-center gap-1 sm:mt-1 sm:gap-1.5">
-          <span className="h-px w-2 xs:w-3 sm:w-4 bg-gradient-to-r from-transparent to-accent/90" />
-          <span className="block whitespace-nowrap text-[0.4rem] font-semibold uppercase tracking-[0.24em] text-amber-300/95 transition-all duration-500 group-hover:text-amber-200 xs:text-[0.48rem] xs:tracking-[0.3em] sm:text-[0.64rem] sm:tracking-[0.42em]">
+        <div className="mt-1 flex w-full items-center justify-center gap-1.5 sm:mt-1.5 sm:gap-2">
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent to-accent/80" />
+          <span className="block whitespace-nowrap text-[0.42rem] font-semibold uppercase tracking-[0.38em] text-amber-300/95 transition-colors duration-300 group-hover:text-amber-200 xs:text-[0.48rem] sm:text-[0.58rem] sm:tracking-[0.52em]">
             Holidays
           </span>
-          <span className="h-px w-2 xs:w-3 sm:w-4 bg-gradient-to-l from-transparent to-accent/90" />
+          <span className="h-px flex-1 bg-gradient-to-l from-transparent to-accent/80" />
         </div>
       </div>
     </Link>
@@ -93,12 +99,12 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
         solid
-          ? "bg-primary/95 backdrop-blur-xl border-b border-accent/25 shadow-soft text-primary-foreground"
-          : "bg-gradient-to-b from-primary/85 via-primary/40 to-transparent text-primary-foreground",
+          ? "border-b border-primary/10 bg-white text-primary shadow-soft"
+          : "border-b border-transparent bg-transparent text-primary shadow-none",
       )}
     >
       {/* Top micro concierge strip (desktop) */}
-      <div className="hidden border-b border-primary-foreground/10 bg-primary/70 py-1 text-[0.68rem] text-primary-foreground/80 backdrop-blur-md lg:block">
+      <div className="hidden border-b border-primary-foreground/10 bg-primary py-1 text-[0.68rem] text-primary-foreground/80 lg:block">
         <div className="container-x flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 font-medium text-accent">
@@ -138,19 +144,19 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
       <div
         className={cn(
           "container-x flex items-center justify-between gap-2 sm:gap-4 transition-all duration-300",
-          scrolled ? "h-14 sm:h-18 lg:h-16" : "h-15 sm:h-20 lg:h-18",
+          scrolled ? "h-20 sm:h-[5.5rem]" : "h-[5.25rem] sm:h-24",
         )}
       >
-        <Logo light={true} />
+        <Logo />
 
         {/* Desktop Navigation Links - Perfectly Aligned */}
-        <nav className="hidden items-center gap-1 xl:gap-2 lg:flex">
+        <nav className="hidden items-center gap-1 xl:flex xl:gap-2">
           {nav.map((n) => (
             <Link
               key={n.to}
               href={n.to}
               prefetch={false}
-              className={`relative inline-flex items-center justify-center px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-all hover:text-accent rounded-full hover:bg-primary-foreground/5 group whitespace-nowrap ${path === n.to ? "text-accent bg-primary-foreground/10" : "text-primary-foreground/85"}`}
+              className={`relative inline-flex items-center justify-center px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-all hover:text-accent rounded-full hover:bg-primary/5 group whitespace-nowrap ${path === n.to ? "text-accent bg-primary/10" : "text-primary/80"}`}
             >
               <span>{n.label}</span>
               <span
@@ -177,14 +183,14 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
           <button
             aria-label="Menu"
             onClick={() => setOpen((v) => !v)}
-            className="grid size-8 shrink-0 place-items-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground transition-all hover:border-accent sm:size-10 lg:hidden"
+            className="grid size-8 shrink-0 place-items-center rounded-full border border-primary/15 bg-primary/5 text-primary transition-all hover:border-accent hover:text-accent sm:size-10 xl:hidden"
           >
             {open ? <X className="size-4.5 sm:size-5" /> : <Menu className="size-4.5 sm:size-5" />}
           </button>
         </div>
       </div>
 
-      <div className="hidden h-8 items-center justify-center border-t border-primary-foreground/10 bg-primary/75 text-primary-foreground backdrop-blur-md max-sm:flex">
+      <div className="hidden h-8 items-center justify-center border-t border-primary-foreground/10 bg-primary text-primary-foreground max-sm:flex">
         <a
           href={`tel:${site.phone}`}
           aria-label={`Call ${site.phone}`}
@@ -199,28 +205,28 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
 
       {/* Luxury Mobile Navigation Drawer */}
       {open && (
-        <nav className="max-h-[calc(100vh-3.75rem)] overflow-y-auto border-t border-accent/25 bg-primary/98 text-primary-foreground backdrop-blur-2xl lg:hidden">
+        <nav className="max-h-[calc(100vh-4.5rem)] overflow-y-auto border-t border-primary/10 bg-white text-primary shadow-soft xl:hidden">
           <div className="container-x flex flex-col py-3 sm:py-5 space-y-1">
             {nav.map((n) => (
               <Link
                 key={n.to}
                 href={n.to}
                 prefetch={false}
-                className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition-colors hover:bg-primary-foreground/10 hover:text-accent sm:py-3 ${path === n.to ? "bg-primary-foreground/10 text-accent" : "text-primary-foreground/90"}`}
+                className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition-colors hover:bg-primary/5 hover:text-accent sm:py-3 ${path === n.to ? "bg-accent/10 text-accent" : "text-primary/85"}`}
               >
                 <span>{n.label}</span>
                 <ArrowRight className="size-4 opacity-50" />
               </Link>
             ))}
 
-            <div className="border-t border-primary-foreground/15 pt-4 mt-3 space-y-3">
+            <div className="mt-3 space-y-3 border-t border-primary/10 pt-4">
               <Button asChild variant="gold" size="xl" className="w-full shadow-soft">
                 <Link href="/plan-trip" className="inline-flex items-center justify-center gap-2">
                   <span>Plan My Trip</span>
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <div className="flex items-center justify-around pt-2 text-xs text-primary-foreground/75">
+              <div className="flex items-center justify-around pt-2 text-xs text-primary/70">
                 <a
                   href={`tel:${site.phone}`}
                   className="flex items-center gap-1.5 hover:text-accent transition-colors"
@@ -228,7 +234,7 @@ export function Header({ promotion = null }: { promotion?: Promotion | null }) {
                   <Phone className="size-3.5 text-accent" />
                   <span>Call Us</span>
                 </a>
-                <span className="text-primary-foreground/30">|</span>
+                <span className="text-primary/25">|</span>
                 <a
                   href={waLink(waMessages.general)}
                   target="_blank"
