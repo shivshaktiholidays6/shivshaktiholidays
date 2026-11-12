@@ -25,6 +25,11 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
   const [heroPaused, setHeroPaused] = useState(false);
   const heroTouchStart = useRef<number | null>(null);
   const heroSlide = slides[activeHero] ?? slides[0];
+  const previousSlide = slides[(activeHero - 1 + slides.length) % slides.length] ?? heroSlide;
+  const nextSlide = slides[(activeHero + 1) % slides.length] ?? heroSlide;
+  const bufferedSlides = [previousSlide, nextSlide, heroSlide].filter(
+    (slide, index, items) => items.findIndex((item) => item.id === slide.id) === index,
+  );
 
   useEffect(() => {
     if (heroPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -62,16 +67,22 @@ export function HomeHero({ slides }: { slides: readonly [HomeHeroSlide, ...HomeH
         heroTouchStart.current = null;
       }}
     >
-      <ResponsiveImage
-        key={heroSlide.id}
-        src={heroSlide.image}
-        alt={heroSlide.alt}
-        focalPoint={heroSlide.focalPoint}
-        fill
-        priority={activeHero === 0}
-        sizes="100vw"
-        className="absolute inset-0 size-full animate-[hero-image-in_1s_ease-out_both] object-cover motion-reduce:animate-none"
-      />
+      {bufferedSlides.map((slide) => {
+        const isActive = slide.id === heroSlide.id;
+        return (
+          <ResponsiveImage
+            key={slide.id}
+            src={slide.image}
+            alt={isActive ? slide.alt : ""}
+            aria-hidden={!isActive}
+            focalPoint={slide.focalPoint}
+            fill
+            loading="eager"
+            sizes="100vw"
+            className={`absolute inset-0 size-full object-cover motion-reduce:animate-none ${isActive ? "animate-[hero-image-in_1s_ease-out_both]" : ""}`}
+          />
+        );
+      })}
       <div className="absolute inset-0 bg-gradient-to-r from-white/82 via-white/30 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/25" />
 

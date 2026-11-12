@@ -58,7 +58,7 @@ export function Logo({ light }: { light?: boolean }) {
         </div>
         <span
           className={cn(
-            "whitespace-nowrap font-display text-[1.5rem] font-semibold tracking-[-0.055em] drop-shadow-sm transition-colors duration-300 xs:text-[1.7rem] sm:text-[2.25rem] lg:text-[2.4rem]",
+            "whitespace-nowrap font-display text-[1.25rem] font-semibold tracking-[-0.055em] drop-shadow-sm transition-colors duration-300 xs:text-[1.45rem] sm:text-[1.85rem] lg:text-[2rem]",
             light ? "text-[#fff8e8] group-hover:text-white" : "text-primary group-hover:text-secondary",
           )}
         >
@@ -66,7 +66,7 @@ export function Logo({ light }: { light?: boolean }) {
         </span>
         <div className="mt-1 flex w-full items-center justify-center gap-1.5 sm:mt-1.5 sm:gap-2">
           <span className="h-px flex-1 bg-gradient-to-r from-transparent to-accent/80" />
-          <span className="block whitespace-nowrap text-[0.42rem] font-semibold uppercase tracking-[0.38em] text-amber-300/95 transition-colors duration-300 group-hover:text-amber-200 xs:text-[0.48rem] sm:text-[0.58rem] sm:tracking-[0.52em]">
+          <span className="block whitespace-nowrap text-[0.42rem] font-extrabold uppercase tracking-[0.38em] text-[#925800] transition-colors duration-300 group-hover:text-[#b97800] xs:text-[0.48rem] sm:text-[0.58rem] sm:tracking-[0.52em]">
             Holidays
           </span>
           <span className="h-px flex-1 bg-gradient-to-l from-transparent to-accent/80" />
