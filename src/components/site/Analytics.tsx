@@ -71,13 +71,15 @@ function reportWebVital(metric: {
 function ConsentBanner({ onChoose }: { onChoose: (choice: Consent) => void }) {
   return (
     <section
-      aria-label="Analytics preferences"
+      aria-label="Cookie preferences"
       className="fixed inset-x-3 bottom-3 z-[120] mx-auto max-w-2xl rounded-2xl border border-accent/30 bg-primary/98 p-4 text-primary-foreground shadow-lift backdrop-blur-xl sm:bottom-5 sm:p-5"
     >
-      <p className="font-display text-lg font-semibold text-white">Help us improve your experience</p>
+      <p className="font-display text-lg font-semibold text-white">
+        Cookies for a more personalised experience
+      </p>
       <p className="mt-1.5 text-xs leading-relaxed text-primary-foreground/75 sm:text-sm">
-        We use optional analytics to understand page performance and which travel experiences are
-        useful. We never send your name, phone number, email, or enquiry message to analytics.
+        Optional cookies help us understand what visitors find useful and improve your personalised
+        travel experience. Your name, phone number, email, and enquiry messages are never included.
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <button
@@ -85,16 +87,19 @@ function ConsentBanner({ onChoose }: { onChoose: (choice: Consent) => void }) {
           onClick={() => onChoose("granted")}
           className="rounded-full bg-accent px-4 py-2 text-xs font-semibold uppercase tracking-wider text-accent-foreground transition hover:brightness-105"
         >
-          Accept analytics
+          Accept cookies
         </button>
         <button
           type="button"
           onClick={() => onChoose("denied")}
           className="rounded-full border border-primary-foreground/25 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white transition hover:border-accent hover:text-accent"
         >
-          Continue without analytics
+          No thanks
         </button>
-        <Link href="/privacy" className="ml-auto text-xs text-primary-foreground/65 underline-offset-4 hover:text-accent hover:underline">
+        <Link
+          href="/privacy"
+          className="ml-auto text-xs text-primary-foreground/65 underline-offset-4 hover:text-accent hover:underline"
+        >
           Privacy details
         </Link>
       </div>
@@ -192,7 +197,10 @@ export function AnalyticsManager() {
         trackAnalyticsEvent("phone_click", { source: pathname });
       } else {
         const destination = new URL(href, window.location.origin);
-        if (destination.origin === window.location.origin && destination.pathname === "/plan-trip") {
+        if (
+          destination.origin === window.location.origin &&
+          destination.pathname === "/plan-trip"
+        ) {
           trackAnalyticsEvent("plan_trip_start", { source: pathname });
         }
       }

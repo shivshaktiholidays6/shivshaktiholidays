@@ -583,7 +583,8 @@ export async function deleteDestination(formData: FormData) {
 function promotionDate(formData: FormData, name: string) {
   const raw = value(formData, name, 40);
   if (!raw) return null;
-  const date = new Date(raw);
+  // datetime-local has no timezone. Admin-entered promotion schedules use India time.
+  const date = new Date(`${raw}:00+05:30`);
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 
